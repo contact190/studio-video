@@ -41,8 +41,8 @@ def probe(path):
 
 
 def file_key(path):
-    st = os.stat(path)
-    return f"{Path(path).name}|{st.st_size}|{int(st.st_mtime)}"
+    """Nom + taille : stable même quand le fichier est recopié (Drive, pont vers l'ordinateur)."""
+    return f"{Path(path).name}|{os.stat(path).st_size}"
 
 
 def short_hash(text, n=8):

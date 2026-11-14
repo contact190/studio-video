@@ -152,11 +152,23 @@ def build(plan_path, out_dir=None, preview=False):
         used[c['seg']] = slot
         return s
 
+    def src_path(f):
+        if plan.get('rushes_dir') and f.get('rel'):
+            p = Path(plan['rushes_dir']) / f['rel']
+            if p.exists():
+                return p
+        if Path(f['path']).exists():
+            return Path(f['path'])
+        raise PlanError(f"Rush introuvable : {f.get('rel', f['name'])} (à rapatrier avant le montage)")
+
     def add_clip(s, c, t_in, dur, volume, slot):
         f = idx['files'][s['file']]
         k = len(clips) + 1
         name = f'c{k:02d}.mp4'
-        n = prep_clip(f['path'], t_in, dur, media / name, W, H, c.get('focus_x', 0.5), c.get('focus_y', 0.5), f['has_audio'], preview)
+        r = s.get('rea') or {}
+        fx = c.get('focus_x', r.get('center_x') if r.get('center_x') is not None else 0.5)
+        fy = c.get('focus_y', 0.5)
+        n = prep_clip(src_path(f), t_in, dur, media / name, W, H, min(1, max(0, fx)), fy, f['has_audio'], preview)
         frm = round(T * FPS)
         clips.append({'src': f'media/{name}', 'from': frm, 'dur': n, 'volume': volume, 'seed': k})
         if c.get('tag'):
@@ -177,7 +189,7 @@ def build(plan_path, out_dir=None, preview=False):
             img = None
             if p.get('image_seg') and p['image_seg'] in idx['segments']:
                 s = idx['segments'][p['image_seg']]
-                still(idx['files'][s['file']]['path'], (s['start'] + s['end']) / 2, media / 'end.jpg', W // (2 if preview else 1))
+                still(src_path(idx['files'][s['file']]), (s['start'] + s['end']) / 2, media / 'end.jpg', W // (2 if preview else 1))
                 img = 'media/end.jpg'
             end = {'from': round(T * FPS), 'dur': round(d * FPS), 'headline': p.get('headline', ''), 'bullets': p.get('bullets', []),
                    'cta': p.get('cta', brand.get('cta', '')), 'image': img, 'logo_text': brand.get('logo_text', ''), 'website': brand.get('website', '')}

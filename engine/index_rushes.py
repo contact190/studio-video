@@ -2,7 +2,12 @@
 nouveaux ou modifiés sont analysés, les autres sont repris de l'index existant.
 
 Usage :
-  python3 engine/index_rushes.py <dossier_rushes> [--index <fichier.json>] [--no-asr] [--lang fr]
+  python3 engine/index_rushes.py <dossier_rushes> [--index <fichier.json>] [--no-asr] [--no-rea] [--lang fr]
+
+Deux analyses se complètent :
+- rea-video (si installé) : coupes, taille de plan, position du sujet, caméra, visages,
+  texte déjà incrusté, origine estimée (filmé / généré) ;
+- Whisper : transcription horodatée mot par mot (+ détection de la parole).
 
 Sortie : <dossier>/_studio/index.json + une planche d'images par fichier
 (<dossier>/_studio/sheets/<FID>_<n>.jpg) que Claude regarde pour décrire les segments
@@ -13,6 +18,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 sys.path.insert(0, str(Path(__file__).parent))
 from common import run, probe, file_key, load_json, save_json, VIDEO_EXT, MODELS, fmt_t
+import rea
 
 AN_W, AN_FPS = 192, 4          # analyse : 4 images/s, 192 px de large
 SEG_MIN, SEG_MAX, SEG_WIN = 0.8, 6.0, 4.0
@@ -86,6 +92,13 @@ def speech_regions(path, lang, use_asr):
         _asr = sherpa_onnx.OfflineRecognizer.from_whisper(
             encoder=str(M / 'small-encoder.int8.onnx'), decoder=str(M / 'small-decoder.int8.onnx'),
             tokens=str(M / 'small-tokens.txt'), num_threads=2, language=lang or '', task='transcribe')
+    # Whisper ne lit que 30 s à la fois : on recoupe les longues zones de parole
+    cut = []
+    for st, n in segs:
+        while n > 25 * 16000:
+            cut.append((st, 20 * 16000)); st += 20 * 16000; n -= 20 * 16000
+        cut.append((st, n))
+    segs = cut
     out = []
     for st, n in segs:
         if n < 4800:
@@ -199,13 +212,19 @@ def contact_sheets(path, fid, segs, out_dir):
 
 
 # ---------------------------------------------------------------- principal
-def index_file(path, fid, lang, use_asr, sheets_dir):
+def index_file(path, fid, lang, use_asr, sheets_dir, use_rea=True):
     info = probe(path)
     dur = info['duration']
     fr = gray_frames(path, info['width'], info['height'])
     sharp, bright, motion, sh = frame_metrics(fr)
     speech = speech_regions(path, lang, use_asr) if info['has_audio'] else []
-    cuts = shot_cuts(path, dur)
+    rshots, rsum = [], {}
+    if use_rea and rea.available():
+        print(f'    rea-video : analyse de {path.name}…', flush=True)
+        bd = rea.analyse(path, sheets_dir.parent / 'rea' / fid)
+        if bd:
+            rshots, rsum = rea.shots(bd), rea.summary(bd)
+    cuts = [s['start'] for s in rshots[1:]] if rshots else shot_cuts(path, dur)
     segs = []
     for n, (a, z) in enumerate(segment(dur, cuts, speech), 1):
         i0, i1 = int(a * AN_FPS), max(int(a * AN_FPS) + 1, int(z * AN_FPS))
@@ -220,6 +239,9 @@ def index_file(path, fid, lang, use_asr, sheets_dir):
         mov = float(np.mean(motion[i0:i1])) if i1 <= len(motion) and i1 > i0 else 0.0
         q, why = score(s_sh, s_br, jit)
         talk = [s for s in speech if s['start'] < z and s['end'] > a]
+        rs = rea.best_shot(rshots, a, z) if rshots else None
+        if rs and rs['overlay_text']:
+            why = why + ['texte incrusté']
         segs.append({
             'id': f'{fid}.S{n:02d}', 'file': fid, 'start': a, 'end': z, 'dur': round(z - a, 2),
             'has_speech': bool(talk),
@@ -228,9 +250,10 @@ def index_file(path, fid, lang, use_asr, sheets_dir):
             'sharpness': round(s_sh, 1), 'brightness': round(s_br, 1), 'motion': round(mov, 2), 'jitter': round(jit, 2),
             'quality': q, 'issues': why, 'usable': q >= 3 and z - a >= SEG_MIN,
             'description': '', 'framing': '', 'tags': [], 'people': [], 'products': [], 'used_in': [],
+            'rea': {k: rs[k] for k in ('shot_size', 'subject', 'center_x', 'center_y', 'faces', 'camera', 'shake', 'overlay_text', 'origin')} if rs else None,
         })
     files = contact_sheets(path, fid, segs, sheets_dir)
-    return info, speech, segs, files
+    return info, speech, segs, files, rsum
 
 
 def main():
@@ -239,6 +262,7 @@ def main():
     ap.add_argument('--index')
     ap.add_argument('--lang', default='')
     ap.add_argument('--no-asr', action='store_true')
+    ap.add_argument('--no-rea', action='store_true')
     a = ap.parse_args()
     folder = Path(a.folder).resolve()
     idx_path = Path(a.index) if a.index else folder / '_studio' / 'index.json'
@@ -251,6 +275,7 @@ def main():
         k = file_key(p)
         if k in known:
             idx['files'][known[k]]['path'] = str(p)
+            idx['files'][known[k]]['rel'] = str(p.relative_to(folder))
             continue
         old = next((fid for fid, f in idx['files'].items() if f['name'] == p.name), None)
         if old:   # fichier modifié : on remplace ses segments
@@ -261,16 +286,19 @@ def main():
             while f'F{n:03d}' in used_ids: n += 1
             fid = f'F{n:03d}'; used_ids.add(fid)
         todo.append((p, fid, k))
-    print(f'{len(vids)} vidéos, {len(vids) - len(todo)} déjà indexées, {len(todo)} à analyser', flush=True)
+    print(f'{len(vids)} vidéos, {len(vids) - len(todo)} déjà indexées, {len(todo)} à analyser'
+          f" · rea-video {'actif' if rea.available() and not a.no_rea else 'absent'}", flush=True)
     for p, fid, k in todo:
-        info, speech, segs, sheets = index_file(p, fid, a.lang, not a.no_asr, idx_path.parent / 'sheets')
-        idx['files'][fid] = {'name': p.name, 'path': str(p), 'key': k, **info, 'speech': speech, 'sheets': sheets,
-                             'n_segments': len(segs), 'summary': ''}
+        info, speech, segs, sheets, rsum = index_file(p, fid, a.lang, not a.no_asr, idx_path.parent / 'sheets', not a.no_rea)
+        idx['files'][fid] = {'name': p.name, 'rel': str(p.relative_to(folder)), 'path': str(p), 'key': k, **info, 'speech': speech,
+                             'sheets': sheets, 'n_segments': len(segs), 'summary': '', 'rea': rsum or None}
         for s in segs:
             idx['segments'][s['id']] = s
         save_json(idx_path, idx)
         ok = sum(s['usable'] for s in segs)
-        print(f"  {fid} {p.name}: {info['duration']:.1f}s {info['width']}x{info['height']} · {len(segs)} segments ({ok} exploitables) · {len(speech)} zones de parole", flush=True)
+        txt = sum(1 for s in segs if 'texte incrusté' in s['issues'])
+        print(f"  {fid} {p.name}: {info['duration']:.1f}s {info['width']}x{info['height']} · {len(segs)} segments ({ok} exploitables)"
+              f" · {len(speech)} zones de parole" + (f' · {txt} avec texte incrusté' if txt else ''), flush=True)
     missing = [fid for fid, f in idx['files'].items() if not Path(f['path']).exists()]
     if missing:
         print(f'  Absents du dossier (conservés dans l\'index) : {", ".join(missing)}')

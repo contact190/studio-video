@@ -23,7 +23,10 @@ if [[ " $* " == *" --voice "* ]] && [ ! -d "$MODELS/kokoro-multi-lang-v1_0" ]; t
 fi
 if [[ " $* " == *" --rea "* ]] && [ ! -d /tmp/rea-video ]; then
   git clone -q --depth 1 https://github.com/JuneYaooo/rea-video.git /tmp/rea-video
-  python3 -m venv /tmp/rea-video/.venv && /tmp/rea-video/.venv/bin/pip install -q -e "/tmp/rea-video[ocr,asr]"
+  python3 -m venv /tmp/rea-video/.venv && /tmp/rea-video/.venv/bin/pip install -q -e "/tmp/rea-video[ocr]"
+  # version sans écran d'OpenCV (pas d'affichage dans la session)
+  /tmp/rea-video/.venv/bin/pip uninstall -y -q opencv-python 2>/dev/null || true
+  /tmp/rea-video/.venv/bin/pip install -q --force-reinstall --no-deps "opencv-python-headless>=4.8,<5"
 fi
 
 (cd render && npm install --no-audit --no-fund --silent)
