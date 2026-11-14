@@ -116,7 +116,7 @@ fiches existantes, avec un champ `description` d'une ligne. Si le style demande 
 `render/src/Edit.jsx` ne sait pas faire, l'ajouter au modèle. Résumer la fiche en mots simples
 (5 lignes maximum), sans JSON.
 
-**Étape 5 — Test.** Monter une vidéo test avec les rushes et le script de `STUDIO VIDÉO\TEST`
+**Étape 5 — Test.** Monter une vidéo test avec les rushes et le script de `STUDIO VIDÉO/TEST`
 (Moteur 3–5) ; la repasser dans rea-video et comparer à la référence. Envoyer la vidéo test et
 demander : « **C'est validé, ou tu veux des modifications ?** »
 - Modifications : changer la fiche (`version + 1`), refaire un test, redemander. À chaque nouveau test,
@@ -129,7 +129,7 @@ demander : « **C'est validé, ou tu veux des modifications ?** »
 ## MOTEUR (étapes techniques, communes aux deux commandes)
 
 **1. Rapatrier les rushes.** `get_device_info` ; dossier non connecté → `device_request_folder_access`
-(une seule demande). L'index vit dans `<dossier>\_studio\index.json` : s'il existe, le rapatrier.
+(une seule demande). L'index vit dans `<dossier>/_studio/index.json` : s'il existe, le rapatrier.
 `device_list_dir` récursif → `listing.json` → `python3 engine/sync.py <index> listing.json` → rapatrier
 seulement `to_index` (50 fichiers et 500 Mo maximum par appel : découper). Sans ordinateur relié :
 utiliser les rushes joints à la discussion, sinon dire comment relier l'app.
@@ -151,7 +151,7 @@ lu → voix off.
 - Éviter `texte incrusté`, `inutilisable`, ou déjà utilisé récemment (`used_in`).
 - Voix off anglaise : Kokoro (gratuit). Autre langue ou meilleure voix : Magnific `audio_tts` après
   `simulate_cost`, sans dépasser `credit_cap`.
-- Musique : `BIBLIOTHÈQUE\SONS` si demandé, sinon `"auto"`.
+- Musique : `BIBLIOTHÈQUE/SONS` si demandé, sinon `"auto"`.
 Puis `engine/sync.py <index> listing.json --need plan.json` et rapatrier ce qui manque.
 
 **5. Monter et contrôler.** `python3 engine/build.py plan.json --preview` (corriger tant que le moteur
@@ -159,7 +159,7 @@ signale une erreur ; regarder la planche). Après validation : `python3 engine/b
 `python3 engine/check.py <vidéo>`, regarder la planche, ne livrer que si le contrôle est OK.
 
 **6. Livrer (seulement après validation).** Copier la vidéo et son rapport dans
-`/mnt/user-data/outputs/`, l'envoyer (`SendUserFile`) et l'écrire dans `STUDIO VIDÉO\SORTIES\`
+`/mnt/user-data/outputs/`, l'envoyer (`SendUserFile`) et l'écrire dans `STUDIO VIDÉO/SORTIES/`
 (`device_commit_files`). Réponse courte : durée, style et composition (avec version), « case → plan »,
 avertissements. Les sons et plans générés rejoignent `BIBLIOTHÈQUE` seulement si l'utilisateur le dit.
 
