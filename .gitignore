@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+render/node_modules/
+render/public/media/
+render/props.json
