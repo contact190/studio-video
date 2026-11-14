@@ -20,16 +20,17 @@ vidéos finies dans `G:\Mon Drive\STUDIO VIDÉO` sur l'ordinateur de l'utilisate
 pour ordinateur), atteint par le pont de l'app Claude. Le connecteur Drive ne télécharge pas au-delà
 de 10 Mo : ne jamais l'utiliser pour des vidéos, seulement pour lire le script.
 
-## Installation (une seule fois, par le propriétaire du compte)
+## Installation (une seule fois par utilisateur)
 
-L'installation est faite **une fois** par la personne qui possède le Drive et la videoask. Les autres
-utilisateurs n'installent rien et ne voient aucune autorisation : on leur partage le dossier
-`STUDIO VIDÉO` (éditeur) et ils utilisent le skill directement.
+Chaque utilisateur a **son** Drive et **sa** videoask : l'installation se fait une fois par
+utilisateur, dans ses comptes. Elle se lance seule au premier usage ; l'utilisateur n'a rien à
+préparer.
 
-Avant tout : si `Réglages` du sheet PILOTAGE contient déjà l'URL du script VideoAsk, ou si le dossier
-`STUDIO VIDÉO` existe, l'installation est faite : ne rien refaire, ne pas en parler.
+Avant tout : si `Réglages` du sheet PILOTAGE de l'utilisateur contient déjà l'URL du script VideoAsk,
+ou si son dossier `STUDIO VIDÉO` existe, l'installation est faite : ne rien refaire, ne pas en parler.
+S'il n'utilise pas VideoAsk, ne faire que l'étape 1.
 
-Sinon, Claude fait tout lui-même et ne demande que **deux clics** au propriétaire, en lui envoyant
+Sinon, Claude fait tout lui-même et ne demande que **deux clics** à l'utilisateur, en lui envoyant
 exactement le message ci-dessous au bon moment (ne jamais taper de mot de passe à sa place) :
 
 > **Une seule action de ta part :** dans l'onglet Apps Script, clique sur **Autoriser l'accès**,
