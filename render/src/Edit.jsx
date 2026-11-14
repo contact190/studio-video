@@ -2,7 +2,7 @@ import React from 'react';
 import {AbsoluteFill, Sequence, OffthreadVideo, Audio, Img, staticFile, useCurrentFrame, useVideoConfig, interpolate, spring} from 'remotion';
 
 const CL = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'};
-const up = (t, c) => (c === 'upper' ? String(t).toUpperCase() : t);
+const up = (t, c) => (c === 'upper' ? String(t).toUpperCase() : c === 'lower' ? String(t).toLowerCase() : t);
 
 const Check = ({size, color}) => (
   <svg width={size} height={size} viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
@@ -85,7 +85,7 @@ const EndCard = ({e, st, brand, W, H}) => {
     <AbsoluteFill style={{background: st.bg, fontFamily: 'Inter', color: '#fff', alignItems: 'center'}}>
       <AbsoluteFill style={{background: `radial-gradient(ellipse at 50% 55%, ${st.glow}55 0%, rgba(0,0,0,0) 60%)`}} />
       {st.show_logo ? <div style={{marginTop: H * 0.11, fontSize: W * 0.05, fontWeight: 900, letterSpacing: 4, color: st.accent, opacity: a(0)}}>{e.logo_text}</div> : null}
-      <div style={{marginTop: H * 0.025, fontSize: W * st.headline_size, fontWeight: 900, letterSpacing: -1, textAlign: 'center', lineHeight: 1, padding: `0 ${W * 0.06}px`,
+      <div style={{marginTop: H * 0.025, fontSize: W * st.headline_size, fontWeight: 900, letterSpacing: -1, textAlign: 'center', lineHeight: 1, padding: `0 ${W * 0.06}px`, color: st.headline_color || '#fff',
         opacity: a(3), transform: `scale(${0.9 + 0.1 * a(3)})`}}>{up(e.headline, 'upper')}</div>
       {e.image ? (
         <div style={{marginTop: H * 0.035, width: W * 0.62, height: W * 0.62, borderRadius: W * 0.04, overflow: 'hidden', opacity: a(6),
@@ -103,7 +103,7 @@ const EndCard = ({e, st, brand, W, H}) => {
       ) : null}
       {e.cta ? (
         <div style={{position: 'absolute', bottom: H * 0.12, padding: `${W * 0.024}px ${W * 0.07}px`, borderRadius: W * 0.06, background: st.accent,
-          fontSize: W * 0.045, fontWeight: 900, color: brand.accent_text || '#fff', opacity: a(14), transform: `scale(${0.85 + 0.15 * a(14)})`}}>{up(e.cta, 'upper')} →</div>
+          fontSize: W * 0.045, fontWeight: 900, color: st.cta_text || brand.accent_text || '#fff', opacity: a(14), transform: `scale(${0.85 + 0.15 * a(14)})`}}>{up(e.cta, 'upper')} →</div>
       ) : null}
       {e.website ? <div style={{position: 'absolute', bottom: H * 0.075, fontSize: W * 0.03, fontWeight: 700, color: st.accent}}>{e.website}</div> : null}
     </AbsoluteFill>

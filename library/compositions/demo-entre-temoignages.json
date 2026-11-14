@@ -1,0 +1,108 @@
+{
+ "id": "demo-entre-temoignages",
+ "name": "Démo entre témoignages",
+ "version": 1,
+ "status": "brouillon",
+ "description": "Plusieurs avis courts de 3 ou 4 personnes, entrecoupés de plans de preuve produit, carton final (25 à 50 s).",
+ "source": "4 vidéos de référence",
+ "target_duration": [
+  25,
+  50
+ ],
+ "slots": [
+  {
+   "id": "hook",
+   "role": "Accroche",
+   "duration": [
+    1.5,
+    4
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "overlay": [
+    "hook_title"
+   ],
+   "brief": "Un avis percutant d'une première personne."
+  },
+  {
+   "id": "testimonial_1",
+   "role": "Témoignage 1",
+   "duration": [
+    4,
+    10
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "Une deuxième personne, une idée."
+  },
+  {
+   "id": "demo_1",
+   "role": "Démo 1",
+   "duration": [
+    3,
+    8
+   ],
+   "audio": [
+    "voiceover",
+    "speaker"
+   ],
+   "shots_per_line": [
+    1,
+    2
+   ],
+   "brief": "Preuves produit qui illustrent l'avis précédent, 1 à 2 s par plan."
+  },
+  {
+   "id": "testimonial_2",
+   "role": "Témoignage 2",
+   "duration": [
+    4,
+    10
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "Une troisième personne, une autre idée."
+  },
+  {
+   "id": "demo_2",
+   "role": "Démo 2",
+   "duration": [
+    3,
+    8
+   ],
+   "audio": [
+    "voiceover",
+    "speaker"
+   ],
+   "shots_per_line": [
+    1,
+    2
+   ],
+   "brief": "Autres preuves produit."
+  },
+  {
+   "id": "testimonial_3",
+   "role": "Témoignage 3",
+   "duration": [
+    3,
+    8
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "Un dernier avis qui conclut."
+  },
+  {
+   "id": "end",
+   "role": "Carton final",
+   "type": "end_card",
+   "duration": [
+    3,
+    5
+   ]
+  }
+ ]
+}

@@ -1,0 +1,82 @@
+{
+ "id": "demo-comparative",
+ "name": "Démo comparative",
+ "version": 1,
+ "status": "brouillon",
+ "description": "Le même test filmé sur un produit concurrent puis sur le produit, commenté en voix off, carton final (20 à 40 s).",
+ "source": "1 vidéo de référence",
+ "target_duration": [
+  20,
+  40
+ ],
+ "slots": [
+  {
+   "id": "hook",
+   "role": "Accroche",
+   "duration": [
+    1.5,
+    3
+   ],
+   "audio": [
+    "voiceover"
+   ],
+   "overlay": [
+    "hook_title"
+   ],
+   "brief": "La question du test (« Lequel résiste ? »), sur le plan du test qui commence."
+  },
+  {
+   "id": "competitor",
+   "role": "Concurrent",
+   "duration": [
+    5,
+    12
+   ],
+   "audio": [
+    "voiceover"
+   ],
+   "shots_per_line": [
+    1,
+    2
+   ],
+   "brief": "Le test sur le produit concurrent, étiquette « Autre marque », sans montrer de logo."
+  },
+  {
+   "id": "product",
+   "role": "Notre produit",
+   "duration": [
+    5,
+    12
+   ],
+   "audio": [
+    "voiceover"
+   ],
+   "shots_per_line": [
+    1,
+    2
+   ],
+   "brief": "Le même test sur notre produit, étiquette avec le résultat."
+  },
+  {
+   "id": "verdict",
+   "role": "Verdict",
+   "duration": [
+    2,
+    5
+   ],
+   "audio": [
+    "voiceover"
+   ],
+   "brief": "Résultat côte à côte ou plan final net."
+  },
+  {
+   "id": "end",
+   "role": "Carton final",
+   "type": "end_card",
+   "duration": [
+    3,
+    5
+   ]
+  }
+ ]
+}

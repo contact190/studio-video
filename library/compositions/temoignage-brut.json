@@ -1,0 +1,50 @@
+{
+ "id": "temoignage-brut",
+ "name": "Témoignage brut",
+ "version": 1,
+ "status": "brouillon",
+ "description": "Une seule personne face caméra du début à la fin, coupée sur les pauses, carton final (15 à 40 s).",
+ "source": "6 vidéos de référence",
+ "target_duration": [
+  15,
+  40
+ ],
+ "slots": [
+  {
+   "id": "hook",
+   "role": "Accroche",
+   "duration": [
+    1.5,
+    4
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "overlay": [
+    "hook_title"
+   ],
+   "brief": "La phrase la plus forte du témoignage, placée en premier."
+  },
+  {
+   "id": "testimonial",
+   "role": "Témoignage",
+   "duration": [
+    10,
+    32
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "La même personne, phrases entières, silences coupés. Étiquettes d'info possibles."
+  },
+  {
+   "id": "end",
+   "role": "Carton final",
+   "type": "end_card",
+   "duration": [
+    3,
+    5
+   ]
+  }
+ ]
+}

@@ -6,33 +6,83 @@
  "source": "Analyse de 5 vidéos de référence (love demo / testimonial), nov. 2026",
  "subtitles": {
   "enabled": true,
-  "font": "Inter", "weight": 900, "size": 0.068, "case": "upper", "letter_spacing": -0.01,
-  "max_words": 3, "max_chars": 18,
-  "color": "#ffffff", "highlight_color": "brand.accent", "highlight": "last_word_every_other",
-  "position_y": 0.64, "stroke": 0, "shadow": "0 6px 24px rgba(0,0,0,0.65)",
+  "font": "Inter",
+  "weight": 900,
+  "size": 0.068,
+  "case": "upper",
+  "letter_spacing": -0.01,
+  "max_words": 3,
+  "max_chars": 18,
+  "color": "#ffffff",
+  "highlight_color": "brand.accent",
+  "highlight": "last_word_every_other",
+  "position_y": 0.64,
+  "stroke": 0,
+  "shadow": "0 6px 24px rgba(0,0,0,0.65)",
   "animation": "pop"
  },
  "hook_title": {
-  "enabled": true, "duration": 2.6, "position_y": 0.1,
-  "bg": "#ffffff", "color": "#111111", "size": 0.05, "weight": 900, "case": "upper", "radius": 0.012
+  "enabled": true,
+  "duration": 2.6,
+  "position_y": 0.1,
+  "bg": "#ffffff",
+  "color": "#111111",
+  "size": 0.05,
+  "weight": 900,
+  "case": "upper",
+  "radius": 0.012
  },
  "tags": {
-  "enabled": true, "position_y": 0.735, "size": 0.03, "weight": 800, "case": "upper",
-  "bg": "rgba(16,16,18,0.88)", "color": "#ffffff", "label_color": "brand.accent", "border": "rgba(255,255,255,0.18)",
+  "enabled": true,
+  "position_y": 0.735,
+  "size": 0.03,
+  "weight": 800,
+  "case": "upper",
+  "bg": "rgba(16,16,18,0.88)",
+  "color": "#ffffff",
+  "label_color": "brand.accent",
+  "border": "rgba(255,255,255,0.18)",
   "icon": "check"
  },
  "image": {
-  "bottom_gradient": 0.82, "gradient_start": 0.45,
-  "contrast": 1.06, "saturation": 1.05, "brightness": 1.0,
-  "zoom": "slow_in", "zoom_amount": 0.05, "grain": 0.0
+  "bottom_gradient": 0.82,
+  "gradient_start": 0.45,
+  "contrast": 1.06,
+  "saturation": 1.05,
+  "brightness": 1.0,
+  "zoom": "slow_in",
+  "zoom_amount": 0.05,
+  "grain": 0.0
  },
- "rhythm": {"max_shot": 3.2, "demo_shot": [1.2, 2.2], "remove_silences": true},
- "transitions": {"type": "cut", "flash_on_slot_change": false},
- "music": {"volume": 0.22, "duck_to": 0.07},
- "voiceover": {"volume": 1.0},
+ "rhythm": {
+  "max_shot": 3.2,
+  "demo_shot": [
+   1.2,
+   2.2
+  ],
+  "remove_silences": true
+ },
+ "transitions": {
+  "type": "cut",
+  "flash_on_slot_change": false
+ },
+ "music": {
+  "volume": 0.22,
+  "duck_to": 0.07
+ },
+ "voiceover": {
+  "volume": 1.0
+ },
  "end_card": {
-  "duration": 3.4, "bg": "#0d0d10", "glow": "brand.accent",
-  "headline_size": 0.085, "headline_color": "#ffffff", "accent": "brand.accent",
-  "show_logo": true, "show_bullets": true, "cta_style": "pill"
- }
+  "duration": 3.4,
+  "bg": "#0d0d10",
+  "glow": "brand.accent",
+  "headline_size": 0.085,
+  "headline_color": "#ffffff",
+  "accent": "brand.accent",
+  "show_logo": true,
+  "show_bullets": true,
+  "cta_style": "pill"
+ },
+ "description": "Gros sous-titres blancs en majuscules + mot-clé en couleur, bas de l'image assombri, étiquettes d'info, fin sur fond sombre."
 }

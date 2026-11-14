@@ -1,0 +1,54 @@
+{
+ "id": "temoignage-illustre",
+ "name": "Témoignage illustré",
+ "version": 1,
+ "status": "brouillon",
+ "description": "Un témoignage long dont la voix continue sous un plan d'illustration par phrase, carton final (25 à 50 s).",
+ "source": "4 vidéos de référence",
+ "target_duration": [
+  25,
+  50
+ ],
+ "slots": [
+  {
+   "id": "hook",
+   "role": "Accroche",
+   "duration": [
+    1.5,
+    4
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "overlay": [
+    "hook_title"
+   ],
+   "brief": "La personne face caméra, phrase forte."
+  },
+  {
+   "id": "story",
+   "role": "Récit illustré",
+   "duration": [
+    15,
+    40
+   ],
+   "audio": [
+    "voiceover"
+   ],
+   "shots_per_line": [
+    1,
+    2
+   ],
+   "brief": "La voix du client (extraite de ses rushes et passée en \"audio\" sur chaque ligne) continue ; chaque phrase est illustrée par un plan produit ou d'ambiance. Revenir sur le visage une fois au milieu."
+  },
+  {
+   "id": "end",
+   "role": "Carton final",
+   "type": "end_card",
+   "duration": [
+    3,
+    5
+   ]
+  }
+ ]
+}

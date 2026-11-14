@@ -1,0 +1,88 @@
+{
+ "id": "demo-voix-off",
+ "name": "Démo voix off",
+ "version": 1,
+ "status": "brouillon",
+ "source": "2 vidéos de référence (nov. 2026)",
+ "subtitles": {
+  "enabled": true,
+  "font": "Inter",
+  "weight": 800,
+  "size": 0.042,
+  "case": "upper",
+  "letter_spacing": -0.01,
+  "max_words": 4,
+  "max_chars": 24,
+  "color": "#ffffff",
+  "highlight_color": "brand.accent",
+  "highlight": "none",
+  "position_y": 0.78,
+  "stroke": 0,
+  "shadow": "0 6px 24px rgba(0,0,0,0.65)",
+  "animation": "pop"
+ },
+ "hook_title": {
+  "enabled": true,
+  "duration": 2.6,
+  "position_y": 0.1,
+  "bg": "#111111",
+  "color": "#ffffff",
+  "size": 0.05,
+  "weight": 900,
+  "case": "upper",
+  "radius": 0.012
+ },
+ "tags": {
+  "enabled": true,
+  "position_y": 0.735,
+  "size": 0.03,
+  "weight": 800,
+  "case": "upper",
+  "bg": "#111111",
+  "color": "#ffffff",
+  "label_color": "#ffffff",
+  "border": "#111111",
+  "icon": "check"
+ },
+ "image": {
+  "bottom_gradient": 0.2,
+  "gradient_start": 0.45,
+  "contrast": 1.06,
+  "saturation": 1.05,
+  "brightness": 1.0,
+  "zoom": "none",
+  "zoom_amount": 0.0,
+  "grain": 0.0
+ },
+ "rhythm": {
+  "max_shot": 2.2,
+  "demo_shot": [
+   1.5,
+   2.2
+  ],
+  "remove_silences": true
+ },
+ "transitions": {
+  "type": "cut",
+  "flash_on_slot_change": false
+ },
+ "music": {
+  "volume": 0.22,
+  "duck_to": 0.07
+ },
+ "voiceover": {
+  "volume": 1.0
+ },
+ "end_card": {
+  "duration": 3.4,
+  "bg": "brand.accent",
+  "glow": "#ffffff",
+  "headline_size": 0.085,
+  "headline_color": "#ffffff",
+  "accent": "brand.accent",
+  "show_logo": true,
+  "show_bullets": true,
+  "cta_style": "pill"
+ },
+ "description": "Petites majuscules blanches, étiquettes noires qui nomment ce qu'on voit, rythme rapide (un plan toutes les 2 s), fin : produit sur fond coloré."
+}

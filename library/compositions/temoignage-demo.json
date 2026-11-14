@@ -4,14 +4,64 @@
  "version": 1,
  "status": "brouillon",
  "source": "love demo (3 vidéos de référence, 26 à 53 s)",
- "target_duration": [24, 45],
+ "target_duration": [
+  24,
+  45
+ ],
  "slots": [
-  {"id": "hook", "role": "Accroche", "duration": [1.5, 5], "audio": ["speaker"], "overlay": ["hook_title"],
-   "brief": "Une phrase forte face caméra qui pose le problème ou le bénéfice. Plan serré, net."},
-  {"id": "testimonial", "role": "Témoignage", "duration": [8, 18], "audio": ["speaker"],
-   "brief": "Une ou deux personnes face caméra. Phrases entières, coupées sur les pauses. Tags d'info possibles."},
-  {"id": "demo", "role": "Démo", "duration": [8, 16], "audio": ["voiceover", "speaker"], "shots_per_line": [1, 2],
-   "brief": "Preuves produit : tests, matières, gros plans. 1 à 2 s par plan, une étiquette par plan."},
-  {"id": "end", "role": "Carton final", "type": "end_card", "duration": [3, 4]}
- ]
+  {
+   "id": "hook",
+   "role": "Accroche",
+   "duration": [
+    1.5,
+    5
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "overlay": [
+    "hook_title"
+   ],
+   "brief": "Une phrase forte face caméra qui pose le problème ou le bénéfice. Plan serré, net."
+  },
+  {
+   "id": "testimonial",
+   "role": "Témoignage",
+   "duration": [
+    8,
+    18
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "Une ou deux personnes face caméra. Phrases entières, coupées sur les pauses. Tags d'info possibles."
+  },
+  {
+   "id": "demo",
+   "role": "Démo",
+   "duration": [
+    8,
+    16
+   ],
+   "audio": [
+    "voiceover",
+    "speaker"
+   ],
+   "shots_per_line": [
+    1,
+    2
+   ],
+   "brief": "Preuves produit : tests, matières, gros plans. 1 à 2 s par plan, une étiquette par plan."
+  },
+  {
+   "id": "end",
+   "role": "Carton final",
+   "type": "end_card",
+   "duration": [
+    3,
+    4
+   ]
+  }
+ ],
+ "description": "Accroche, témoignage face caméra, puis plans de preuve produit, carton final (24 à 45 s)."
 }
