@@ -49,7 +49,7 @@ exactement le message ci-dessous au bon moment (ne jamais taper de mot de passe 
 3. **Webhook VideoAsk** (navigateur, organisation qui contient la videoask) : videoask › Connect ›
    Webhooks › `<URL /exec>?k=<clé>`, événement `form_response`. Demander l'accord avant d'enregistrer.
    Sans plan payant VideoAsk (pas de webhooks) : export zip une fois (Télécharger › Media files).
-4. Test (« Send test » ou vraie réponse) : un fichier `Nom_AAAA-MM-JJ_HHmm_Qnn.mp4` arrive dans RUSHES.
+4. Test : « Send a test response » ouvre la videoask publique ; l’utilisateur y enregistre une courte réponse (ou attendre une vraie réponse) : un fichier `Nom_AAAA-MM-JJ_HHmm_Qnn.mp4` arrive dans RUSHES.
 5. Écrire dans `Réglages` : ID des dossiers, URL du script, videoask branchée.
 
 ## 0. Démarrage (chaque session)
