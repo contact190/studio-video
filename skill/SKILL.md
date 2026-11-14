@@ -20,32 +20,36 @@ vidéos finies dans `G:\Mon Drive\STUDIO VIDÉO` sur l'ordinateur de l'utilisate
 pour ordinateur), atteint par le pont de l'app Claude. Le connecteur Drive ne télécharge pas au-delà
 de 10 Mo : ne jamais l'utiliser pour des vidéos, seulement pour lire le script.
 
-## Installation (une seule fois par utilisateur)
+## Installation (une seule fois, par le propriétaire du compte)
 
-À faire quand `STUDIO VIDÉO` n'existe pas dans le Drive de l'utilisateur, ou quand il demande de
-brancher VideoAsk. Tout est fait par Claude ; l'utilisateur ne clique que sur les autorisations
-Google ou VideoAsk (Claude ne tape jamais de mot de passe).
+L'installation est faite **une fois** par la personne qui possède le Drive et la videoask. Les autres
+utilisateurs n'installent rien et ne voient aucune autorisation : on leur partage le dossier
+`STUDIO VIDÉO` (éditeur) et ils utilisent le skill directement.
 
-1. **Dossiers Drive** (connecteur Google Drive ; s'il manque, le proposer) : créer
-   `STUDIO VIDÉO/BIBLIOTHÈQUE/{RUSHES,SONS,RÉFÉRENCES}`, `STUDIO VIDÉO/SORTIES`, `STUDIO VIDÉO/TEST`.
-   Noter l'ID de `RUSHES`. Sur le PC, Google Drive pour ordinateur doit être connecté au même compte.
-2. **VideoAsk → Drive** (gratuit, fichiers jusqu'à 50 Mo ; pas de Make ni Zapier : Make gratuit
-   refuse les fichiers de plus de 5 Mo) :
-   1. `python3 integrations/fill_gs.py <ID RUSHES>` → code prêt + clé secrète.
-   2. Navigateur, sur le compte Google de l'utilisateur : `script.google.com/create`, nommer le projet
-      « Studio Vidéo — VideoAsk », remplacer le code par celui produit (éditeur Monaco :
-      `monaco.editor.getModels()[0].setValue(code)`), enregistrer.
-   3. Déployer › Nouveau déploiement › Application Web (exécuter en tant que : moi ; accès : tout le
-      monde). L'utilisateur clique sur « Autoriser l'accès » (fenêtre Google ; si le navigateur
-      intégré bloque la fenêtre, le faire depuis son Chrome). Copier l'URL `/exec`.
-   4. VideoAsk (organisation qui contient la videoask, demander laquelle si plusieurs) › videoask ›
-      Connect › Webhooks : ajouter `<URL /exec>?k=<clé>`, événement `form_response`. Demander
-      l'accord avant d'enregistrer. Les webhooks VideoAsk exigent un plan payant ; sinon, proposer
-      l'export zip (Télécharger › Media files) une fois.
-   5. Test : « Send test » dans VideoAsk ou attendre une vraie réponse, puis vérifier qu'un fichier
-      `Nom_AAAA-MM-JJ_HHmm_Qnn.mp4` arrive dans RUSHES.
-   6. Historique : export zip des réponses déjà reçues, à décompresser dans RUSHES.
-3. Enregistrer les ID (dossiers, URL du script, videoask branchée) dans `Réglages` du sheet PILOTAGE.
+Avant tout : si `Réglages` du sheet PILOTAGE contient déjà l'URL du script VideoAsk, ou si le dossier
+`STUDIO VIDÉO` existe, l'installation est faite : ne rien refaire, ne pas en parler.
+
+Sinon, Claude fait tout lui-même et ne demande que **deux clics** au propriétaire, en lui envoyant
+exactement le message ci-dessous au bon moment (ne jamais taper de mot de passe à sa place) :
+
+> **Une seule action de ta part :** dans l'onglet Apps Script, clique sur **Autoriser l'accès**,
+> choisis ton compte Google, puis **Paramètres avancés › Accéder à Studio Vidéo — VideoAsk ›
+> Autoriser**. C'est ton propre script ; Google affiche cet avertissement pour tout script
+> personnel. Ensuite écris « c'est fait ».
+
+1. **Dossiers Drive** (connecteur Google Drive, sinon navigateur) : `STUDIO VIDÉO/BIBLIOTHÈQUE/{RUSHES,SONS,RÉFÉRENCES}`,
+   `STUDIO VIDÉO/SORTIES`, `STUDIO VIDÉO/TEST`. Noter l'ID de `RUSHES`.
+2. **VideoAsk → Drive** (gratuit, jusqu'à 50 Mo par vidéo ; Make gratuit refuse plus de 5 Mo) :
+   `python3 integrations/fill_gs.py <ID RUSHES>` ; navigateur : `script.google.com/create`, nommer
+   « Studio Vidéo — VideoAsk », coller le code (`monaco.editor.getModels()[0].setValue(code)`),
+   enregistrer ; Déployer › Nouveau déploiement › Application Web (moi ; tout le monde) › Déployer ;
+   envoyer le message ci-dessus ; copier l'URL `/exec`. Si la fenêtre Google est bloquée par le
+   navigateur intégré, donner le lien du projet à ouvrir dans Chrome.
+3. **Webhook VideoAsk** (navigateur, organisation qui contient la videoask) : videoask › Connect ›
+   Webhooks › `<URL /exec>?k=<clé>`, événement `form_response`. Demander l'accord avant d'enregistrer.
+   Sans plan payant VideoAsk (pas de webhooks) : export zip une fois (Télécharger › Media files).
+4. Test (« Send test » ou vraie réponse) : un fichier `Nom_AAAA-MM-JJ_HHmm_Qnn.mp4` arrive dans RUSHES.
+5. Écrire dans `Réglages` : ID des dossiers, URL du script, videoask branchée.
 
 ## 0. Démarrage (chaque session)
 
