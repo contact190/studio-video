@@ -8,6 +8,9 @@
   draft   <variants.json> <brief.json> [--out plans]
       → un premier jet de plan par variante (accroche, témoignages de la personne principale,
         plans de démo tournants, voix off tirée des messages du brief, carton final). Claude le relit.
+  names   <variants.json> --date 11.10.26 --product 001 --ident ryad [--existing listing.json] [--only V01,V03]
+      → nom final de chaque variante validée : 11.10.26_001_ryad_Videoask_V<x>, x continue après la
+        dernière version trouvée dans SORTIES.
   board   <variants.json> [--plans dossier]
       → planche de résumé (Markdown) : nom, style, composition, personne, accroche, durée.
   build   <dossier de plans> [--final] [--only V01,V04] [--out dossier]
@@ -271,6 +274,34 @@ def draft(a):
     print(f"{len(v['variants'])} plans (premier jet) → {out}")
 
 
+# ---------- nom final ----------
+
+def final_names(a):
+    """Nom final : MM.JJ.AA_<produit>_<identifiant>_Videoask_V<x>, x = dernière version + 1."""
+    import re
+    v = load(a.variants)
+    existing = []
+    if a.existing:
+        lst = load(a.existing)
+        lst = lst.get('entries', lst) if isinstance(lst, dict) else lst
+        existing = [e['name'] if isinstance(e, dict) else str(e) for e in lst]
+    base = f"{a.date}_{a.product}_{a.ident}_Videoask_V"
+    last = 0
+    for n in existing:
+        m = re.search(r'_Videoask_V(\d+)', n, re.I)
+        if m and n.lower().startswith(f"{a.date}_{a.product}_{a.ident}".lower()):
+            last = max(last, int(m.group(1)))
+    only = [o for o in (a.only or '').split(',') if o]
+    k = last
+    for x in v['variants']:
+        if only and x['id'] not in only:
+            continue
+        k += 1
+        x['final_name'] = f'{base}{k}'
+        print(f"{x['id']} → {x['final_name']}.mp4")
+    Path(a.variants).write_text(json.dumps(v, ensure_ascii=False, indent=1), encoding='utf-8')
+
+
 def main():
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest='cmd', required=True)
@@ -289,13 +320,20 @@ def main():
     d.add_argument('variants')
     d.add_argument('brief')
     d.add_argument('--out', default='plans')
+    f = sub.add_parser('names')
+    f.add_argument('variants')
+    f.add_argument('--date', required=True)
+    f.add_argument('--product', required=True)
+    f.add_argument('--ident', required=True)
+    f.add_argument('--existing', help='listing JSON du dossier SORTIES (device_list_dir)')
+    f.add_argument('--only')
     u = sub.add_parser('build')
     u.add_argument('plans')
     u.add_argument('--final', action='store_true')
     u.add_argument('--only')
     u.add_argument('--out')
     a = ap.parse_args()
-    sys.exit({'matrix': matrix, 'board': board, 'draft': draft, 'build': build}[a.cmd](a) or 0)
+    sys.exit({'matrix': matrix, 'board': board, 'draft': draft, 'names': final_names, 'build': build}[a.cmd](a) or 0)
 
 
 if __name__ == '__main__':

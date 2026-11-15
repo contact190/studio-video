@@ -111,6 +111,10 @@ Questions, une par message :
 5. **Style et composition.** AskUserQuestion : *Auto* (le skill répartit sur la bibliothèque) ·
    *Choisir*. Choisir → listes numérotées `engine/library.py styles` puis `compositions`.
 6. **Nombre de variantes.** AskUserQuestion : *10* · *15* · *20*.
+7. **Nom des vidéos.** « Pour le nom final : la date (MM.JJ.AA, aujourd'hui par défaut), le numéro
+   produit (ex. 001) et l'identifiant (ex. ryad) ? » Le nom sera
+   `MM.JJ.AA_<produit>_<identifiant>_Videoask_V<x>` (ex. `11.10.26_001_ryad_Videoask_V4`) ; `V<x>` est
+   calculé seul : dernière version de ce préfixe trouvée dans `SORTIES`, plus 1. Ne pas le demander.
 
 Puis, sans autre question :
 
@@ -133,7 +137,10 @@ Puis, sans autre question :
    plan concernés ; modifier le plan, refaire l'aperçu de cette seule variante, redemander.
    « validée » → variante suivante.
 6. **Livraison** des variantes validées : `variants.py build plans --final --only …`, `check.py`
-   sur chacune, puis Moteur 6. Nom : `<projet>_V03_<style>_<composition>.mp4`.
+   sur chacune. Lister `SORTIES` (`device_list_dir` → `sorties.json`), puis
+   `variants.py names variants.json --date … --product … --ident … --existing sorties.json --only <validées>`
+   et livrer chaque vidéo sous son `final_name` (Moteur 6), dans l'ordre de validation. Pendant le
+   travail, les variantes gardent leur nom de travail (`<projet>_V03_<style>_<composition>`).
 
 ### Le brief (modèle)
 
