@@ -3,3 +3,4 @@ __pycache__/
 render/node_modules/
 render/public/media/
 render/props.json
+render/variants_out/
