@@ -147,6 +147,21 @@ def _speech_words(f, s):
 
 
 _AUDIO = {}
+# Mots après lesquels une phrase ne peut pas finir : un point de Whisper derrière eux est une erreur.
+_OPEN_WORDS = set('the a an any other another my your our their his her its of to and or but for with in on at '
+                  'from by as that this these those some very so just really is are was were be been being am '
+                  'i we they he she it you not no if than then because which who whose where when while'.split())
+_CUTS = {}
+
+
+def _source_cuts(path):
+    """Coupes déjà présentes dans le fichier source (vidéo déjà montée) : un plan ne doit jamais
+    en contenir, sinon on hérite d'une coupe au milieu d'une phrase."""
+    if path not in _CUTS:
+        r = subprocess.run(['ffmpeg', '-v', 'error', '-i', path, '-vf', 'scdet=threshold=6,metadata=print:file=-',
+                            '-an', '-f', 'null', '-'], capture_output=True, text=True)
+        _CUTS[path] = [float(x.split('=')[1]) for x in r.stdout.split() if x.startswith('lavfi.scd.time=')]
+    return _CUTS[path]
 
 
 def _rms(path):
@@ -210,21 +225,38 @@ def _cut(f, s, cap):
     if not allw:
         return (s['start'], min(s['end'], s['start'] + cap), s.get('transcript', '')) if not s.get('has_speech') else None
     cap1 = lambda w: w[0][:1].isupper()   # Whisper met une majuscule en début de phrase
-    starts = [i for i in range(len(allw)) if cap1(allw[i]) and (allw[i - 1][0][-1] in '.!?' if i else True)]
-    ends = {i for i, w in enumerate(allw) if w[0][-1] in '.!?'} | {len(allw) - 1}
+    def fin(w):   # vraie fin de phrase : . ! ? (pas « … »), et pas sur un mot qui appelle une suite
+        t = w[0]
+        if t[-1:] not in '.!?' or t.endswith(('..', '…')):
+            return False
+        return t.rstrip('.!?').lower().strip('"\'') not in _OPEN_WORDS
+    starts = [i for i in range(len(allw)) if cap1(allw[i]) and (fin(allw[i - 1]) if i else True)]
+    ends = {i for i, w in enumerate(allw) if fin(w)}   # jamais au milieu d'une phrase
+    cuts = [c for c in _source_cuts(f['path']) if c > 0.1]
     inseg = [i for i, w in enumerate(allw) if s['start'] - 0.05 <= (w[1] + w[2]) / 2 < s['end'] + 0.05]
     dur = f.get('duration', allw[-1][2] + 1)
     for i in [x for x in inseg if x in starts]:
-        t0 = _pause_near(f['path'], allw[i][1] - 0.1, max(0.0, allw[i][1] - 0.6), allw[i][1] + 0.15, side='in')
+        w0 = allw[i][1]
+        nxt = min([c for c in cuts if c > w0 + 0.05] + [dur])        # la phrase doit finir avant la coupe suivante de la source
+        prv = max([c for c in cuts if c <= w0 + 0.05] + [0.0])
+        t0 = _pause_near(f['path'], w0 - 0.1, max(prv, w0 - 0.6), w0 + 0.15, side='in')
+        if t0 is None and w0 - prv < 0.6:
+            t0 = prv + 0.03                                         # la source coupe juste avant : partir de là
         if t0 is None:
             continue
-        cands = sorted((j for j in inseg if j >= i and j in ends), key=lambda j: -(allw[j][2] - allw[i][1]))
+        t0 = max(t0, prv + 0.03 if prv else t0)
+        cands = sorted((j for j in range(i, len(allw)) if j in ends and allw[j][2] < nxt - 0.02),
+                       key=lambda j: -(allw[j][2] - w0))
         for j in cands:
-            d = allw[j][2] - allw[i][1]
+            d = allw[j][2] - w0
             if d > cap or d < 1.2:
                 continue
-            t1 = _pause_near(f['path'], allw[j][2] + 0.1, allw[j][2] - 0.3, min(dur, allw[j][2] + 0.6), side='out')
+            t1 = _pause_near(f['path'], allw[j][2] + 0.1, allw[j][2] - 0.3, min(dur, nxt - 0.03, allw[j][2] + 0.6), side='out')
+            if t1 is None and nxt - allw[j][2] < 0.5:
+                t1 = nxt - 0.03                                     # finir juste avant la coupe de la source
             if t1 is None or t1 - t0 < 1.0:
+                continue
+            if any(t0 + 0.04 < c < t1 - 0.04 for c in cuts):
                 continue
             return round(t0, 2), round(t1, 2), ' '.join(w[0] for w in allw[i:j + 1])
     return None
@@ -297,10 +329,17 @@ def draft(a):
                 if dur >= target or sid in used or len(clips) >= max_clips:
                     continue
                 s = segs[sid]
-                r = _cut(files[s['file']], s, min(cap, target - dur + 1.5))
+                r = _cut(files[s['file']], s, cap)
                 if not r or r[1] - r[0] < 1.0:
                     continue
                 t0, t1, _ = r
+                prev = clips[-1] if clips else None
+                if prev and segs[prev['seg']]['file'] == s['file'] and -0.5 < t0 - prev['out'] < 0.6 \
+                        and not any(prev['out'] - 0.1 < c < t0 + 0.1 for c in _source_cuts(files[s['file']]['path'])):
+                    dur += t1 - prev['out']          # phrases qui se suivent : un seul plan, pas de coupe
+                    prev['out'] = t1
+                    used.add(sid)
+                    continue
                 clips.append({'seg': sid, 'in': t0, 'out': t1}); used.add(sid); dur += t1 - t0
             return clips, dur
 
@@ -314,7 +353,7 @@ def draft(a):
                 total += 3.5
             elif slot['audio'][0] == 'speaker' and lead:
                 who = lead if sid in ('hook', 'testimonial', 'testimonial_1') or not others else others[(len(plan['slots'])) % len(others)]
-                clips, d = speak(who, min(target, hi), cap=hi if sid == 'hook' else 8.0, rotate=n if sid == 'hook' else 0, max_clips=1 if sid == 'hook' else 99)
+                clips, d = speak(who, min(target, hi), cap=max(hi, 6.0) if sid == 'hook' else 12.0, rotate=n if sid == 'hook' else 0, max_clips=1 if sid == 'hook' else 99)
                 for o in (others if sid != 'hook' else []):   # compléter avec d'autres personnes si la case est trop courte
                     if d >= lo:
                         break
@@ -328,7 +367,7 @@ def draft(a):
                     if d >= target or k in used:
                         continue
                     s = segs[k]
-                    r = _cut(files[s['file']], s, 8.0)
+                    r = _cut(files[s['file']], s, 12.0)
                     if not r or r[1] - r[0] < 1.5:
                         continue
                     t0, t1, text = r
