@@ -303,6 +303,8 @@ def main():
     if missing:
         print(f'  Absents du dossier (conservés dans l\'index) : {", ".join(missing)}')
     save_json(idx_path, idx)
+    import subprocess as _sp  # recaler les mots sur les vrais silences (fins de phrase)
+    _sp.run([sys.executable, str(Path(__file__).with_name('realign.py')), str(idx_path)], check=False)
     print(f'Index : {idx_path}')
 
 

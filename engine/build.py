@@ -107,6 +107,7 @@ def prep_clip(src, t_in, dur, out, W, H, fx=0.5, fy=0.5, has_audio=True, half=Fa
     if not has_audio:
         cmd += ['-f', 'lavfi', '-i', 'anullsrc=r=48000:cl=stereo']
     cmd += ['-vf', vf, '-frames:v', str(n), '-map', '0:v', '-map', '0:a' if has_audio else '1:a',
+            '-af', f'afade=t=in:d=0.03,afade=t=out:st={max(0, n / FPS - 0.05):.3f}:d=0.05',
             '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '17', '-c:a', 'aac', '-ar', '48000', '-ac', '2',
             '-t', f'{n / FPS:.3f}', str(out)]
     run(cmd)

@@ -144,15 +144,65 @@ def _speech_words(f, s):
     return [w for sp in f.get('speech', []) for w in sp.get('words', []) if s['start'] <= (w[1] + w[2]) / 2 < s['end']]
 
 
+_AUDIO = {}
+
+
+def _rms(path):
+    """Énergie du son par tranches de 20 ms (mise en cache par fichier)."""
+    if path not in _AUDIO:
+        import numpy as np
+        pcm = subprocess.run(['ffmpeg', '-v', 'error', '-i', path, '-vn', '-ac', '1', '-ar', '16000', '-f', 'f32le', '-'],
+                             capture_output=True).stdout
+        x = np.frombuffer(pcm, np.float32)
+        n = len(x) // 320
+        _AUDIO[path] = np.sqrt((x[:n * 320].reshape(n, 320) ** 2).mean(1)) if n else np.zeros(1)
+    return _AUDIO[path]
+
+
+def _snap(path, t, lo, hi, window=0.45):
+    """Déplace une coupe vers le moment le plus silencieux autour de t (entre lo et hi)."""
+    e = _rms(path)
+    a, b = max(lo, t - window), min(hi, t + window)
+    i0, i1 = int(a / 0.02), max(int(a / 0.02) + 1, int(b / 0.02))
+    seg = e[i0:i1]
+    if not len(seg):
+        return t
+    return round((i0 + int(seg.argmin())) * 0.02 + 0.01, 2)
+
+
 def _cut(f, s, cap):
-    """Entrée/sortie calées sur les mots, au plus `cap` secondes."""
-    ws = _speech_words(f, s)
-    if not ws:
-        return s['start'], min(s['end'], s['start'] + cap), s.get('transcript', '')
-    t0 = max(s['start'], ws[0][1] - 0.12)
-    keep = [w for w in ws if w[2] - t0 <= cap] or ws[:1]
-    t1 = min(s['end'], keep[-1][2] + 0.15)
-    return round(t0, 2), round(t1, 2), ' '.join(w[0] for w in keep)
+    """Une ou plusieurs phrases entières du segment, coupées sur des silences, au plus `cap` s.
+    Renvoie (entrée, sortie, texte) ou None si le segment ne contient pas de phrase entière."""
+    allw = [w for sp in f.get('speech', []) for w in sp.get('words', [])]
+    if not allw:
+        return (s['start'], min(s['end'], s['start'] + cap), s.get('transcript', '')) if not s.get('has_speech') else None
+    # début de phrase : premier mot de la parole, après un silence de 0,3 s, ou après . ! ?
+    cap1 = lambda w: w[0][:1].isupper()   # Whisper met une majuscule en début de phrase
+    e = _rms(f['path'])
+    loud_at = lambda t: float(e[min(len(e) - 1, max(0, int(t / 0.02)))]) > 0.03
+    starts = {i for i in range(len(allw)) if cap1(allw[i]) and (allw[i - 1][0][-1] in '.!?' if i else True)
+              and not (allw[i][1] < 0.3 and loud_at(0.02))}   # pas de début de fichier en pleine phrase
+    ends = {i for i, w in enumerate(allw) if w[0][-1] in '.!?'} | {len(allw) - 1}
+    inseg = [i for i, w in enumerate(allw) if s['start'] - 0.05 <= (w[1] + w[2]) / 2 < s['end'] + 0.05]
+    best = None
+    for i in inseg:
+        if i not in starts:
+            continue
+        for j in inseg:
+            if j < i or j not in ends:
+                continue
+            d = allw[j][2] - allw[i][1]
+            if d <= cap and d >= 1.2 and (best is None or d > best[2]):
+                best = (i, j, d)
+        if best:
+            break
+    if not best:
+        return None
+    i, j, _ = best
+    # les mots sont datés approximativement : chercher le vrai silence autour de la coupe
+    t0 = _snap(f['path'], allw[i][1] - 0.1, max(0.0, allw[i][1] - 0.5), allw[i][1] + 0.2, window=0.5)
+    t1 = _snap(f['path'], allw[j][2] + 0.1, allw[j][2] - 0.3, min(f.get('duration', 1e9), allw[j][2] + 0.6), window=0.6)
+    return round(t0, 2), round(max(t1, t0 + 0.8), 2), ' '.join(w[0] for w in allw[i:j + 1])
 
 
 def draft(a):
@@ -210,7 +260,7 @@ def draft(a):
             d_ptr += k
             return res
 
-        def speak(person, target, cap=6.0, rotate=0):
+        def speak(person, target, cap=6.0, rotate=0, max_clips=99):
             clips, dur = [], 0.0
             pool = [m for m in must if m not in used and segs[m].get('has_speech')]
             own = sorted(speakers.get(person, []), key=lambda k: (segs[k]['file'], segs[k]['start']))
@@ -219,12 +269,13 @@ def draft(a):
                 own = own[r:] + own[:r]
             pool += own
             for sid in pool:
-                if dur >= target or sid in used:
+                if dur >= target or sid in used or len(clips) >= max_clips:
                     continue
                 s = segs[sid]
-                t0, t1, _ = _cut(files[s['file']], s, min(cap, target - dur + 1.5))
-                if t1 - t0 < 1.0:
+                r = _cut(files[s['file']], s, min(cap, target - dur + 1.5))
+                if not r or r[1] - r[0] < 1.0:
                     continue
+                t0, t1, _ = r
                 clips.append({'seg': sid, 'in': t0, 'out': t1}); used.add(sid); dur += t1 - t0
             return clips, dur
 
@@ -238,8 +289,8 @@ def draft(a):
                 total += 3.5
             elif slot['audio'][0] == 'speaker' and lead:
                 who = lead if sid in ('hook', 'testimonial', 'testimonial_1') or not others else others[(len(plan['slots'])) % len(others)]
-                clips, d = speak(who, min(target, hi), cap=hi if sid == 'hook' else 6.0, rotate=n if sid == 'hook' else 0)
-                for o in others:   # compléter avec d'autres personnes si la case est trop courte
+                clips, d = speak(who, min(target, hi), cap=hi if sid == 'hook' else 8.0, rotate=n if sid == 'hook' else 0, max_clips=1 if sid == 'hook' else 99)
+                for o in (others if sid != 'hook' else []):   # compléter avec d'autres personnes si la case est trop courte
                     if d >= lo:
                         break
                     more, d2 = speak(o, lo - d + 2)
@@ -252,9 +303,10 @@ def draft(a):
                     if d >= target or k in used:
                         continue
                     s = segs[k]
-                    t0, t1, text = _cut(files[s['file']], s, 6.0)
-                    if t1 - t0 < 1.5:
+                    r = _cut(files[s['file']], s, 8.0)
+                    if not r or r[1] - r[0] < 1.5:
                         continue
+                    t0, t1, text = r
                     wav = out / 'audio' / f"{x['id']}_{k}.wav"
                     subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', str(t0), '-to', str(t1), '-i',
                                     files[s['file']]['path'], '-vn', '-ac', '2', '-ar', '48000', str(wav)], check=True)
