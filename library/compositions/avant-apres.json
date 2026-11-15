@@ -1,0 +1,76 @@
+{
+ "id": "avant-apres",
+ "name": "Avant / après",
+ "version": 1,
+ "status": "brouillon",
+ "source": "proposition (nov. 2026)",
+ "description": "Le même client décrit avant et après le produit.",
+ "info": {
+  "quoi": "Accroche › « avant » › coupure nette › « après » › carte de fin.",
+  "quand": "Quand le changement est visible ou facile à raconter.",
+  "ideal_pour": "Produits à résultat (confort, coupe, gain de temps).",
+  "besoin": "1 personne qui parle d'avant et d'après."
+ },
+ "target_duration": [
+  15,
+  35
+ ],
+ "slots": [
+  {
+   "id": "hook",
+   "role": "Accroche",
+   "duration": [
+    1.5,
+    3
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "Le résultat en une phrase.",
+   "overlay": [
+    "hook_title"
+   ]
+  },
+  {
+   "id": "testimonial",
+   "role": "Avant",
+   "duration": [
+    4,
+    10
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "La situation avant."
+  },
+  {
+   "id": "testimonial_2",
+   "role": "Après",
+   "duration": [
+    4,
+    10
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "La situation après.",
+   "same_person": true
+  },
+  {
+   "id": "end",
+   "role": "Carton final",
+   "type": "end_card",
+   "duration": [
+    3,
+    5
+   ]
+  }
+ ],
+ "requires": {
+  "people": 1,
+  "longest_speech": 8
+ },
+ "todo_render": [
+  "carton « BEFORE » / « AFTER »"
+ ]
+}

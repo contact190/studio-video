@@ -5,6 +5,7 @@ Usage :
   python3 engine/library.py styles          → liste numérotée des styles
   python3 engine/library.py compositions    → liste numérotée des compositions
   python3 engine/library.py all --json      → tout, en JSON
+  python3 engine/library.py info <id>       → fiche (i) : à quoi ça ressemble, quand l'utiliser, ce qu'il faut
 Ordre : validés d'abord, puis brouillons ; le défaut est marqué.
 """
 import json
@@ -41,13 +42,31 @@ def items(kind):
         out.append({
             'id': d.get('id', p.stem), 'name': d.get('name', p.stem),
             'version': d.get('version', 1), 'status': d.get('status', 'brouillon'),
-            'default': d.get('id', p.stem) == default_id, 'description': describe(kind, d),
+            'default': d.get('id', p.stem) == default_id, 'description': describe(kind, d), 'info': d.get('info', {}),
         })
     out.sort(key=lambda x: (x['status'] != 'validé', not x['default'], x['name']))
     return out
 
 
+LABELS = [('quoi', 'À quoi ça ressemble'), ('quand', 'Quand le choisir'), ('ideal_pour', 'Idéal pour'), ('besoin', 'Ce qu\'il faut dans les rushes')]
+
+
+def show_info(ident):
+    for k in ('styles', 'compositions'):
+        for it in items(k):
+            if it['id'] == ident or it['name'].lower() == ident.lower():
+                print(f"ⓘ {it['name']} ({'style' if k == 'styles' else 'composition'}, v{it['version']}, {it['status']})")
+                for key, lab in LABELS:
+                    if it['info'].get(key):
+                        print(f"  {lab} : {it['info'][key]}")
+                return
+    sys.exit(f'inconnu : {ident}')
+
+
 def main():
+    if sys.argv[1:2] == ['info']:
+        show_info(' '.join(sys.argv[2:]))
+        return
     kinds = ['styles', 'compositions'] if sys.argv[1:2] == ['all'] else sys.argv[1:2] or ['styles']
     if '--json' in sys.argv:
         print(json.dumps({k: items(k) for k in kinds}, ensure_ascii=False, indent=1))
@@ -56,7 +75,9 @@ def main():
         print(k.upper())
         for i, it in enumerate(items(k), 1):
             mark = ' (par défaut)' if it['default'] else ''
-            print(f"{i}. {it['name']} — v{it['version']}, {it['status']}{mark} — {it['description']}")
+            print(f"{i}. {it['name']}{mark} — {it['description']}")
+            if it['info'].get('quand'):
+                print(f"   ⓘ {it['info']['quand']} Idéal pour : {it['info'].get('ideal_pour', '—')}")
 
 
 if __name__ == '__main__':

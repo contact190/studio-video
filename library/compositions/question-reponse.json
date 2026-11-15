@@ -1,0 +1,75 @@
+{
+ "id": "question-reponse",
+ "name": "Réponse à une question",
+ "version": 1,
+ "status": "brouillon",
+ "source": "proposition (nov. 2026)",
+ "description": "Une question en gros à l'écran, un client y répond.",
+ "info": {
+  "quoi": "La question (« Does it shrink? ») en gros texte › la réponse du client › une autre question › carte de fin.",
+  "quand": "Idéal pour VideoAsk : chaque réponse correspond déjà à une question.",
+  "ideal_pour": "Lever les questions fréquentes, FAQ en vidéo.",
+  "besoin": "Réponses VideoAsk (le numéro de question Qnn sert à afficher la question)."
+ },
+ "target_duration": [
+  15,
+  40
+ ],
+ "slots": [
+  {
+   "id": "hook",
+   "role": "Question 1",
+   "duration": [
+    1.5,
+    3
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "Le texte de la question, affiché en gros.",
+   "overlay": [
+    "hook_title"
+   ]
+  },
+  {
+   "id": "testimonial_1",
+   "role": "Réponse 1",
+   "duration": [
+    4,
+    10
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "La réponse à cette question."
+  },
+  {
+   "id": "testimonial_2",
+   "role": "Question 2 + réponse",
+   "duration": [
+    4,
+    10
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "Une autre question et sa réponse."
+  },
+  {
+   "id": "end",
+   "role": "Carton final",
+   "type": "end_card",
+   "duration": [
+    3,
+    5
+   ]
+  }
+ ],
+ "requires": {
+  "people": 1,
+  "longest_speech": 6
+ },
+ "todo_render": [
+  "carton question entre les réponses"
+ ]
+}

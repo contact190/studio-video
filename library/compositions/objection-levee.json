@@ -1,0 +1,75 @@
+{
+ "id": "objection-levee",
+ "name": "Objection levée",
+ "version": 1,
+ "status": "brouillon",
+ "source": "proposition (nov. 2026)",
+ "description": "On commence par un doute, puis la preuve qui le fait tomber.",
+ "info": {
+  "quoi": "« J'étais sceptique… » › la preuve (test, chiffre, garantie) › le client convaincu › carte de fin.",
+  "quand": "Produit cher ou nouveau, qui suscite des doutes.",
+  "ideal_pour": "Retargeting des hésitants.",
+  "besoin": "1 personne qui exprime un doute, des plans de preuve."
+ },
+ "target_duration": [
+  20,
+  40
+ ],
+ "slots": [
+  {
+   "id": "hook",
+   "role": "Le doute",
+   "duration": [
+    2,
+    5
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "Le client dit qu'il doutait.",
+   "overlay": [
+    "hook_title"
+   ]
+  },
+  {
+   "id": "demo",
+   "role": "La preuve",
+   "duration": [
+    5,
+    10
+   ],
+   "audio": [
+    "voiceover",
+    "speaker"
+   ],
+   "brief": "La preuve qui répond au doute (preuves du brief)."
+  },
+  {
+   "id": "testimonial",
+   "role": "Convaincu",
+   "duration": [
+    4,
+    10
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "Ce qu'il en pense maintenant."
+  },
+  {
+   "id": "end",
+   "role": "Carton final",
+   "type": "end_card",
+   "duration": [
+    3,
+    5
+   ]
+  }
+ ],
+ "requires": {
+  "people": 1,
+  "longest_speech": 6,
+  "demo_shots": 2
+ },
+ "todo_render": []
+}

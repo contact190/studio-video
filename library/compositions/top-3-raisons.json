@@ -1,0 +1,90 @@
+{
+ "id": "top-3-raisons",
+ "name": "Top 3 raisons",
+ "version": 1,
+ "status": "brouillon",
+ "source": "proposition (nov. 2026)",
+ "description": "Compte à rebours de 3 raisons d'acheter.",
+ "info": {
+  "quoi": "« 3 reasons… » › raison 3 › raison 2 › raison 1 › carte de fin, avec un gros chiffre à chaque raison.",
+  "quand": "Quand le brief a au moins 3 messages clés.",
+  "ideal_pour": "Contenu facile à suivre, bon taux de visionnage.",
+  "besoin": "3 messages clés, témoignages ou démos pour chacun."
+ },
+ "target_duration": [
+  20,
+  40
+ ],
+ "slots": [
+  {
+   "id": "hook",
+   "role": "Annonce",
+   "duration": [
+    1.5,
+    3
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "« 3 reasons … »",
+   "overlay": [
+    "hook_title"
+   ]
+  },
+  {
+   "id": "testimonial_1",
+   "role": "Raison 3",
+   "duration": [
+    3,
+    8
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "Premier message clé."
+  },
+  {
+   "id": "demo",
+   "role": "Raison 2",
+   "duration": [
+    3,
+    8
+   ],
+   "audio": [
+    "voiceover",
+    "speaker"
+   ],
+   "brief": "Deuxième message clé."
+  },
+  {
+   "id": "testimonial_2",
+   "role": "Raison 1",
+   "duration": [
+    3,
+    8
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "Le message le plus fort.",
+   "same_person": true
+  },
+  {
+   "id": "end",
+   "role": "Carton final",
+   "type": "end_card",
+   "duration": [
+    3,
+    5
+   ]
+  }
+ ],
+ "requires": {
+  "people": 1,
+  "longest_speech": 6,
+  "demo_shots": 2
+ },
+ "todo_render": [
+  "gros chiffre 3 / 2 / 1 à chaque raison"
+ ]
+}

@@ -11,12 +11,14 @@ const Check = ({size, color}) => (
 // ---------------------------------------------------------------- image
 const Clip = ({c, img}) => {
   const f = useCurrentFrame();
-  const z = img.zoom === 'slow_in' ? 1 + (img.zoom_amount || 0.04) * (f / Math.max(1, c.dur)) : 1;
+  const amt = img.zoom_amount ?? 0.04;
+  const z = img.zoom === 'slow_in' ? 1 + amt * (f / Math.max(1, c.dur)) : img.zoom === 'punch' ? 1 + amt * Math.max(0, 1 - f / 8) : 1;
+  const sat = c.speaker && img.saturation_speaker != null ? img.saturation_speaker : (img.saturation ?? 1);
   return (
     <AbsoluteFill style={{overflow: 'hidden', background: '#000'}}>
       <OffthreadVideo src={staticFile(c.src)} volume={c.volume}
         style={{width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${z})`,
-          filter: `contrast(${img.contrast || 1}) saturate(${img.saturation || 1}) brightness(${img.brightness || 1})`}} />
+          filter: `contrast(${img.contrast || 1}) saturate(${sat}) brightness(${img.brightness || 1})`}} />
     </AbsoluteFill>
   );
 };

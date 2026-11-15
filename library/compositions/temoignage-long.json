@@ -1,0 +1,58 @@
+{
+ "id": "temoignage-long",
+ "name": "Témoignage long",
+ "version": 1,
+ "status": "brouillon",
+ "source": "proposition (nov. 2026)",
+ "description": "Une seule personne, 45 à 60 s, presque sans coupe.",
+ "info": {
+  "quoi": "Un client raconte toute son histoire, coupé seulement sur les pauses, sans accroche ajoutée.",
+  "quand": "Pour les gens qui connaissent déjà la marque.",
+  "ideal_pour": "Retargeting, page produit.",
+  "besoin": "1 personne qui parle au moins 30 s."
+ },
+ "target_duration": [
+  40,
+  60
+ ],
+ "slots": [
+  {
+   "id": "hook",
+   "role": "Ouverture",
+   "duration": [
+    2,
+    5
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "Sa première phrase forte."
+  },
+  {
+   "id": "testimonial",
+   "role": "Histoire",
+   "duration": [
+    30,
+    50
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "L'histoire complète, phrases entières."
+  },
+  {
+   "id": "end",
+   "role": "Carton final",
+   "type": "end_card",
+   "duration": [
+    3,
+    5
+   ]
+  }
+ ],
+ "requires": {
+  "people": 1,
+  "longest_speech": 30
+ },
+ "todo_render": []
+}

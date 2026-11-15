@@ -84,5 +84,11 @@
   "show_bullets": true,
   "cta_style": "pill"
  },
- "description": "Gros sous-titres blancs en majuscules + mot-clé en couleur, bas de l'image assombri, étiquettes d'info, fin sur fond sombre."
+ "description": "Gros sous-titres blancs en majuscules + mot-clé en couleur, bas de l'image assombri, étiquettes d'info, fin sur fond sombre.",
+ "info": {
+  "quoi": "Image sombre et contrastée, sous-titres blancs avec un mot surligné, titre d'accroche, carte de fin noire.",
+  "quand": "Produit haut de gamme, ton sérieux.",
+  "ideal_pour": "Pubs Meta et TikTok premium.",
+  "besoin": "Rien de particulier."
+ }
 }

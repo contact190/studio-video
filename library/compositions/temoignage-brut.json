@@ -50,5 +50,11 @@
  "requires": {
   "people": 1,
   "longest_speech": 10
+ },
+ "info": {
+  "quoi": "Une seule personne du début à la fin, coupée sur les pauses.",
+  "quand": "Quand un témoignage est très bon tout seul.",
+  "ideal_pour": "Preuve sociale simple.",
+  "besoin": "1 personne qui parle au moins 10 s."
  }
 }

@@ -1,0 +1,109 @@
+{
+ "id": "mosaique-clients",
+ "name": "Mosaïque de clients",
+ "version": 1,
+ "status": "brouillon",
+ "source": "proposition (nov. 2026)",
+ "description": "4 à 6 personnes, une phrase chacune, enchaînées vite.",
+ "info": {
+  "quoi": "Accroche › une phrase de chaque client, très rapide › carte de fin.",
+  "quand": "Quand on a beaucoup de témoins.",
+  "ideal_pour": "Montrer que tout le monde l'adore.",
+  "besoin": "4 personnes ou plus, une bonne phrase chacune."
+ },
+ "target_duration": [
+  15,
+  35
+ ],
+ "slots": [
+  {
+   "id": "hook",
+   "role": "Accroche",
+   "duration": [
+    1.5,
+    3
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "La phrase la plus forte.",
+   "overlay": [
+    "hook_title"
+   ]
+  },
+  {
+   "id": "testimonial_1",
+   "role": "Client 1",
+   "duration": [
+    2,
+    5
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "Une phrase courte, une personne différente."
+  },
+  {
+   "id": "testimonial_2",
+   "role": "Client 2",
+   "duration": [
+    2,
+    5
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "Une phrase courte, une personne différente."
+  },
+  {
+   "id": "testimonial_3",
+   "role": "Client 3",
+   "duration": [
+    2,
+    5
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "Une phrase courte, une personne différente."
+  },
+  {
+   "id": "testimonial_4",
+   "role": "Client 4",
+   "duration": [
+    2,
+    5
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "Une phrase courte, une personne différente."
+  },
+  {
+   "id": "testimonial_5",
+   "role": "Client 5",
+   "duration": [
+    2,
+    5
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "Une phrase courte, une personne différente."
+  },
+  {
+   "id": "end",
+   "role": "Carton final",
+   "type": "end_card",
+   "duration": [
+    3,
+    5
+   ]
+  }
+ ],
+ "requires": {
+  "people": 4,
+  "speech_per_person": 2
+ },
+ "todo_render": []
+}

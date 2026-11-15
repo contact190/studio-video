@@ -357,7 +357,7 @@ def draft(a):
                                       'cta': brief.get('cta', 'Shop now'), 'image_seg': demo[0] if demo else None}
                 total += 3.5
             elif slot['audio'][0] == 'speaker' and lead:
-                who = lead if sid in ('hook', 'testimonial', 'testimonial_1') or not others else others[(len(plan['slots'])) % len(others)]
+                who = lead if slot.get('same_person') or sid in ('hook', 'testimonial', 'testimonial_1') or not others else others[(len(plan['slots'])) % len(others)]
                 clips, d = speak(who, min(target, hi), cap=max(hi, 6.0) if sid == 'hook' else 12.0, rotate=n if sid == 'hook' else 0, max_clips=1 if sid == 'hook' else 99)
                 for o in (others if sid != 'hook' else []):   # compléter avec d'autres personnes si la case est trop courte
                     if d >= lo:
@@ -418,6 +418,14 @@ def draft(a):
                         break
                 plan['slots'][sid] = {'audio': 'voiceover', 'lines': lines}
                 total += d
+        stop = {'the','and','that','this','with','your','they','them','from','have','just','than','what','when','it\'s'}
+        kw = set()
+        for t in msgs + list(brief.get('proofs', []) or []):
+            for w in str(t).replace('·', ' ').split():
+                w2 = ''.join(ch for ch in w.lower() if ch.isalnum() or ch == '%')
+                if w2 and w2 not in stop and (len(w2) >= 5 or any(ch.isdigit() for ch in w2)):
+                    kw.add(w2)
+        plan['keywords'] = sorted(kw)
         plan['estimated_duration'] = f'{round(total)} s'
         (out / f"{x['name']}.json").write_text(json.dumps(plan, ensure_ascii=False, indent=1), encoding='utf-8')
     print(f"{len(v['variants'])} plans (premier jet) → {out}")

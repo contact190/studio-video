@@ -1,0 +1,89 @@
+{
+ "id": "comparatif-chiffre",
+ "name": "Comparatif chiffré",
+ "version": 1,
+ "status": "brouillon",
+ "source": "proposition (nov. 2026)",
+ "description": "Des chiffres animés entre deux témoignages.",
+ "info": {
+  "quoi": "Témoignage › gros chiffres animés (51 % chanvre, garantie à vie) sur la démo › témoignage › carte de fin.",
+  "quand": "Quand le brief a des preuves chiffrées.",
+  "ideal_pour": "Produits techniques ou comparables.",
+  "besoin": "Preuves chiffrées dans le brief, 2 personnes ou 1 qui parle 10 s."
+ },
+ "target_duration": [
+  20,
+  40
+ ],
+ "slots": [
+  {
+   "id": "hook",
+   "role": "Accroche",
+   "duration": [
+    1.5,
+    4
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "Une phrase forte.",
+   "overlay": [
+    "hook_title"
+   ]
+  },
+  {
+   "id": "testimonial_1",
+   "role": "Témoignage",
+   "duration": [
+    4,
+    10
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "Pourquoi il a choisi."
+  },
+  {
+   "id": "demo",
+   "role": "Chiffres",
+   "duration": [
+    5,
+    10
+   ],
+   "audio": [
+    "voiceover",
+    "speaker"
+   ],
+   "brief": "Les chiffres du brief, en gros."
+  },
+  {
+   "id": "testimonial_2",
+   "role": "Témoignage",
+   "duration": [
+    3,
+    8
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "Le verdict."
+  },
+  {
+   "id": "end",
+   "role": "Carton final",
+   "type": "end_card",
+   "duration": [
+    3,
+    5
+   ]
+  }
+ ],
+ "requires": {
+  "people": 1,
+  "longest_speech": 8,
+  "demo_shots": 2
+ },
+ "todo_render": [
+  "gros chiffres animés"
+ ]
+}

@@ -1,0 +1,75 @@
+{
+ "id": "unboxing",
+ "name": "Unboxing / première impression",
+ "version": 1,
+ "status": "brouillon",
+ "source": "proposition (nov. 2026)",
+ "description": "Le client découvre le produit et réagit, puis la démo.",
+ "info": {
+  "quoi": "Accroche › ouverture du colis et réaction › démo › avis › carte de fin.",
+  "quand": "Quand on a des plans d'ouverture ou de première utilisation.",
+  "ideal_pour": "Lancement, cadeau.",
+  "besoin": "Plans d'ouverture du produit."
+ },
+ "target_duration": [
+  20,
+  40
+ ],
+ "slots": [
+  {
+   "id": "hook",
+   "role": "Accroche",
+   "duration": [
+    1.5,
+    4
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "La réaction la plus spontanée.",
+   "overlay": [
+    "hook_title"
+   ]
+  },
+  {
+   "id": "demo",
+   "role": "Découverte",
+   "duration": [
+    5,
+    12
+   ],
+   "audio": [
+    "voiceover",
+    "speaker"
+   ],
+   "brief": "Ouverture, toucher, premier essai."
+  },
+  {
+   "id": "testimonial",
+   "role": "Avis",
+   "duration": [
+    4,
+    10
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "Ce qu'il en pense."
+  },
+  {
+   "id": "end",
+   "role": "Carton final",
+   "type": "end_card",
+   "duration": [
+    3,
+    5
+   ]
+  }
+ ],
+ "requires": {
+  "people": 1,
+  "longest_speech": 5,
+  "demo_shots": 3
+ },
+ "todo_render": []
+}

@@ -88,5 +88,11 @@
  "description": "Sous-titres blancs gras mot par mot, étiquettes blanches arrondies, montage rapide (un plan toutes les 1,5 à 2,5 s), fin sur fond coloré.",
  "todo_render": [
   "emoji dans les sous-titres et étiquettes"
- ]
+ ],
+ "info": {
+  "quoi": "Sous-titres gros et animés mot par mot, coupes rapides : ressemble à une vidéo TikTok normale.",
+  "quand": "Quand la pub doit se fondre dans le fil.",
+  "ideal_pour": "TikTok, Reels.",
+  "besoin": "Rien de particulier."
+ }
 }

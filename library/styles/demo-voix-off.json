@@ -84,5 +84,11 @@
   "show_bullets": true,
   "cta_style": "pill"
  },
- "description": "Petites majuscules blanches, étiquettes noires qui nomment ce qu'on voit, rythme rapide (un plan toutes les 2 s), fin : produit sur fond coloré."
+ "description": "Petites majuscules blanches, étiquettes noires qui nomment ce qu'on voit, rythme rapide (un plan toutes les 2 s), fin : produit sur fond coloré.",
+ "info": {
+  "quoi": "Plans produit et voix off anglaise, sous-titres clairs.",
+  "quand": "Quand les clients parlent peu ou mal.",
+  "ideal_pour": "Démo produit.",
+  "besoin": "Des plans de démo."
+ }
 }

@@ -109,5 +109,11 @@
   "people": 3,
   "speech_per_person": 3,
   "demo_shots": 4
+ },
+ "info": {
+  "quoi": "Trois clients différents, avec des plans de démo entre eux.",
+  "quand": "Quand on a plusieurs bons témoins.",
+  "ideal_pour": "Montrer que beaucoup de gens aiment.",
+  "besoin": "3 personnes, 4 plans de démo."
  }
 }

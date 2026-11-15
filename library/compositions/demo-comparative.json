@@ -82,5 +82,11 @@
  "requires": {
   "competitor_shots": 2,
   "demo_shots": 3
+ },
+ "info": {
+  "quoi": "Voix off : le concurrent › notre produit › le verdict.",
+  "quand": "Pour montrer une différence nette.",
+  "ideal_pour": "Produits face à une alternative connue.",
+  "besoin": "2 plans concurrent, 3 plans produit."
  }
 }

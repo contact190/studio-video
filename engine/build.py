@@ -73,6 +73,13 @@ def fair_split(need, avail, min_shot=0.6):
     return share
 
 
+KEYWORDS = set()
+
+
+def _norm(w):
+    return ''.join(ch for ch in w.lower() if ch.isalnum() or ch == '%')
+
+
 def chunk_words(words, style, slot_end):
     st = style['subtitles']
     chunks, cur = [], []
@@ -92,6 +99,11 @@ def chunk_words(words, style, slot_end):
         if end - start < 0.12:
             continue
         hi = len(c) - 1 if (st.get('highlight') == 'last_word_every_other' and i % 2 == 1) or st.get('highlight') == 'last_word' else -1
+        if st.get('highlight') == 'keywords':   # mots clés du brief
+            kw = [j for j, x in enumerate(c) if _norm(x[0]) in KEYWORDS]
+            hi = kw[0] if kw else -1
+        elif st.get('highlight') == 'word':
+            hi = len(c) - 1
         out.append({'t0': start, 't1': end, 'words': [x[0].strip() for x in c], 'hi': hi})
     return out
 
@@ -121,6 +133,7 @@ def still(src, t, out, W):
 # ---------------------------------------------------------------- construction
 def build(plan_path, out_dir=None, preview=False):
     plan = load_json(plan_path)
+    KEYWORDS.clear(); KEYWORDS.update(_norm(w) for w in plan.get('keywords', []))
     style_raw = library('styles', plan['style'])
     comp = library('compositions', plan['composition'])
     brand = library('brand', plan.get('brand', 'neutre'))
@@ -171,7 +184,7 @@ def build(plan_path, out_dir=None, preview=False):
         fy = c.get('focus_y', 0.5)
         n = prep_clip(src_path(f), t_in, dur, media / name, W, H, min(1, max(0, fx)), fy, f['has_audio'], preview)
         frm = round(T * FPS)
-        clips.append({'src': f'media/{name}', 'from': frm, 'dur': n, 'volume': volume, 'seed': k})
+        clips.append({'src': f'media/{name}', 'from': frm, 'dur': n, 'volume': volume, 'seed': k, 'speaker': volume > 0})
         if c.get('tag'):
             label, _, txt = c['tag'].rpartition('|')
             tags.append({'from': frm, 'to': frm + n, 'text': txt.strip(), 'label': label.strip()})

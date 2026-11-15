@@ -1,0 +1,98 @@
+{
+ "id": "podcast-interview",
+ "name": "Podcast / interview",
+ "version": 1,
+ "status": "brouillon",
+ "source": "proposition (nov. 2026)",
+ "subtitles": {
+  "enabled": true,
+  "font": "Inter",
+  "weight": 500,
+  "size": 0.04,
+  "case": "lower",
+  "letter_spacing": -0.01,
+  "max_words": 6,
+  "max_chars": 26,
+  "color": "#ffffff",
+  "highlight_color": "brand.accent",
+  "highlight": "none",
+  "position_y": 0.8,
+  "stroke": 0,
+  "shadow": "0 2px 8px rgba(0,0,0,0.35)",
+  "animation": "none"
+ },
+ "hook_title": {
+  "enabled": false,
+  "duration": 2.6,
+  "position_y": 0.1,
+  "bg": "#ffffff",
+  "color": "#111111",
+  "size": 0.05,
+  "weight": 900,
+  "case": "upper",
+  "radius": 0.012
+ },
+ "tags": {
+  "enabled": true,
+  "position_y": 0.735,
+  "size": 0.07,
+  "weight": 800,
+  "case": "none",
+  "bg": "rgba(0,0,0,0)",
+  "color": "#ffffff",
+  "label_color": "#ffffff",
+  "border": "rgba(0,0,0,0)",
+  "icon": "check"
+ },
+ "image": {
+  "bottom_gradient": 0.3,
+  "gradient_start": 0.45,
+  "contrast": 1.0,
+  "saturation": 0.95,
+  "brightness": 1.0,
+  "zoom": "none",
+  "zoom_amount": 0.03,
+  "grain": 0.0
+ },
+ "rhythm": {
+  "max_shot": 8.0,
+  "demo_shot": [
+   2.0,
+   3.5
+  ],
+  "remove_silences": true
+ },
+ "transitions": {
+  "type": "cut",
+  "flash_on_slot_change": false
+ },
+ "music": {
+  "volume": 0.22,
+  "duck_to": 0.07
+ },
+ "voiceover": {
+  "volume": 1.0
+ },
+ "end_card": {
+  "duration": 3.4,
+  "bg": "#f4f2ee",
+  "glow": "#f4f2ee",
+  "headline_size": 0.07,
+  "headline_color": "#111111",
+  "accent": "brand.accent",
+  "show_logo": true,
+  "show_bullets": false,
+  "cta_style": "pill"
+ },
+ "description": "Cadre posé, nom du client en bas, fond sobre, rythme lent.",
+ "todo_render": [
+  "bandeau nom + prénom du client (lower third)",
+  "cadre 1:1 au centre sur fond flou"
+ ],
+ "info": {
+  "quoi": "Comme un extrait d'interview : le client bien cadré, son prénom en bandeau, sous-titres discrets.",
+  "quand": "Témoignages longs et crédibles.",
+  "ideal_pour": "LinkedIn, YouTube, retargeting.",
+  "besoin": "Témoignages bien cadrés."
+ }
+}

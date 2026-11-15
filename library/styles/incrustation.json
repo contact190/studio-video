@@ -93,5 +93,11 @@
  },
  "todo_render": [
   "vignette (pip) : garder la personne à l'écran pendant les plans produit"
- ]
+ ],
+ "info": {
+  "quoi": "Grandes étiquettes d'info posées sur l'image (chiffres, avantages) pendant que le client parle.",
+  "quand": "Quand il y a beaucoup de preuves à montrer.",
+  "ideal_pour": "Produits techniques.",
+  "besoin": "Des preuves dans le brief."
+ }
 }

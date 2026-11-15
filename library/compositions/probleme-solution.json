@@ -1,0 +1,88 @@
+{
+ "id": "probleme-solution",
+ "name": "Problème → solution",
+ "version": 1,
+ "status": "brouillon",
+ "source": "proposition (nov. 2026)",
+ "description": "Le client raconte sa galère, puis la démo, puis le résultat.",
+ "info": {
+  "quoi": "Accroche › le problème raconté par le client › la démo › le résultat › carte de fin.",
+  "quand": "La structure de pub qui convertit le plus souvent.",
+  "ideal_pour": "Pubs d'acquisition (nouveaux clients).",
+  "besoin": "1 personne qui parle du problème et du résultat, 3 plans de démo."
+ },
+ "target_duration": [
+  20,
+  45
+ ],
+ "slots": [
+  {
+   "id": "hook",
+   "role": "Accroche",
+   "duration": [
+    1.5,
+    4
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "Le problème en une phrase.",
+   "overlay": [
+    "hook_title"
+   ]
+  },
+  {
+   "id": "testimonial",
+   "role": "Problème",
+   "duration": [
+    4,
+    10
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "Le client décrit sa galère avant le produit."
+  },
+  {
+   "id": "demo",
+   "role": "Solution",
+   "duration": [
+    5,
+    10
+   ],
+   "audio": [
+    "voiceover",
+    "speaker"
+   ],
+   "brief": "Le produit en action."
+  },
+  {
+   "id": "testimonial_2",
+   "role": "Résultat",
+   "duration": [
+    3,
+    8
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "Ce qui a changé pour lui.",
+   "same_person": true
+  },
+  {
+   "id": "end",
+   "role": "Carton final",
+   "type": "end_card",
+   "duration": [
+    3,
+    5
+   ]
+  }
+ ],
+ "requires": {
+  "people": 1,
+  "longest_speech": 8,
+  "demo_shots": 3
+ },
+ "todo_render": []
+}

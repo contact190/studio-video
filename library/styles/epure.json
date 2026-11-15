@@ -87,5 +87,11 @@
  "description": "Petits sous-titres discrets en minuscules, plans d'ambiance lents, gros chiffres posés sur les plans produit, fin simple : slogan, produit, site.",
  "todo_render": [
   "étiquettes sans cadre : afficher le chiffre seul, en grand"
- ]
+ ],
+ "info": {
+  "quoi": "Petits sous-titres discrets en minuscules, plans lents, chiffres en grand, fin simple.",
+  "quand": "Marque calme et élégante.",
+  "ideal_pour": "Retargeting, site web.",
+  "besoin": "De beaux plans produit."
+ }
 }

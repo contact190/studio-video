@@ -1,0 +1,63 @@
+{
+ "id": "accroche-choc",
+ "name": "Accroche choc + preuve",
+ "version": 1,
+ "status": "brouillon",
+ "source": "proposition (nov. 2026)",
+ "description": "Une phrase forte, la démo, l'appel à l'action. 10 à 15 s.",
+ "info": {
+  "quoi": "Une phrase de 2 secondes › la preuve en démo › appel à l'action. Très court.",
+  "quand": "Pour les formats courts et le test d'accroches.",
+  "ideal_pour": "Tester beaucoup d'accroches à petit budget.",
+  "besoin": "Une phrase forte, 2 plans de démo."
+ },
+ "target_duration": [
+  10,
+  15
+ ],
+ "slots": [
+  {
+   "id": "hook",
+   "role": "Accroche",
+   "duration": [
+    1.5,
+    3
+   ],
+   "audio": [
+    "speaker"
+   ],
+   "brief": "La phrase la plus forte.",
+   "overlay": [
+    "hook_title"
+   ]
+  },
+  {
+   "id": "demo",
+   "role": "Preuve",
+   "duration": [
+    4,
+    7
+   ],
+   "audio": [
+    "voiceover",
+    "speaker"
+   ],
+   "brief": "Une preuve rapide."
+  },
+  {
+   "id": "end",
+   "role": "Carton final",
+   "type": "end_card",
+   "duration": [
+    3,
+    5
+   ]
+  }
+ ],
+ "requires": {
+  "people": 1,
+  "longest_speech": 2,
+  "demo_shots": 2
+ },
+ "todo_render": []
+}

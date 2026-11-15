@@ -1,0 +1,98 @@
+{
+ "id": "tiktok-energique",
+ "name": "TikTok énergique",
+ "version": 1,
+ "status": "brouillon",
+ "source": "proposition (nov. 2026)",
+ "subtitles": {
+  "enabled": true,
+  "font": "Inter",
+  "weight": 900,
+  "size": 0.064,
+  "case": "none",
+  "letter_spacing": -0.01,
+  "max_words": 2,
+  "max_chars": 12,
+  "color": "#ffffff",
+  "highlight_color": "brand.accent",
+  "highlight": "word",
+  "position_y": 0.6,
+  "stroke": 0.004,
+  "shadow": "0 3px 10px rgba(0,0,0,0.5)",
+  "animation": "pop"
+ },
+ "hook_title": {
+  "enabled": true,
+  "duration": 2.6,
+  "position_y": 0.1,
+  "bg": "#ffffff",
+  "color": "#111111",
+  "size": 0.046,
+  "weight": 900,
+  "case": "none",
+  "radius": 0.03
+ },
+ "tags": {
+  "enabled": true,
+  "position_y": 0.735,
+  "size": 0.03,
+  "weight": 800,
+  "case": "none",
+  "bg": "#ffffff",
+  "color": "#111111",
+  "label_color": "#111111",
+  "border": "rgba(0,0,0,0.08)",
+  "icon": "check"
+ },
+ "image": {
+  "bottom_gradient": 0.0,
+  "gradient_start": 0.45,
+  "contrast": 1.0,
+  "saturation": 1.08,
+  "brightness": 1.0,
+  "zoom": "punch",
+  "zoom_amount": 0.08,
+  "grain": 0.0
+ },
+ "rhythm": {
+  "max_shot": 2.0,
+  "demo_shot": [
+   0.8,
+   1.6
+  ],
+  "remove_silences": true
+ },
+ "transitions": {
+  "type": "cut",
+  "flash_on_slot_change": true
+ },
+ "music": {
+  "volume": 0.3,
+  "duck_to": 0.07
+ },
+ "voiceover": {
+  "volume": 1.0
+ },
+ "end_card": {
+  "duration": 3.4,
+  "bg": "brand.accent",
+  "glow": "#ffffff",
+  "headline_size": 0.085,
+  "headline_color": "#ffffff",
+  "accent": "#ffffff",
+  "show_logo": true,
+  "show_bullets": false,
+  "cta_style": "pill",
+  "cta_text": "brand.accent"
+ },
+ "description": "Coupes très rapides, zooms sur les mots forts, sous-titres mot par mot qui sautent.",
+ "todo_render": [
+  "effets sonores (whoosh) aux coupes"
+ ],
+ "info": {
+  "quoi": "Plans de 1 à 2 s, zooms, sous-titres d'un ou deux mots qui apparaissent en sautant, flash entre les parties.",
+  "quand": "Pour capter l'attention d'un public jeune.",
+  "ideal_pour": "TikTok, publics 18–30.",
+  "besoin": "Beaucoup de plans courts."
+ }
+}

@@ -55,5 +55,11 @@
   "people": 1,
   "longest_speech": 15,
   "demo_shots": 4
+ },
+ "info": {
+  "quoi": "On entend le client, mais on voit le produit pendant qu'il parle.",
+  "quand": "Bon audio mais image moyenne (mauvais cadre, lumière).",
+  "ideal_pour": "Témoignages filmés à la maison.",
+  "besoin": "1 personne qui parle 15 s, 4 plans de démo."
  }
 }

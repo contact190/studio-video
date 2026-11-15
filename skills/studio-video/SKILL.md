@@ -109,7 +109,11 @@ Questions, une par message :
 4. **Références** (facultatif). « Des vidéos ou liens de référence pour l'esprit ? (ou *non*) » →
    les regarder (rea-video si vidéo) et en tirer le ton, le rythme, les accroches.
 5. **Style et composition.** AskUserQuestion : *Auto* (le skill répartit sur la bibliothèque) ·
-   *Choisir*. Choisir → listes numérotées `engine/library.py styles` puis `compositions`.
+   *Choisir*. Choisir → listes numérotées `engine/library.py styles` puis `compositions` : recopier
+   chaque choix avec sa ligne **ⓘ** (quand le choisir, idéal pour), et ajouter « Pour le détail
+   d'un choix, réponds *i* + le numéro ». *i 7* → `engine/library.py info <id>` (à quoi ça ressemble,
+   quand le choisir, idéal pour, ce qu'il faut dans les rushes), puis reposer la question. Plusieurs
+   numéros possibles (« 2, 5, 9 ») : les variantes se répartissent entre eux.
 6. **Nombre de variantes.** AskUserQuestion : *10* · *15* · *20*.
 7. **Nom des vidéos.** « Pour le nom final : la date (MM.JJ.AA, aujourd'hui par défaut), le numéro
    produit (ex. 001) et l'identifiant (ex. ryad) ? » Le nom sera

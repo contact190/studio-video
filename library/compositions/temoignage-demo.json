@@ -68,5 +68,11 @@
   "people": 1,
   "longest_speech": 8,
   "demo_shots": 3
+ },
+ "info": {
+  "quoi": "Accroche › un client témoigne › démo du produit › carte de fin.",
+  "quand": "Le cas standard : un bon témoin et quelques plans produit.",
+  "ideal_pour": "Toutes les pubs.",
+  "besoin": "1 personne qui parle 8 s, 3 plans de démo."
  }
 }
