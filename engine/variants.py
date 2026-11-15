@@ -127,7 +127,7 @@ def build(a):
     for p in plans:
         if only and not any(f'_{o}_' in p.name for o in only):
             continue
-        cmd = [sys.executable, str(ROOT / 'engine' / 'build.py'), str(p)] + (['--out', a.out] if a.out else [])
+        cmd = [sys.executable, str(ROOT / 'engine' / 'build.py'), str(p.resolve())] + (['--out', str(Path(a.out).resolve())] if a.out else [])
         if not a.final:
             cmd.append('--preview')
         r = subprocess.run(cmd, capture_output=True, text=True)
@@ -210,10 +210,14 @@ def draft(a):
             d_ptr += k
             return res
 
-        def speak(person, target, cap=6.0):
+        def speak(person, target, cap=6.0, rotate=0):
             clips, dur = [], 0.0
             pool = [m for m in must if m not in used and segs[m].get('has_speech')]
-            pool += sorted(speakers.get(person, []), key=lambda k: (segs[k]['file'], segs[k]['start']))
+            own = sorted(speakers.get(person, []), key=lambda k: (segs[k]['file'], segs[k]['start']))
+            if own and rotate:
+                r = rotate % len(own)
+                own = own[r:] + own[:r]
+            pool += own
             for sid in pool:
                 if dur >= target or sid in used:
                     continue
@@ -234,7 +238,7 @@ def draft(a):
                 total += 3.5
             elif slot['audio'][0] == 'speaker' and lead:
                 who = lead if sid in ('hook', 'testimonial', 'testimonial_1') or not others else others[(len(plan['slots'])) % len(others)]
-                clips, d = speak(who, min(target, hi), cap=hi if sid == 'hook' else 6.0)
+                clips, d = speak(who, min(target, hi), cap=hi if sid == 'hook' else 6.0, rotate=n if sid == 'hook' else 0)
                 for o in others:   # compléter avec d'autres personnes si la case est trop courte
                     if d >= lo:
                         break
@@ -254,17 +258,38 @@ def draft(a):
                     wav = out / 'audio' / f"{x['id']}_{k}.wav"
                     subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', str(t0), '-to', str(t1), '-i',
                                     files[s['file']]['path'], '-vn', '-ac', '2', '-ar', '48000', str(wav)], check=True)
+                    need = (t1 - t0) + 0.4
+                    clips, have = [], 0.0
+                    while have < need:
+                        c = take_demo(1)
+                        if not c:
+                            break
+                        clips += c
+                        have += segs[c[0]['seg']]['dur']
+                    if have < need:
+                        break   # plus assez de plans pour illustrer cette phrase
                     used.add(k)
-                    lines.append({'text': text, 'audio': str(wav.resolve()), 'clips': take_demo(3)})
+                    lines.append({'text': text, 'audio': str(wav.resolve()), 'clips': clips})
                     d += t1 - t0
                 plan['slots'][sid] = {'audio': 'voiceover', 'lines': lines}
                 total += d
             else:   # voix off sur plans de démo
                 lines, d = [], 0.0
                 while d < target and msgs:
-                    text = msgs[m_ptr % len(msgs)]; m_ptr += 1
-                    lines.append({'text': text, 'clips': take_demo(3)})
-                    d += max(1.8, len(text.split()) / 2.9)
+                    text = msgs[m_ptr % len(msgs)]
+                    need = max(1.8, len(text.split()) / 2.6) + 0.6
+                    clips, have = [], 0.0
+                    while have < need:
+                        c = take_demo(1)
+                        if not c:
+                            break
+                        clips += c
+                        have += segs[c[0]['seg']]['dur']
+                    if have < need:
+                        break   # plus assez de plans de démo libres
+                    m_ptr += 1
+                    lines.append({'text': text, 'clips': clips})
+                    d += need - 0.6
                     if len(lines) >= 4:
                         break
                 plan['slots'][sid] = {'audio': 'voiceover', 'lines': lines}
