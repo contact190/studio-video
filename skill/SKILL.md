@@ -47,7 +47,7 @@ exactement le message ci-dessous au bon moment (ne jamais taper de mot de passe 
 > personnel. Ensuite écris « c'est fait ».
 
 1. **Dossiers Drive** (connecteur Google Drive, sinon navigateur) : `STUDIO VIDÉO/BIBLIOTHÈQUE/{RUSHES,SONS,RÉFÉRENCES}`,
-   `STUDIO VIDÉO/SORTIES`, `STUDIO VIDÉO/TEST`. Noter l'ID de `RUSHES`.
+   `STUDIO VIDÉO/SORTIES`, `STUDIO VIDÉO/TEST`, et le sheet `PILOTAGE` (onglets `Réglages`, `Rushes`, `Segments`) dans `STUDIO VIDÉO`, toujours dans le compte de l'utilisateur. Noter l'ID de `RUSHES` et du sheet.
 2. **VideoAsk → Drive** (gratuit, jusqu'à 50 Mo par vidéo ; Make gratuit refuse plus de 5 Mo) :
    `python3 integrations/fill_gs.py <ID RUSHES>` ; navigateur : `script.google.com/create`, nommer
    « Studio Vidéo — VideoAsk », coller le code (`monaco.editor.getModels()[0].setValue(code)`),
