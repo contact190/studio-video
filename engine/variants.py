@@ -19,6 +19,8 @@
 import argparse
 import itertools
 import json
+
+import numpy as np
 import subprocess
 import sys
 from pathlib import Path
@@ -170,39 +172,62 @@ def _snap(path, t, lo, hi, window=0.45):
     return round((i0 + int(seg.argmin())) * 0.02 + 0.01, 2)
 
 
+def _pause_near(path, t, lo, hi, min_len=0.12, side=None):
+    """Milieu de la pause réelle (≥ min_len s) la plus proche de t entre lo et hi, ou None.
+    Le début du fichier compte comme une pause seulement s'il est silencieux assez longtemps."""
+    e = _rms(path)
+    thr = max(0.006, float(np.percentile(e, 20)) * 1.8) if len(e) > 10 else 0.01
+    i0, i1 = max(0, int(lo / 0.02)), min(len(e), int(hi / 0.02) + 1)
+    best, k = None, i0
+    while k < i1:
+        if e[k] < thr:
+            j = k
+            while j < len(e) and e[j] < thr:
+                j += 1
+            st = k
+            while st > 0 and e[st - 1] < thr:
+                st -= 1
+            if (j - st) * 0.02 >= min_len:
+                a, z = st * 0.02, j * 0.02
+                if side == 'in':     # ~0,2 s de respiration avant que la parole reprenne
+                    mid = max(a + 0.02, z - 0.2)
+                elif side == 'out':  # ~0,25 s de respiration après la dernière syllabe
+                    mid = min(z - 0.02, a + 0.25)
+                else:
+                    mid = (a + z) / 2
+                if best is None or abs(mid - t) < abs(best - t):
+                    best = mid
+            k = j
+        else:
+            k += 1
+    return None if best is None else round(best, 2)
+
+
 def _cut(f, s, cap):
-    """Une ou plusieurs phrases entières du segment, coupées sur des silences, au plus `cap` s.
-    Renvoie (entrée, sortie, texte) ou None si le segment ne contient pas de phrase entière."""
+    """Une ou plusieurs phrases entières du segment, coupées au milieu de vraies pauses (≥ 0,12 s),
+    au plus `cap` s. Renvoie (entrée, sortie, texte) ou None."""
     allw = [w for sp in f.get('speech', []) for w in sp.get('words', [])]
     if not allw:
         return (s['start'], min(s['end'], s['start'] + cap), s.get('transcript', '')) if not s.get('has_speech') else None
-    # début de phrase : premier mot de la parole, après un silence de 0,3 s, ou après . ! ?
     cap1 = lambda w: w[0][:1].isupper()   # Whisper met une majuscule en début de phrase
-    e = _rms(f['path'])
-    loud_at = lambda t: float(e[min(len(e) - 1, max(0, int(t / 0.02)))]) > 0.03
-    starts = {i for i in range(len(allw)) if cap1(allw[i]) and (allw[i - 1][0][-1] in '.!?' if i else True)
-              and not (allw[i][1] < 0.3 and loud_at(0.02))}   # pas de début de fichier en pleine phrase
+    starts = [i for i in range(len(allw)) if cap1(allw[i]) and (allw[i - 1][0][-1] in '.!?' if i else True)]
     ends = {i for i, w in enumerate(allw) if w[0][-1] in '.!?'} | {len(allw) - 1}
     inseg = [i for i, w in enumerate(allw) if s['start'] - 0.05 <= (w[1] + w[2]) / 2 < s['end'] + 0.05]
-    best = None
-    for i in inseg:
-        if i not in starts:
+    dur = f.get('duration', allw[-1][2] + 1)
+    for i in [x for x in inseg if x in starts]:
+        t0 = _pause_near(f['path'], allw[i][1] - 0.1, max(0.0, allw[i][1] - 0.6), allw[i][1] + 0.15, side='in')
+        if t0 is None:
             continue
-        for j in inseg:
-            if j < i or j not in ends:
-                continue
+        cands = sorted((j for j in inseg if j >= i and j in ends), key=lambda j: -(allw[j][2] - allw[i][1]))
+        for j in cands:
             d = allw[j][2] - allw[i][1]
-            if d <= cap and d >= 1.2 and (best is None or d > best[2]):
-                best = (i, j, d)
-        if best:
-            break
-    if not best:
-        return None
-    i, j, _ = best
-    # les mots sont datés approximativement : chercher le vrai silence autour de la coupe
-    t0 = _snap(f['path'], allw[i][1] - 0.1, max(0.0, allw[i][1] - 0.5), allw[i][1] + 0.2, window=0.5)
-    t1 = _snap(f['path'], allw[j][2] + 0.1, allw[j][2] - 0.3, min(f.get('duration', 1e9), allw[j][2] + 0.6), window=0.6)
-    return round(t0, 2), round(max(t1, t0 + 0.8), 2), ' '.join(w[0] for w in allw[i:j + 1])
+            if d > cap or d < 1.2:
+                continue
+            t1 = _pause_near(f['path'], allw[j][2] + 0.1, allw[j][2] - 0.3, min(dur, allw[j][2] + 0.6), side='out')
+            if t1 is None or t1 - t0 < 1.0:
+                continue
+            return round(t0, 2), round(t1, 2), ' '.join(w[0] for w in allw[i:j + 1])
+    return None
 
 
 def draft(a):
