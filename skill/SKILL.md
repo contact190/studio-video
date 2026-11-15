@@ -200,7 +200,7 @@ seulement `to_index` (50 fichiers et 500 Mo maximum par appel : découper). Sans
 utiliser les rushes joints à la discussion, sinon dire comment relier l'app.
 
 **2. Indexer (incrémental).** `python3 engine/index_rushes.py <dossier> --index <index> --lang <langue>`
-(rea-video + Whisper ; seuls les nouveaux fichiers sont analysés ; les mots sont ensuite recalés sur les vrais silences par `engine/realign.py`, lancé automatiquement — à lancer à la main sur un ancien index). Regarder chaque planche des nouveaux
+(rea-video + Whisper ; seuls les nouveaux fichiers sont analysés ; les mots sont ensuite recalés sur les vrais silences par `engine/realign.py`, lancé automatiquement — à lancer à la main sur un ancien index). Règle de coupe : un plan parlé commence au début d'une phrase et finit à la fin d'une phrase, jamais au milieu (le premier jet de `variants.py draft` l'applique déjà ; la garder en relisant les plans). Regarder chaque planche des nouveaux
 fichiers (`_studio/sheets/*.jpg`) et écrire les descriptions (`engine/annotate.py <index> apply
 annotations.json`). Ne jamais décrire un segment sans avoir vu sa planche. Renvoyer l'index sur
 l'ordinateur (`device_commit_files`).
