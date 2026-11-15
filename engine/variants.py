@@ -284,6 +284,7 @@ def draft(a):
         lead = x['lead_person'] if x['lead_person'] in speakers else (people[0] if people else None)
         others = [p for p in people if p != lead]
         used, d_ptr, m_ptr, total = set(), n * 3, n, 0.0
+        spans = {}   # passages déjà pris par fichier : jamais deux fois la même phrase
         must = []
         for m in x.get('must', []):
             if m in segs:
@@ -333,6 +334,10 @@ def draft(a):
                 if not r or r[1] - r[0] < 1.0:
                     continue
                 t0, t1, _ = r
+                fid = s['file']
+                if any(t0 < b - 0.05 and t1 > a + 0.05 for a, b in spans.get(fid, [])):
+                    continue
+                spans.setdefault(fid, []).append((t0, t1))
                 prev = clips[-1] if clips else None
                 if prev and segs[prev['seg']]['file'] == s['file'] and -0.5 < t0 - prev['out'] < 0.6 \
                         and not any(prev['out'] - 0.1 < c < t0 + 0.1 for c in _source_cuts(files[s['file']]['path'])):
@@ -371,6 +376,8 @@ def draft(a):
                     if not r or r[1] - r[0] < 1.5:
                         continue
                     t0, t1, text = r
+                    if any(t0 < b - 0.05 and t1 > a + 0.05 for a, b in spans.get(s['file'], [])):
+                        continue
                     wav = out / 'audio' / f"{x['id']}_{k}.wav"
                     subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', str(t0), '-to', str(t1), '-i',
                                     files[s['file']]['path'], '-vn', '-ac', '2', '-ar', '48000', str(wav)], check=True)
@@ -385,6 +392,7 @@ def draft(a):
                     if have < need:
                         break   # plus assez de plans pour illustrer cette phrase
                     used.add(k)
+                    spans.setdefault(s['file'], []).append((t0, t1))
                     lines.append({'text': text, 'audio': str(wav.resolve()), 'clips': clips})
                     d += t1 - t0
                 plan['slots'][sid] = {'audio': 'voiceover', 'lines': lines}
