@@ -8,7 +8,7 @@
   "enabled": true,
   "font": "Inter",
   "weight": 900,
-  "size": 0.068,
+  "size": 0.042,
   "case": "upper",
   "letter_spacing": -0.01,
   "max_words": 3,
@@ -16,13 +16,13 @@
   "color": "#ffffff",
   "highlight_color": "brand.accent",
   "highlight": "last_word_every_other",
-  "position_y": 0.64,
+  "position_y": 0.8,
   "stroke": 0,
   "shadow": "0 6px 24px rgba(0,0,0,0.65)",
   "animation": "pop"
  },
  "hook_title": {
-  "enabled": true,
+  "enabled": false,
   "duration": 2.6,
   "position_y": 0.1,
   "bg": "#ffffff",
@@ -52,7 +52,9 @@
   "brightness": 1.0,
   "zoom": "slow_in",
   "zoom_amount": 0.05,
-  "grain": 0.15
+  "grain": 0.15,
+  "letterbox": 0.11,
+  "warm": 0.18
  },
  "rhythm": {
   "max_shot": 5.0,
@@ -91,8 +93,5 @@
   "ideal_pour": "Lancements, marques premium.",
   "besoin": "Des plans de bonne qualité."
  },
- "todo_render": [
-  "bandes noires 2.39:1",
-  "étalonnage chaud"
- ]
+ "todo_render": []
 }

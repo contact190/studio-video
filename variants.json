@@ -1,7 +1,7 @@
 {
- "project": "t",
+ "project": "f4",
  "index": "/home/claude/testrush/_studio/index.json",
- "n": 20,
+ "n": 1,
  "material": {
   "people": {
    "P1": 92.02999999999999,
@@ -14,208 +14,16 @@
   "demo": 14,
   "competitor": 0
  },
- "compositions_skipped": [
-  "demo-comparative"
- ],
+ "compositions_skipped": [],
  "variants": [
   {
    "id": "V01",
-   "name": "t_V01_avis-clients_accroche-choc",
-   "style": "avis-clients",
-   "composition": "accroche-choc",
+   "name": "f4_V01_cinema_comparatif-chiffre",
+   "style": "cinema",
+   "composition": "comparatif-chiffre",
    "lead_person": "P1",
    "must": [],
    "hook_angle": 1,
-   "status": "proposée"
-  },
-  {
-   "id": "V02",
-   "name": "t_V02_ugc-brut_avant-apres",
-   "style": "ugc-brut",
-   "composition": "avant-apres",
-   "lead_person": "P1",
-   "must": [],
-   "hook_angle": 2,
-   "status": "proposée"
-  },
-  {
-   "id": "V03",
-   "name": "t_V03_tiktok-energique_comparatif-chiffre",
-   "style": "tiktok-energique",
-   "composition": "comparatif-chiffre",
-   "lead_person": "P1",
-   "must": [],
-   "hook_angle": 3,
-   "status": "proposée"
-  },
-  {
-   "id": "V04",
-   "name": "t_V04_sombre-premium_demo-entre-temoignages",
-   "style": "sombre-premium",
-   "composition": "demo-entre-temoignages",
-   "lead_person": "P1",
-   "must": [],
-   "hook_angle": 4,
-   "status": "proposée"
-  },
-  {
-   "id": "V05",
-   "name": "t_V05_podcast-interview_mosaique-clients",
-   "style": "podcast-interview",
-   "composition": "mosaique-clients",
-   "lead_person": "P1",
-   "must": [],
-   "hook_angle": 5,
-   "status": "proposée"
-  },
-  {
-   "id": "V06",
-   "name": "t_V06_noir-blanc_objection-levee",
-   "style": "noir-blanc",
-   "composition": "objection-levee",
-   "lead_person": "P1",
-   "must": [],
-   "hook_angle": 6,
-   "status": "proposée"
-  },
-  {
-   "id": "V07",
-   "name": "t_V07_natif-reseaux_probleme-solution",
-   "style": "natif-reseaux",
-   "composition": "probleme-solution",
-   "lead_person": "P1",
-   "must": [],
-   "hook_angle": 7,
-   "status": "proposée"
-  },
-  {
-   "id": "V08",
-   "name": "t_V08_mots-surlignes_question-reponse",
-   "style": "mots-surlignes",
-   "composition": "question-reponse",
-   "lead_person": "P1",
-   "must": [],
-   "hook_angle": 8,
-   "status": "proposée"
-  },
-  {
-   "id": "V09",
-   "name": "t_V09_magazine_temoignage-brut",
-   "style": "magazine",
-   "composition": "temoignage-brut",
-   "lead_person": "P1",
-   "must": [],
-   "hook_angle": 9,
-   "status": "proposée"
-  },
-  {
-   "id": "V10",
-   "name": "t_V10_incrustation_temoignage-demo",
-   "style": "incrustation",
-   "composition": "temoignage-demo",
-   "lead_person": "P1",
-   "must": [],
-   "hook_angle": 10,
-   "status": "proposée"
-  },
-  {
-   "id": "V11",
-   "name": "t_V11_fil-messages_temoignage-illustre",
-   "style": "fil-messages",
-   "composition": "temoignage-illustre",
-   "lead_person": "P1",
-   "must": [],
-   "hook_angle": 11,
-   "status": "proposée"
-  },
-  {
-   "id": "V12",
-   "name": "t_V12_epure_temoignage-long",
-   "style": "epure",
-   "composition": "temoignage-long",
-   "lead_person": "P1",
-   "must": [],
-   "hook_angle": 12,
-   "status": "proposée"
-  },
-  {
-   "id": "V13",
-   "name": "t_V13_ecran-partage_top-3-raisons",
-   "style": "ecran-partage",
-   "composition": "top-3-raisons",
-   "lead_person": "P1",
-   "must": [],
-   "hook_angle": 13,
-   "status": "proposée"
-  },
-  {
-   "id": "V14",
-   "name": "t_V14_demo-voix-off_unboxing",
-   "style": "demo-voix-off",
-   "composition": "unboxing",
-   "lead_person": "P1",
-   "must": [],
-   "hook_angle": 14,
-   "status": "proposée"
-  },
-  {
-   "id": "V15",
-   "name": "t_V15_cinema_accroche-choc",
-   "style": "cinema",
-   "composition": "accroche-choc",
-   "lead_person": "P4",
-   "must": [],
-   "hook_angle": 15,
-   "status": "proposée"
-  },
-  {
-   "id": "V16",
-   "name": "t_V16_avis-clients_avant-apres",
-   "style": "avis-clients",
-   "composition": "avant-apres",
-   "lead_person": "P4",
-   "must": [],
-   "hook_angle": 16,
-   "status": "proposée"
-  },
-  {
-   "id": "V17",
-   "name": "t_V17_ugc-brut_comparatif-chiffre",
-   "style": "ugc-brut",
-   "composition": "comparatif-chiffre",
-   "lead_person": "P4",
-   "must": [],
-   "hook_angle": 17,
-   "status": "proposée"
-  },
-  {
-   "id": "V18",
-   "name": "t_V18_tiktok-energique_demo-entre-temoignages",
-   "style": "tiktok-energique",
-   "composition": "demo-entre-temoignages",
-   "lead_person": "P4",
-   "must": [],
-   "hook_angle": 18,
-   "status": "proposée"
-  },
-  {
-   "id": "V19",
-   "name": "t_V19_sombre-premium_mosaique-clients",
-   "style": "sombre-premium",
-   "composition": "mosaique-clients",
-   "lead_person": "P4",
-   "must": [],
-   "hook_angle": 19,
-   "status": "proposée"
-  },
-  {
-   "id": "V20",
-   "name": "t_V20_podcast-interview_objection-levee",
-   "style": "podcast-interview",
-   "composition": "objection-levee",
-   "lead_person": "P4",
-   "must": [],
-   "hook_angle": 20,
    "status": "proposée"
   }
  ]

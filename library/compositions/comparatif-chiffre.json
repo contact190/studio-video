@@ -54,7 +54,8 @@
     "voiceover",
     "speaker"
    ],
-   "brief": "Les chiffres du brief, en gros."
+   "brief": "Les chiffres du brief, en gros.",
+   "stats": true
   },
   {
    "id": "testimonial_2",
@@ -83,7 +84,5 @@
   "longest_speech": 8,
   "demo_shots": 2
  },
- "todo_render": [
-  "gros chiffres animés"
- ]
+ "todo_render": []
 }

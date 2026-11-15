@@ -85,13 +85,12 @@
   "cta_style": "pill"
  },
  "description": "Étoiles et extraits d'avis écrits par-dessus la vidéo.",
- "todo_render": [
-  "carte d'avis avec étoiles"
- ],
+ "todo_render": [],
  "info": {
   "quoi": "Des étoiles 5/5 et de courtes citations d'avis s'affichent pendant que le client parle.",
   "quand": "Quand on a de bons avis écrits.",
   "ideal_pour": "E-commerce.",
   "besoin": "Avis clients dans le brief (preuves)."
- }
+ },
+ "review_cards": true
 }

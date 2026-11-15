@@ -86,13 +86,12 @@
   "cta_text": "brand.accent"
  },
  "description": "Coupes très rapides, zooms sur les mots forts, sous-titres mot par mot qui sautent.",
- "todo_render": [
-  "effets sonores (whoosh) aux coupes"
- ],
+ "todo_render": [],
  "info": {
   "quoi": "Plans de 1 à 2 s, zooms, sous-titres d'un ou deux mots qui apparaissent en sautant, flash entre les parties.",
   "quand": "Pour capter l'attention d'un public jeune.",
   "ideal_pour": "TikTok, publics 18–30.",
   "besoin": "Beaucoup de plans courts."
- }
+ },
+ "sfx": "whoosh"
 }

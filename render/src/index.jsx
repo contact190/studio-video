@@ -4,10 +4,11 @@ import '@fontsource/inter/500.css';
 import '@fontsource/inter/700.css';
 import '@fontsource/inter/800.css';
 import '@fontsource/inter/900.css';
+import '@fontsource/anton/400.css';
 import {Edit} from './Edit';
 
 const h = delayRender('fonts');
-Promise.all(['500 40px Inter', '700 40px Inter', '800 40px Inter', '900 40px Inter'].map((s) => document.fonts.load(s)))
+Promise.all(['500 40px Inter', '700 40px Inter', '800 40px Inter', '900 40px Inter', '400 40px Anton'].map((s) => document.fonts.load(s)))
   .then(() => continueRender(h)).catch(() => continueRender(h));
 
 const Root = () => (

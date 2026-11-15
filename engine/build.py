@@ -75,6 +75,39 @@ def fair_split(need, avail, min_shot=0.6):
 
 KEYWORDS = set()
 
+_UNITS = {w: i for i, w in enumerate('zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen'.split())}
+_TENS = {w: 10 * i for i, w in enumerate('_ _ twenty thirty forty fifty sixty seventy eighty ninety'.split()) if w != '_'}
+
+
+def find_number(text):
+    """Premier nombre d'une phrase, en chiffres ou en lettres : (valeur, suffixe, suite du texte)."""
+    import re
+    m = re.search(r'(\d+(?:[.,]\d+)?)\s*(%|x|×|k|\+)?', text)
+    if m:
+        return float(m.group(1).replace(',', '.')), m.group(2) or '', text[m.end():]
+    words = re.findall(r"[A-Za-z]+|[^A-Za-z]+", text)
+    toks = [w.lower() for w in words]
+    for i, w in enumerate(toks):
+        if w in _UNITS or w in _TENS or w == 'hundred':
+            val, j = 0, i
+            while j < len(toks):
+                t = toks[j]
+                if t in _TENS: val += _TENS[t]
+                elif t in _UNITS: val += _UNITS[t]
+                elif t == 'hundred': val = max(val, 1) * 100
+                elif t.strip() in ('-', '') and j + 1 < len(toks) and (toks[j + 1] in _UNITS or toks[j + 1] in _TENS): pass
+                else: break
+                j += 1
+            if val < 2 and toks[i] in ('one', 'zero'):
+                continue
+            rest = ''.join(words[j:])
+            suf = ''
+            if re.match(r'\s*percent', rest, re.I):
+                suf = '%'; rest = re.sub(r'^\s*percent', '', rest, flags=re.I)
+            return float(val), suf, rest
+    return None
+
+
 
 def _norm(w):
     return ''.join(ch for ch in w.lower() if ch.isalnum() or ch == '%')
@@ -192,6 +225,8 @@ def build(plan_path, out_dir=None, preview=False):
                        'at': round(T, 2), 'description': s.get('description', '')})
         return n / FPS
 
+    overlays, last_who = [], [None]
+    reviews = plan.get('reviews', [])
     for slot in comp['slots']:
         sid = slot['id']
         p = plan['slots'].get(sid)
@@ -212,6 +247,13 @@ def build(plan_path, out_dir=None, preview=False):
             for c in p.get('clips', []):
                 s = seg_of(c, sid)
                 if not s: continue
+                import re as _re
+                fname = idx['files'][s['file']]['name']
+                who = (s.get('person') or (fname.split('_')[0] if _re.match(r'^[A-Za-zÀ-ÿ\- ]+_.*\d{4}-\d{2}-\d{2}', fname) else None))
+                if style.get('lower_third') and who and who != last_who[0] and sid != 'hook':
+                    overlays.append({'type': 'name', 'text': who, 'sub': style.get('lower_third_sub', 'Verified customer'),
+                                     'from': round(T * FPS), 'to': round(T * FPS) + 75})
+                last_who[0] = who
                 t_in = c.get('in', s['start']); t_out = c.get('out', s['end'])
                 f = idx['files'][s['file']]
                 if t_out <= t_in or t_out > f['duration'] + 0.05:
@@ -259,6 +301,14 @@ def build(plan_path, out_dir=None, preview=False):
                         continue
                     t_in = c.get('in', s['start'] + 0.1 if s['dur'] > d + 0.3 else s['start'])
                     T += add_clip(s, c, t_in, d, c.get('volume', 0.0), sid)
+                if slot.get('stats'):
+                    import re as _re
+                    st_ = find_number(line['text'])
+                    if st_:
+                        val, suf, rest = st_
+                        overlays.append({'type': 'stat', 'value': val, 'suffix': suf,
+                                         'label': line.get('stat_label') or ' '.join(rest.split()[:3]).strip(' .,:;'),
+                                         'from': round(line_start * FPS), 'to': round(T * FPS)})
                 subs += chunk_words(spread_words(line['text'], line_start, line_start + vd), style, T)
                 duck.append([round(line_start * FPS), round((line_start + vd) * FPS)])
         dur = T - start
@@ -266,6 +316,12 @@ def build(plan_path, out_dir=None, preview=False):
         if dur and not (lo - 0.3 <= dur <= hi + 0.3):
             warns.append(f"Case « {sid} » : {dur:.1f}s (attendu {lo}–{hi}s)")
         slot_marks.append({'slot': sid, 'from': round(start * FPS), 'to': round(T * FPS)})
+        card = (p or {}).get('card') or (slot.get('card') if slot.get('card') != 'question' else None)
+        if card and T > start:
+            overlays.append({'type': 'card', 'text': card, 'from': round(start * FPS), 'to': round(start * FPS) + min(36, round((T - start) * FPS))})
+        if style.get('review_cards') and slot.get('audio', [''])[0] == 'speaker' and sid != 'hook' and T - start > 2 and reviews:
+            overlays.append({'type': 'review', 'text': reviews[len([o for o in overlays if o['type'] == 'review']) % len(reviews)],
+                             'from': round(start * FPS) + 9, 'to': round(min(T, start + 3.5) * FPS)})
 
     if p_hook := plan.get('hook_title'):
         if style['hook_title']['enabled']:
@@ -290,9 +346,20 @@ def build(plan_path, out_dir=None, preview=False):
             make(mfile, T + 0.4, calm=calm, hits=[0.0] + ([end['from'] / FPS] if end else []))
         music = {'src': 'media/music.wav', 'volume': style['music']['volume'], 'duck_to': style['music']['duck_to'], 'ranges': duck}
 
+    if style.get('sfx') == 'whoosh' and len(slot_marks) > 1:
+        wh = media / 'whoosh.wav'
+        run(['ffmpeg', '-v', 'error', '-y', '-f', 'lavfi', '-i', 'anoisesrc=d=0.4:c=pink:a=0.6', '-af',
+             'highpass=f=400,lowpass=f=6000,afade=t=in:d=0.18,afade=t=out:st=0.2:d=0.2,aformat=channel_layouts=stereo', '-ar', '48000', str(wh)])
+        for m in slot_marks[1:]:
+            voice.append({'src': 'media/whoosh.wav', 'from': max(0, m['from'] - 5), 'volume': 0.35})
+    broll = None
+    if (style.get('image') or {}).get('layout') == 'split':
+        demo_c = next((c for c in clips if not c['speaker']), None)
+        if demo_c:
+            broll = {'src': demo_c['src'], 'dur': demo_c['dur']}
     if preview:
         W, H = W // 2, H // 2
-    timeline = {'width': W, 'height': H, 'fps': FPS, 'durationInFrames': total, 'style': style, 'brand': brand,
+    timeline = {'overlays': overlays, 'broll': broll, 'width': W, 'height': H, 'fps': FPS, 'durationInFrames': total, 'style': style, 'brand': brand,
                 'clips': clips, 'voice': voice, 'music': music, 'subtitles': [{**s, 'from': round(s['t0'] * FPS), 'to': round(s['t1'] * FPS)} for s in subs],
                 'tags': tags, 'hook': hook, 'end': end, 'slots': slot_marks}
     props = RENDER / 'props.json'

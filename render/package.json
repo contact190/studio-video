@@ -1,12 +1,13 @@
 {
   "name": "studio-video-render",
   "private": true,
-  "description": "Modèle de montage Remotion du moteur Studio Vidéo",
+  "description": "Mod\u00e8le de montage Remotion du moteur Studio Vid\u00e9o",
   "dependencies": {
     "@fontsource/inter": "5.2.8",
     "@remotion/cli": "4.0.543",
     "react": "19.3.1",
     "react-dom": "19.3.1",
-    "remotion": "4.0.543"
+    "remotion": "4.0.543",
+    "@fontsource/anton": "5.2.8"
   }
 }

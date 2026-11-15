@@ -8,7 +8,7 @@
   "enabled": true,
   "font": "Inter",
   "weight": 900,
-  "size": 0.068,
+  "size": 0.045,
   "case": "upper",
   "letter_spacing": -0.01,
   "max_words": 3,
@@ -16,7 +16,7 @@
   "color": "#ffffff",
   "highlight_color": "brand.accent",
   "highlight": "last_word_every_other",
-  "position_y": 0.5,
+  "position_y": 0.47,
   "stroke": 0,
   "shadow": "0 6px 24px rgba(0,0,0,0.65)",
   "animation": "pop"
@@ -45,14 +45,15 @@
   "icon": "check"
  },
  "image": {
-  "bottom_gradient": 0.82,
+  "bottom_gradient": 0.0,
   "gradient_start": 0.45,
   "contrast": 1.06,
   "saturation": 1.05,
   "brightness": 1.0,
   "zoom": "slow_in",
   "zoom_amount": 0.05,
-  "grain": 0.0
+  "grain": 0.0,
+  "layout": "split"
  },
  "rhythm": {
   "max_shot": 3.2,
@@ -91,7 +92,5 @@
   "ideal_pour": "Démos courtes avec témoignage.",
   "besoin": "Témoignages + plans de démo."
  },
- "todo_render": [
-  "mise en page deux vidéos superposées (haut/bas)"
- ]
+ "todo_render": []
 }

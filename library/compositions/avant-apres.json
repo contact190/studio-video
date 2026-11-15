@@ -41,7 +41,8 @@
    "audio": [
     "speaker"
    ],
-   "brief": "La situation avant."
+   "brief": "La situation avant.",
+   "card": "Before"
   },
   {
    "id": "testimonial_2",
@@ -54,7 +55,8 @@
     "speaker"
    ],
    "brief": "La situation après.",
-   "same_person": true
+   "same_person": true,
+   "card": "After"
   },
   {
    "id": "end",
@@ -70,7 +72,5 @@
   "people": 1,
   "longest_speech": 8
  },
- "todo_render": [
-  "carton « BEFORE » / « AFTER »"
- ]
+ "todo_render": []
 }

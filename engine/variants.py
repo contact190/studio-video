@@ -399,8 +399,19 @@ def draft(a):
                 total += d
             else:   # voix off sur plans de démo
                 lines, d = [], 0.0
-                while d < target and msgs:
-                    text = msgs[m_ptr % len(msgs)]
+                pool = msgs
+                if slot.get('stats'):   # chiffres d'abord
+                    sys.path.insert(0, str(Path(__file__).resolve().parent))
+                    from build import find_number
+                    num = [t for t in msgs if find_number(str(t))]
+                    pool = num + [t for t in msgs if t not in num]
+                seen_lines = set()
+                while d < target and pool and len(seen_lines) < len(set(map(str, pool))):
+                    text = pool[m_ptr % len(pool)] if not slot.get('stats') else pool[len(seen_lines)]
+                    if str(text) in seen_lines:
+                        m_ptr += 1
+                        continue
+                    seen_lines.add(str(text))
                     need = max(1.8, len(text.split()) / 2.6) + 0.6
                     clips, have = [], 0.0
                     while have < need:
@@ -426,6 +437,14 @@ def draft(a):
                 if w2 and w2 not in stop and (len(w2) >= 5 or any(ch.isdigit() for ch in w2)):
                     kw.add(w2)
         plan['keywords'] = sorted(kw)
+        plan['reviews'] = list(brief.get('reviews') or []) or [m for m in msgs if len(str(m).split()) <= 9][:4]
+        qs = list(brief.get('questions') or [])
+        for k, sl in enumerate([sl for sl in comp['slots'] if sl.get('card') == 'question']):
+            if sl['id'] in plan['slots']:
+                if qs:
+                    plan['slots'][sl['id']]['card'] = qs[(k + n) % len(qs)]
+                else:
+                    plan['slots'][sl['id']].pop('card', None)
         plan['estimated_duration'] = f'{round(total)} s'
         (out / f"{x['name']}.json").write_text(json.dumps(plan, ensure_ascii=False, indent=1), encoding='utf-8')
     print(f"{len(v['variants'])} plans (premier jet) → {out}")

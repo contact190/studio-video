@@ -8,18 +8,19 @@
   "enabled": true,
   "font": "Inter",
   "weight": 900,
-  "size": 0.064,
+  "size": 0.042,
   "case": "none",
   "letter_spacing": -0.01,
   "max_words": 8,
-  "max_chars": 12,
+  "max_chars": 48,
   "color": "#ffffff",
   "highlight_color": "brand.accent",
   "highlight": "none",
-  "position_y": 0.6,
+  "position_y": 0.66,
   "stroke": 0.004,
   "shadow": "0 3px 10px rgba(0,0,0,0.5)",
-  "animation": "pop"
+  "animation": "pop",
+  "mode": "bubble"
  },
  "hook_title": {
   "enabled": true,
@@ -86,9 +87,7 @@
   "cta_text": "brand.accent"
  },
  "description": "Les phrases du client apparaissent comme des bulles de messages.",
- "todo_render": [
-  "bulles de messages au lieu des sous-titres"
- ],
+ "todo_render": [],
  "info": {
   "quoi": "Les phrases du client s'affichent dans des bulles type SMS ou WhatsApp au lieu de sous-titres.",
   "quand": "Ton proche, conversation.",

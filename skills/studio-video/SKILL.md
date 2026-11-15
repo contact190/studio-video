@@ -100,7 +100,7 @@ Questions, une par message :
 1. **Le brief.** « Envoie ton brief (lien Google Doc, fichier ou texte). » Modèle à proposer si
    l'utilisateur n'en a pas : rubriques ci-dessous. Le lire et le résumer en `brief.json`
    (`subject`, `goal`, `audience`, `messages`, `hooks`, `proofs`, `tone`, `cta`, `end_text`,
-   `bullets`, `avoid`, `language`, `duration`). Une rubrique obligatoire manque → la demander.
+   `bullets`, `avoid`, `language`, `duration`, `questions`, `reviews`). Une rubrique obligatoire manque → la demander.
 2. **Les rushes.** « Les rushes : `RUSHES` (déjà indexés), ou le lien d'un autre dossier ? » Autre
    dossier → « Je l'indexe et le range dans `RUSHES`, ou je travaille directement avec ? » puis
    Analyse sur ce dossier (seulement les nouveaux fichiers).
@@ -160,6 +160,8 @@ Puis, sans autre question :
 | Appel à l'action + texte de fin | non | Shop now · Built to last |
 | À éviter | non | Pas de prix, pas de concurrent nommé |
 | Langue et durée | non | Anglais, 20 à 40 s |
+| Questions posées (VideoAsk) | non | Does it really fit? · How does it feel? (affichées en carton dans *Réponse à une question*) |
+| Avis écrits | non | « Softest tee I own » (cartes d'avis du style *Avis clients*) |
 
 ---
 

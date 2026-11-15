@@ -41,7 +41,8 @@
    "audio": [
     "speaker"
    ],
-   "brief": "Premier message clé."
+   "brief": "Premier message clé.",
+   "card": "3"
   },
   {
    "id": "demo",
@@ -54,7 +55,8 @@
     "voiceover",
     "speaker"
    ],
-   "brief": "Deuxième message clé."
+   "brief": "Deuxième message clé.",
+   "card": "2"
   },
   {
    "id": "testimonial_2",
@@ -67,7 +69,8 @@
     "speaker"
    ],
    "brief": "Le message le plus fort.",
-   "same_person": true
+   "same_person": true,
+   "card": "1"
   },
   {
    "id": "end",
@@ -84,7 +87,5 @@
   "longest_speech": 6,
   "demo_shots": 2
  },
- "todo_render": [
-  "gros chiffre 3 / 2 / 1 à chaque raison"
- ]
+ "todo_render": []
 }
