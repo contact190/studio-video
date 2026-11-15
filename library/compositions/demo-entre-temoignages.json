@@ -104,5 +104,10 @@
     5
    ]
   }
- ]
+ ],
+ "requires": {
+  "people": 3,
+  "speech_per_person": 3,
+  "demo_shots": 4
+ }
 }

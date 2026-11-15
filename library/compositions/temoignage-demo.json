@@ -63,5 +63,10 @@
    ]
   }
  ],
- "description": "Accroche, témoignage face caméra, puis plans de preuve produit, carton final (24 à 45 s)."
+ "description": "Accroche, témoignage face caméra, puis plans de preuve produit, carton final (24 à 45 s).",
+ "requires": {
+  "people": 1,
+  "longest_speech": 8,
+  "demo_shots": 3
+ }
 }

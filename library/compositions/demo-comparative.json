@@ -78,5 +78,9 @@
     5
    ]
   }
- ]
+ ],
+ "requires": {
+  "competitor_shots": 2,
+  "demo_shots": 3
+ }
 }

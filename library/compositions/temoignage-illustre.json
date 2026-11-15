@@ -50,5 +50,10 @@
     5
    ]
   }
- ]
+ ],
+ "requires": {
+  "people": 1,
+  "longest_speech": 15,
+  "demo_shots": 4
+ }
 }

@@ -1,29 +1,32 @@
 ---
 name: studio-video
-description: Studio Vidéo, deux commandes. Montage = faire une vidéo guidée pas à pas (rushes Drive, script, style et composition choisis dans la bibliothèque, aperçu puis validation). Production = atelier pour créer ou modifier un style ou une composition à partir de références, avec tests et validation.
+description: Studio Vidéo, trois commandes. Analyse = indexer une fois des dossiers de rushes. Montage = à partir d'un brief (idée générale) et des rushes, produire 10 à 20 variantes avec styles et compositions de la bibliothèque, voix off anglaise, validation une par une. Production = créer ou modifier un style ou une composition à partir de références.
 ---
 
 # Studio Vidéo
 
-Deux commandes. Reconnaître celle que l'utilisateur veut ; s'il dit seulement « studio vidéo »,
-lui proposer les deux (AskUserQuestion : **Montage** — faire une vidéo ; **Production** — créer ou
-modifier un style ou une composition).
+Trois commandes. Reconnaître celle que l'utilisateur veut ; s'il dit seulement « studio vidéo »,
+lui proposer les trois (AskUserQuestion).
 
 | Commande | Déclencheurs | Ce qu'elle fait |
 |---|---|---|
-| **Montage** | « montage », « fais une vidéo », « monte… » | Guide pas à pas : rushes → script → style → composition → aperçu → validation → livraison |
-| **Production** | « production », « atelier », « nouveau style », « nouvelle composition », « modifie le style X » | Crée ou modifie un style, une composition ou les deux à partir de références, avec test et validation |
+| **Analyse** | « analyse », « indexe ce dossier » | Analyse un ou plusieurs dossiers une seule fois, range les vidéos dans `RUSHES`, met l'index et le sheet à jour |
+| **Montage** | « montage », « fais des variantes », « fais une vidéo » | Brief + rushes → 10, 15 ou 20 variantes, planche de choix, aperçus, validation une par une |
+| **Production** | « production », « atelier », « nouveau style » | Crée ou modifie un style, une composition ou les deux, avec test et validation |
 
 Règles communes :
-- **Une seule question à la fois**, numérotée (« Étape 2/4 »), courte, avec un exemple de réponse.
-  Pour un choix dans une liste : AskUserQuestion si 4 options ou moins, sinon liste numérotée dans
-  le message (« réponds par le numéro »).
-- Ne jamais écrire dans `SORTIES` ni dans la bibliothèque sans la validation explicite de
-  l'utilisateur (« valide », « ok », « c'est bon »). Toute autre réponse = modifications demandées.
-- Le code et la bibliothèque vivent dans le dépôt `contact190/studio-video` ; les rushes et les vidéos
-  finies dans `STUDIO VIDÉO` sur le Drive de l'utilisateur, lu depuis son ordinateur
-  (`G:\Mon Drive\STUDIO VIDÉO` via Google Drive pour ordinateur et le pont de l'app Claude). Le
-  connecteur Drive ne télécharge pas au-delà de 10 Mo : jamais pour des vidéos, seulement pour le script.
+- **Une seule question à la fois**, numérotée, courte, avec un exemple de réponse. Choix dans une
+  liste : AskUserQuestion si 4 options ou moins, sinon liste numérotée (« réponds par le numéro »).
+- Rien n'est écrit dans `SORTIES` ni dans la bibliothèque sans validation explicite.
+- Les rushes, l'index et les vidéos finies sont dans `STUDIO VIDÉO` sur le Drive de l'utilisateur,
+  lu depuis son ordinateur (Google Drive pour ordinateur, via le pont de l'app Claude). Le lecteur
+  dépend du compte (`G:\Mon Drive`, `H:\Mon Drive`…) : le retrouver avec `get_device_info` /
+  `device_list_dir` et le noter dans `Réglages`. Le connecteur Drive ne télécharge pas au-delà de
+  10 Mo : jamais pour des vidéos, seulement pour le brief, le script et le sheet.
+- **Une vidéo n'est analysée qu'une fois.** L'index (`RUSHES/_studio/index.json`) garde chaque fichier
+  (reconnu par nom, taille et date) avec ses segments, sa transcription mot à mot, sa qualité, ses
+  personnes, produits et usages. Il est recopié dans le sheet PILOTAGE (onglets `Rushes` et
+  `Segments`) pour être lisible. Montage ne réanalyse jamais un fichier déjà indexé.
 
 ## Installation (une seule fois par utilisateur)
 
@@ -60,37 +63,92 @@ exactement le message ci-dessous au bon moment (ne jamais taper de mot de passe 
 ## Démarrage technique (chaque session, en silence)
 
 1. `add_repo` contact190/studio-video (accès push), puis `git clone --depth 1` dans `/home/claude/studio-video`.
-2. En arrière-plan : `bash setup.sh --voice --rea` (modèles dans `/tmp/studio-models`, rea-video dans
-   `/tmp/rea-video`). Poser les premières questions pendant l'installation.
+2. En arrière-plan : `bash setup.sh --voice --rea` (Whisper, voix off anglaise Kokoro open source,
+   rea-video). Poser les premières questions pendant l'installation.
+
+## À l'ouverture : nouvelles vidéos
+
+Avant la première question : rapatrier l'index de `RUSHES`, lister `RUSHES` (`device_list_dir`
+récursif → `listing.json`) et lancer `python3 engine/sync.py <index> listing.json`. S'il y a des
+fichiers dans `to_index`, le dire en une ligne et proposer (AskUserQuestion) : *Les analyser et faire
+des variantes* (→ Analyse sur ces fichiers, puis Montage avec ces vidéos imposées) · *Les analyser
+seulement* · *Plus tard*. Sinon, ne rien dire.
 
 ---
 
-## MONTAGE (faire une vidéo)
+## ANALYSE (indexer une fois)
 
-Poser les quatre questions dans cet ordre, une par message, puis travailler sans autre question.
+1. « Envoie le ou les dossiers à analyser (liens Drive ou chemins). »
+2. Pour chaque dossier hors de `RUSHES` : demander une fois pour tous « Je les range dans `RUSHES`
+   (recommandé : ils serviront à tous les montages) ou je les analyse sur place ? ». Ranger = copier
+   les fichiers dans `RUSHES/<nom du dossier>/` (connecteur Drive `copy_file`, même compte) avant
+   l'analyse.
+3. Moteur 1–2 : seuls les fichiers absents de l'index sont rapatriés et analysés.
+4. Sheet : `python3 engine/index_export.py <index> --out /tmp` puis écrire `rushes.json` et
+   `segments.json` dans les onglets `Rushes` et `Segments` du sheet PILOTAGE (Google Sheets
+   `update_values`, à partir de A1, après avoir vidé l'onglet). Pas de sheet : le créer dans
+   `STUDIO VIDÉO` du compte de l'utilisateur.
+5. Réponse : nombre de vidéos ajoutées, durée totale, personnes et produits repérés, segments
+   inutilisables et pourquoi.
 
-**Étape 1/4 — Les rushes.** « Envoie le lien du dossier Drive de tes rushes (ou réponds
-*VideoAsk* pour utiliser `BIBLIOTHÈQUE/RUSHES`). »
-→ Retrouver le dossier sur l'ordinateur : nom du dossier via le connecteur Drive (ID du lien), puis
-chemin sous `G:\Mon Drive` (`device_list_dir`). Hors de `STUDIO VIDÉO` : `device_request_folder_access`
-une seule fois. Lancer tout de suite le rapatriement et l'indexation (section *Moteur*, 1–2) pendant
-les questions suivantes.
+---
 
-**Étape 2/4 — Le script.** « Envoie ton script : lien Google Doc, fichier, ou colle le texte. »
+## MONTAGE (variantes à partir d'un brief)
 
-**Étape 3/4 — Le style.** `python3 engine/library.py styles` → afficher la liste numérotée
-(nom, version, statut, description, défaut marqué). « Choisis un style (numéro), ou *défaut*. »
+Questions, une par message :
 
-**Étape 4/4 — La composition.** `python3 engine/library.py compositions` → même présentation.
-Format : 9:16 sauf si l'utilisateur en a demandé un autre (ne pas poser la question).
+1. **Le brief.** « Envoie ton brief (lien Google Doc, fichier ou texte). » Modèle à proposer si
+   l'utilisateur n'en a pas : rubriques ci-dessous. Le lire et le résumer en `brief.json`
+   (`subject`, `goal`, `audience`, `messages`, `hooks`, `proofs`, `tone`, `cta`, `end_text`,
+   `bullets`, `avoid`, `language`, `duration`). Une rubrique obligatoire manque → la demander.
+2. **Les rushes.** « Les rushes : `RUSHES` (déjà indexés), ou le lien d'un autre dossier ? » Autre
+   dossier → « Je l'indexe et le range dans `RUSHES`, ou je travaille directement avec ? » puis
+   Analyse sur ce dossier (seulement les nouveaux fichiers).
+3. **Vidéos imposées** (facultatif). « Des vidéos à utiliser obligatoirement dans toutes les
+   variantes ? (noms ou liens, ou *non*) » → identifiants `F00X` ou `F00X.S0Y`.
+4. **Références** (facultatif). « Des vidéos ou liens de référence pour l'esprit ? (ou *non*) » →
+   les regarder (rea-video si vidéo) et en tirer le ton, le rythme, les accroches.
+5. **Style et composition.** AskUserQuestion : *Auto* (le skill répartit sur la bibliothèque) ·
+   *Choisir*. Choisir → listes numérotées `engine/library.py styles` puis `compositions`.
+6. **Nombre de variantes.** AskUserQuestion : *10* · *15* · *20*.
 
-Puis annoncer en une ligne : « Je monte : <style> + <composition>, 9:16. Je reviens avec un aperçu. »
+Puis, sans autre question :
 
-**Aperçu.** Moteur 3–5 en mode aperçu ; envoyer l'aperçu (`SendUserFile`) avec la liste
-« case → plan utilisé » et demander : « **C'est validé, ou tu veux des modifications ?** »
-- Modifications : appliquer (changer un plan, couper, rythme, textes, musique), refaire un aperçu,
-  redemander. Recommencer jusqu'à validation.
-- Validé : rendu final + contrôle (`check.py`), puis livraison (Moteur 6).
+1. `python3 engine/variants.py matrix <index> --n N --style <auto|id> --composition <auto|id>
+   --must <F003,…> --project <nom>` : répartit les variantes (compositions possibles avec ces rushes
+   seulement, personne principale qui a assez de parole, accroches tournantes).
+2. `python3 engine/variants.py draft variants.json brief.json --out plans` : premier jet de chaque
+   plan. **Relire chaque plan** : réécrire l'accroche et les lignes de voix off depuis le brief (ton,
+   messages, `avoid`), vérifier sur les planches que chaque plan montre ce que dit la ligne, couper sur
+   les pauses (`annotate.py <index> words F00X`). Voix off : anglais seulement, Kokoro ; un mot
+   inconnu de la voix → l'ajouter à `tts/lexicon-extra.txt` (phonèmes sur le modèle des mots voisins).
+3. **Planche.** `python3 engine/variants.py board variants.json --plans plans` → envoyer le tableau
+   (variante, style, composition, personne, accroche, durée) et demander : « Lesquelles je monte ?
+   (*toutes*, ou les numéros) ».
+4. **Aperçus.** `python3 engine/variants.py build plans --only V01,V04,…` (≈ 3 à 4 min par vidéo :
+   prévenir de la durée). Envoyer les aperçus au fur et à mesure (`SendUserFile`).
+5. **Validation une par une.** Pour chaque variante, dans l'ordre, demander :
+   « **V03** — validée, ou une note ? Format : `V03 4–7 s : <ce qu'il faut changer>` (plusieurs
+   lignes possibles) ». Pour une note : `python3 engine/locate.py <rapport V03> 4 7` → la case et le
+   plan concernés ; modifier le plan, refaire l'aperçu de cette seule variante, redemander.
+   « validée » → variante suivante.
+6. **Livraison** des variantes validées : `variants.py build plans --final --only …`, `check.py`
+   sur chacune, puis Moteur 6. Nom : `<projet>_V03_<style>_<composition>.mp4`.
+
+### Le brief (modèle)
+
+| Rubrique | Obligatoire | Exemple |
+|---|---|---|
+| Sujet | oui | Les clients adorent la douceur du t-shirt chanvre |
+| Objectif | oui | Acheter |
+| Public | oui | Hommes 25–45, déjà clients |
+| Messages clés (2 à 4, par importance) | non | Doux · respirant · garde sa forme |
+| Accroches possibles | non | « Finally, a shirt that fits » |
+| Preuves | non | Test d'arrachage, 51 % chanvre, garantie |
+| Ton | non | Authentique |
+| Appel à l'action + texte de fin | non | Shop now · Built to last |
+| À éviter | non | Pas de prix, pas de concurrent nommé |
+| Langue et durée | non | Anglais, 20 à 40 s |
 
 ---
 
