@@ -39,3 +39,9 @@ library/  styles/  compositions/  brand/
 tts/      mots ajoutés au dictionnaire de la voix off
 docs/     plan.md : format du plan de montage
 ```
+
+## Installer le skill
+
+- **App Claude (web, ordinateur, mobile)** : Customize › Skills › + › Create skill › Upload a skill, avec `studio-video-skill.zip` (le dossier `skills/studio-video` zippé).
+- **Claude Code (terminal)** : `npx skills add contact190/studio-video --skill studio-video --agent claude-code -g`
+  (dépôt privé : être invité sur GitHub et connecté avec `gh auth login` avant).
