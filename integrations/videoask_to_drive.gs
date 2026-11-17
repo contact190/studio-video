@@ -35,8 +35,51 @@ function doPost(e) {
   }
 }
 
-function doGet() {
+function doGet(e) {
+  const prm = (e && e.parameter) || {};
+  if (prm.action === 'fetch') {
+    if (SECRET && prm.k !== SECRET) return out_('forbidden');
+    return fetchToDrive_(prm);
+  }
   return out_('Studio Vidéo — VideoAsk → Drive : actif');
+}
+
+/**
+ * Télécharge une vidéo (pub Meta) directement dans STUDIO VIDÉO/BIBLIOTHÈQUE/RÉFÉRENCES/<sub>.
+ * ?action=fetch&k=<clé>&url=<lien vidéo>&name=<nom.mp4>&sub=META
+ * Réponse JSON : {ok, id, name, size, existing}. Limite Google : 50 Mo par fichier.
+ */
+function fetchToDrive_(prm) {
+  try {
+    const url = String(prm.url || '');
+    if (!/^https:\/\/[^/]*(fbcdn\.net|facebook\.com|fbsbx\.com|cdninstagram\.com)\//.test(url)) {
+      return json_({ok: false, error: 'lien non autorisé (Meta uniquement)'});
+    }
+    const name = String(prm.name || 'meta.mp4').replace(/[\\/:*?"<>|]/g, '_');
+    const lib = DriveApp.getFolderById(FOLDER_ID).getParents().next();       // BIBLIOTHÈQUE
+    const refs = child_(lib, 'RÉFÉRENCES');
+    const dest = child_(refs, String(prm.sub || 'META'));
+    const same = dest.getFilesByName(name);
+    if (same.hasNext()) {
+      const f = same.next();
+      return json_({ok: true, id: f.getId(), name: name, size: f.getSize(), existing: true});
+    }
+    const r = UrlFetchApp.fetch(url, {followRedirects: true, muteHttpExceptions: true});
+    if (r.getResponseCode() !== 200) return json_({ok: false, error: 'HTTP ' + r.getResponseCode()});
+    const f = dest.createFile(r.getBlob().setName(name));
+    return json_({ok: true, id: f.getId(), name: name, size: f.getSize(), existing: false});
+  } catch (err) {
+    return json_({ok: false, error: String(err)});
+  }
+}
+
+function child_(parent, name) {
+  const it = parent.getFoldersByName(name);
+  return it.hasNext() ? it.next() : parent.createFolder(name);
+}
+
+function json_(o) {
+  return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
 }
 
 /** Enregistre les vidéos d'une réponse. Renvoie le nombre de fichiers créés. */
