@@ -1,18 +1,19 @@
 ---
 name: studio-video
-description: Studio Vidéo, trois commandes. Analyse = indexer une fois des dossiers de rushes. Montage = à partir d'un brief (idée générale) et des rushes, produire 10 à 20 variantes avec styles et compositions de la bibliothèque, voix off anglaise, validation une par une. Production = créer ou modifier un style ou une composition à partir de références.
+description: Studio Vidéo, quatre commandes. Analyse = indexer une fois des dossiers de rushes. Montage = à partir d'un brief et des rushes, produire 10 à 20 variantes (styles et compositions de la bibliothèque, voix off anglaise, validation une par une). Production = créer ou modifier un style ou une composition. Gagnants = classer les pubs Meta d'une période et décliner les meilleures en variantes.
 ---
 
 # Studio Vidéo
 
-Trois commandes. Reconnaître celle que l'utilisateur veut ; s'il dit seulement « studio vidéo »,
-lui proposer les trois (AskUserQuestion).
+Quatre commandes. Reconnaître celle que l'utilisateur veut ; s'il dit seulement « studio vidéo »,
+lui proposer les quatre (AskUserQuestion).
 
 | Commande | Déclencheurs | Ce qu'elle fait |
 |---|---|---|
 | **Analyse** | « analyse », « indexe ce dossier » | Analyse un ou plusieurs dossiers une seule fois, range les vidéos dans `RUSHES`, met l'index et le sheet à jour |
 | **Montage** | « montage », « fais des variantes », « fais une vidéo » | Brief + rushes → 10, 15 ou 20 variantes, planche de choix, aperçus, validation une par une |
 | **Production** | « production », « atelier », « nouveau style » | Crée ou modifie un style, une composition ou les deux, avec test et validation |
+| **Gagnants** | « gagnants », « meilleures pubs », « analyse Meta » | Classe les pubs Meta d'une période, analyse celles choisies (composition, style, script) et les décline en variantes jusqu'au résultat final |
 
 Règles communes :
 - **Une seule question à la fois**, numérotée, courte, avec un exemple de réponse. Choix dans une
@@ -197,7 +198,61 @@ demander : « **C'est validé, ou tu veux des modifications ?** »
 
 ---
 
-## MOTEUR (étapes techniques, communes aux deux commandes)
+## GAGNANTS (pubs Meta → variantes)
+
+Questions, une par message :
+
+1. **Connexion Meta.** Chercher les outils Meta (`ToolSearch` « +Meta ads »). Absents ou non
+   connectés → `SearchMcpRegistry` [« meta ads »] puis `SuggestConnectors` (connecteur **Meta**) et
+   attendre « c'est connecté ». Ne jamais passer à la suite sans connexion.
+2. **Compte publicitaire.** `ads_get_ad_accounts`. Un seul → le dire et continuer. Plusieurs →
+   AskUserQuestion (nom et numéro). Compte sans aucune pub → le dire et proposer un autre compte ou
+   la Bibliothèque publicitaire (`ads_library_search` : pubs publiques d'une marque, sans chiffres ;
+   une pub active depuis longtemps est en général une gagnante).
+3. **Période.** « Du … au … ? (ex. 01.10.26 au 15.11.26, ou *30 derniers jours*) » → `time_range`
+   ou `date_preset`.
+
+Puis :
+
+4. **Classement.** Vérifier les champs (`ads_get_field_context`), puis `ads_get_ad_entities` level=ad,
+   période choisie, champs : `id, name, campaign_name, effective_status, creative_id, amount_spent,
+   impressions, ctr, results, cost_per_result, video_play_actions,
+   video_continuous_2_sec_watched_actions, video_thruplay_watched_actions,
+   video_p75_watched_actions, video_avg_time_watched_actions` (suivre `next_cursor` jusqu'au bout ;
+   exécuter les `next_actions` en lecture seule). Enregistrer en `ads.json`, puis
+   `python3 engine/meta_rank.py ads.json --out rank.json`. Envoyer le tableau (rang, pub, dépense,
+   résultats, coût par résultat, accroche, rétention, CTR, score, recommandation) avec 2 ou 3 lignes
+   de lecture en mots simples, puis demander : « Lesquelles je décline ? (numéros) ». Recommander
+   les « Gagnante ». Ne jamais modifier les campagnes (lecture seule).
+5. **Récupérer les vidéos choisies.** `ads_get_creatives` (creative_ids) → `video_id`, texte de la
+   pub (`body`, `title`) ; `ads_get_ad_videos` (video_ids, fields `download_hd_url`). L'espace de
+   travail ne joint pas les serveurs vidéo de Meta : télécharger sur l'ordinateur de l'utilisateur
+   (`device_bash` : `curl -L -o "<STUDIO VIDÉO>/BIBLIOTHÈQUE/RÉFÉRENCES/META/<ad_id>.mp4" "<url>"`),
+   puis rapatrier (`device_stage_files`). Sans ordinateur relié : demander d'autoriser `*.fbcdn.net`
+   dans Settings › Capabilities, ou de télécharger la vidéo depuis le Gestionnaire de publicités.
+6. **Analyse de chaque gagnante** (comme Production étape 3, `rea-video decompose`) : accroche, script
+   mot à mot, parties et durées, rythme, sous-titres, textes à l'écran, musique. Résumer en 5 lignes
+   avec les chiffres Meta.
+7. **Composition et style.** Comparer à la bibliothèque (`engine/library.py all --json`). Déjà
+   présents → le dire et les utiliser. Absents → créer la fiche (Production étape 4) avec
+   `source: "meta:<ad_id>"`, `status: brouillon` et dans `info` les chiffres Meta (accroche, rétention,
+   coût par résultat, période) ; la montrer et demander validation (test monté comme Production
+   étape 5 si l'utilisateur le veut). Validé → `status: validé`, commit et push.
+8. **Nombre de variantes par vidéo.** AskUserQuestion : *5* · *10* · *15* · *20*.
+9. **Scripts.** Écrire `brief.json` depuis la gagnante (sujet, messages dans son ordre, accroche
+   d'origine en tête de `hooks`, texte de la pub, CTA) et proposer les angles : nouvelles accroches,
+   autre personne, autre ordre, autre durée — **une seule chose changée par variante**, pour savoir
+   au prochain test ce qui a fait la différence. Montrer la liste des scripts et demander validation.
+10. **Rushes.** Indexer la gagnante dans `RUSHES/META` (Analyse) pour réutiliser ses plans, plus les
+    rushes existants.
+11. **Suite = MONTAGE à partir de « Puis, sans autre question »** (matrix avec la composition et le
+    style de la gagnante, draft, planche, aperçus, validation une par une, nom final — demander date,
+    numéro produit et identifiant si pas encore donnés). Les variantes gardent dans leur rapport
+    `source_ad: <ad_id>`.
+
+---
+
+## MOTEUR (étapes techniques, communes aux commandes)
 
 **1. Rapatrier les rushes.** `get_device_info` ; dossier non connecté → `device_request_folder_access`
 (une seule demande). L'index vit dans `<dossier>/_studio/index.json` : s'il existe, le rapatrier.
