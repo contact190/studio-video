@@ -1,7 +1,7 @@
 {
- "project": "f4",
+ "project": "c",
  "index": "/home/claude/testrush/_studio/index.json",
- "n": 1,
+ "n": 3,
  "material": {
   "people": {
    "P1": 92.02999999999999,
@@ -14,16 +14,41 @@
   "demo": 14,
   "competitor": 0
  },
- "compositions_skipped": [],
+ "compositions_skipped": [
+  "demo-comparative"
+ ],
  "variants": [
   {
    "id": "V01",
-   "name": "f4_V01_cinema_comparatif-chiffre",
-   "style": "cinema",
-   "composition": "comparatif-chiffre",
+   "name": "c_V01_avis-clients_accroche-choc",
+   "style": "avis-clients",
+   "composition": "accroche-choc",
    "lead_person": "P1",
    "must": [],
    "hook_angle": 1,
+   "end_layout": null,
+   "status": "proposée"
+  },
+  {
+   "id": "V02",
+   "name": "c_V02_ugc-brut_avant-apres",
+   "style": "ugc-brut",
+   "composition": "avant-apres",
+   "lead_person": "P1",
+   "must": [],
+   "hook_angle": 2,
+   "end_layout": null,
+   "status": "proposée"
+  },
+  {
+   "id": "V03",
+   "name": "c_V03_tiktok-energique_comparatif-chiffre",
+   "style": "tiktok-energique",
+   "composition": "comparatif-chiffre",
+   "lead_person": "P1",
+   "must": [],
+   "hook_angle": 3,
+   "end_layout": null,
    "status": "proposée"
   }
  ]

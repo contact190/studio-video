@@ -241,7 +241,8 @@ def build(plan_path, out_dir=None, preview=False):
                 still(src_path(idx['files'][s['file']]), (s['start'] + s['end']) / 2, media / 'end.jpg', W // (2 if preview else 1))
                 img = 'media/end.jpg'
             end = {'from': round(T * FPS), 'dur': round(d * FPS), 'headline': p.get('headline', ''), 'bullets': p.get('bullets', []),
-                   'cta': p.get('cta', brand.get('cta', '')), 'image': img, 'logo_text': brand.get('logo_text', ''), 'website': brand.get('website', '')}
+                   'cta': p.get('cta', brand.get('cta', '')), 'image': img, 'logo_text': brand.get('logo_text', ''), 'website': brand.get('website', ''),
+                   'layout': p.get('layout') or style['end_card'].get('layout', 'classique'), 'badge': p.get('badge', ''), 'quote': p.get('quote', '')}
             T += round(d * FPS) / FPS
         elif p.get('audio', slot['audio'][0]) == 'speaker':
             for c in p.get('clips', []):

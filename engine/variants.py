@@ -30,6 +30,47 @@ LIB = ROOT / 'library'
 DEMO_TAGS = {'demo', 'démo', 'produit', 'product', 'broll', 'b-roll', 'test', 'preuve'}
 
 
+CTAS = json.loads((Path(__file__).resolve().parent.parent / 'library' / 'ctas.json').read_text(encoding='utf-8'))
+
+
+def _as_list(x):
+    return [t.strip() for t in (x if isinstance(x, list) else str(x or '').split('·')) if str(t).strip()]
+
+
+def end_card(brief, msgs, n, image_seg, layout=None):
+    """Fin de vidéo différente à chaque variante : mise en page + texte du bouton qui tournent."""
+    goal = str(brief.get('goal', '')).lower()
+    kind = 'lead' if any(w in goal for w in ('devis', 'quote', 'lead', 'contact', 'rdv', 'call', 'appel')) else \
+           'learn' if any(w in goal for w in ('learn', 'découvr', 'notoriété', 'awareness')) else 'buy'
+    ctas = _as_list(brief.get('cta')) + [c for c in CTAS['cta_texts'][kind] if c not in _as_list(brief.get('cta'))]
+    avoid = ' '.join(_as_list(brief.get('avoid'))).lower()
+    lays = [l['id'] for l in CTAS['layouts']]
+    if not _as_list(brief.get('reviews')):   # jamais d'avis inventé : seulement les vrais avis du brief
+        lays.remove('avis')
+    offers = _as_list(brief.get('offers'))
+    if not offers:
+        lays.remove('offre')
+    guar = [p for p in _as_list(brief.get('proofs')) if any(w in p.lower() for w in ('warrant', 'garant', 'guarant', 'return', 'rembours'))]
+    if not guar:
+        lays.remove('garantie')
+    lay = layout or lays[(n - 1) % len(lays)]
+    ends = _as_list(brief.get('end_text'))
+    card = {'layout': lay, 'cta': ctas[(n - 1) % len(ctas)], 'headline': ends[(n - 1) % len(ends)] if ends else '',
+            'bullets': brief.get('bullets', msgs[:3]), 'image_seg': image_seg}
+    if lay == 'question':
+        card['headline'] = CTAS['questions'][(n - 1) % len(CTAS['questions'])]
+    if lay == 'offre':
+        card['badge'] = offers[(n - 1) % len(offers)]
+    if lay == 'garantie':
+        card['badge'] = guar[0]
+    if lay == 'avis':
+        revs = _as_list(brief.get('reviews'))
+        card['quote'] = revs[(n - 1) % len(revs)]
+    if 'price' in avoid or 'prix' in avoid:
+        card['cta'] = card['cta'].replace('price', '').strip()
+    return card
+
+
 def load(p):
     return json.loads(Path(p).read_text(encoding='utf-8'))
 
@@ -97,6 +138,7 @@ def matrix(a):
         vid = f'V{i:02d}'
         out.append({'id': vid, 'name': f'{a.project}_{vid}_{s["id"]}_{c["id"]}', 'style': s['id'],
                     'composition': c['id'], 'lead_person': lead, 'must': must, 'hook_angle': i,
+                    'end_layout': None if a.end == 'auto' else a.end.split(',')[(i - 1) % len(a.end.split(','))],
                     'status': 'proposée'})
     res = {'project': a.project, 'index': str(Path(a.index).resolve()), 'n': a.n, 'material': mat,
            'compositions_skipped': skipped, 'variants': out}
@@ -109,14 +151,16 @@ def matrix(a):
 def board(a):
     v = load(a.variants)
     plans = Path(a.plans) if a.plans else None
-    rows = ['| Variante | Style | Composition | Personne | Accroche | Durée |', '|---|---|---|---|---|---|']
+    rows = ['| Variante | Style | Composition | Personne | Accroche | Fin (CTA) | Durée |', '|---|---|---|---|---|---|---|']
     for x in v['variants']:
-        hook, dur = '—', '—'
+        hook, dur, fin = '—', '—', '—'
         if plans and (plans / f"{x['name']}.json").exists():
             p = load(plans / f"{x['name']}.json")
             hook = p.get('hook_title', '—')
+            e = p.get('slots', {}).get('end', {})
+            fin = f"{e.get('layout', '—')} · « {e.get('cta', '')} »" if e else '—'
             dur = p.get('estimated_duration', '—')
-        rows.append(f"| {x['id']} | {x['style']} | {x['composition']} | {x['lead_person']} | {hook} | {dur} |")
+        rows.append(f"| {x['id']} | {x['style']} | {x['composition']} | {x['lead_person']} | {hook} | {fin} | {dur} |")
     md = '\n'.join(rows)
     Path(a.variants).with_suffix('.board.md').write_text(md, encoding='utf-8')
     print(md)
@@ -353,8 +397,7 @@ def draft(a):
             lo, hi = slot.get('duration', [3, 8])
             target = (lo + hi) / 2
             if slot.get('type') == 'end_card':
-                plan['slots'][sid] = {'headline': brief.get('end_text', ''), 'bullets': brief.get('bullets', msgs[:3]),
-                                      'cta': brief.get('cta', 'Shop now'), 'image_seg': demo[0] if demo else None}
+                plan['slots'][sid] = end_card(brief, msgs, n + 1, demo[0] if demo else None, x.get('end_layout'))
                 total += 3.5
             elif slot['audio'][0] == 'speaker' and lead:
                 who = lead if slot.get('same_person') or sid in ('hook', 'testimonial', 'testimonial_1') or not others else others[(len(plan['slots'])) % len(others)]
@@ -437,7 +480,7 @@ def draft(a):
                 if w2 and w2 not in stop and (len(w2) >= 5 or any(ch.isdigit() for ch in w2)):
                     kw.add(w2)
         plan['keywords'] = sorted(kw)
-        plan['reviews'] = list(brief.get('reviews') or []) or [m for m in msgs if len(str(m).split()) <= 9][:4]
+        plan['reviews'] = list(brief.get('reviews') or [])   # vrais avis seulement
         qs = list(brief.get('questions') or [])
         for k, sl in enumerate([sl for sl in comp['slots'] if sl.get('card') == 'question']):
             if sl['id'] in plan['slots']:
@@ -486,6 +529,7 @@ def main():
     m.add_argument('--n', type=int, default=10)
     m.add_argument('--style', default='auto')
     m.add_argument('--composition', default='auto')
+    m.add_argument('--end', default='auto', help="mise en page de fin : auto (varie) ou id[,id] de library/ctas.json")
     m.add_argument('--must', default='')
     m.add_argument('--project', default='video')
     m.add_argument('--out', default='variants.json')

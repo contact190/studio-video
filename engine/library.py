@@ -5,6 +5,7 @@ Usage :
   python3 engine/library.py styles          → liste numérotée des styles
   python3 engine/library.py compositions    → liste numérotée des compositions
   python3 engine/library.py all --json      → tout, en JSON
+  python3 engine/library.py fins            → mises en page de fin (CTA), avec ⓘ
   python3 engine/library.py info <id>       → fiche (i) : à quoi ça ressemble, quand l'utiliser, ce qu'il faut
 Ordre : validés d'abord, puis brouillons ; le défaut est marqué.
 """
@@ -63,7 +64,17 @@ def show_info(ident):
     sys.exit(f'inconnu : {ident}')
 
 
+def show_ends():
+    d = json.loads((Path(__file__).resolve().parent.parent / 'library' / 'ctas.json').read_text(encoding='utf-8'))
+    for i, l in enumerate(d['layouts'], 1):
+        print(f"{i}. {l['name']} — {l['description']}")
+        print(f"   ⓘ {l['info']['quand']} Idéal pour : {l['info']['ideal_pour']}")
+
+
 def main():
+    if sys.argv[1:2] == ['fins']:
+        show_ends()
+        return
     if sys.argv[1:2] == ['info']:
         show_info(' '.join(sys.argv[2:]))
         return

@@ -1,0 +1,28 @@
+{
+ "layouts": [
+  {"id": "classique", "name": "Classique", "description": "Titre, photo produit, avantages en pastilles, bouton.",
+   "info": {"quoi": "Carte de fin complète : titre, photo du produit, 3 avantages, bouton.", "quand": "Quand on veut tout récapituler.", "ideal_pour": "Retargeting, produits à plusieurs avantages."}},
+  {"id": "bouton", "name": "Gros bouton animé", "description": "Un seul gros bouton qui pulse, avec une main qui appuie.",
+   "info": {"quoi": "Fond simple, un très gros bouton qui pulse et une flèche qui le désigne.", "quand": "Quand l'action doit être évidente.", "ideal_pour": "Acquisition, TikTok, Reels."}},
+  {"id": "offre", "name": "Offre / urgence", "description": "Badge d'offre (stock limité, livraison offerte) au-dessus du bouton.",
+   "info": {"quoi": "Un badge qui clignote (« Limited stock », « Free shipping ») au-dessus du titre et du bouton.", "quand": "Quand il y a une vraie offre dans le brief.", "ideal_pour": "Promotions, lancements, fin de saison."}},
+  {"id": "garantie", "name": "Garantie", "description": "Bouclier + promesse de garantie, puis le bouton.",
+   "info": {"quoi": "Un bouclier avec la garantie (« Lifetime warranty », « 30-day returns ») et le bouton.", "quand": "Quand le prix ou la nouveauté font hésiter.", "ideal_pour": "Produits chers, nouvelle marque."}},
+  {"id": "avis", "name": "Avis 5 étoiles", "description": "Étoiles + une phrase de client, puis le bouton.",
+   "info": {"quoi": "5 étoiles, une courte citation client et le bouton.", "quand": "Quand on a de bons avis.", "ideal_pour": "E-commerce, preuve sociale."}},
+  {"id": "superpose", "name": "Sur l'image", "description": "Pas de carte : le bouton s'affiche sur la dernière image du produit.",
+   "info": {"quoi": "La dernière image reste en plein écran, assombrie, avec le titre et le bouton par-dessus.", "quand": "Pour une fin douce qui ne casse pas la vidéo.", "ideal_pour": "Styles natifs, UGC."}},
+  {"id": "question", "name": "Question", "description": "Une question au spectateur, puis le bouton en réponse.",
+   "info": {"quoi": "Une question en gros (« Ready to feel the difference? ») puis le bouton.", "quand": "Pour impliquer le spectateur.", "ideal_pour": "Témoignages, ton conversationnel."}},
+  {"id": "minimal", "name": "Minimal", "description": "Logo et bouton seulement, beaucoup d'espace.",
+   "info": {"quoi": "Fond uni, le nom de la marque et le bouton, rien d'autre.", "quand": "Marque premium, fin sobre.", "ideal_pour": "Styles épurés, cinéma, magazine."}}
+ ],
+ "cta_texts": {
+  "buy": ["Shop now", "Get yours", "Try it today", "Grab yours", "See all colors", "Order yours", "Try it risk-free", "Find your size"],
+  "lead": ["Get a free quote", "Book a call", "Get your free estimate", "Talk to an expert", "Request a quote", "Get in touch"],
+  "learn": ["Learn more", "See how it works", "Watch the full story", "Discover more"]
+ },
+ "questions": ["Ready to feel the difference?", "Why wait?", "Your turn?", "Still not convinced?", "Ready for the upgrade?"],
+ "offers": ["Limited stock", "Free shipping", "New colors", "Bestseller"],
+ "guarantees": ["Lifetime warranty", "30-day returns", "Satisfaction guaranteed"]
+}

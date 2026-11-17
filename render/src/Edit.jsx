@@ -163,33 +163,111 @@ const Tag = ({t, st, W, H}) => {
 const EndCard = ({e, st, brand, W, H}) => {
   const f = useCurrentFrame();
   const a = (s) => spring({frame: f - s, fps: 30, config: {damping: 14, stiffness: 170}});
-  return (
-    <AbsoluteFill style={{background: st.bg, fontFamily: 'Inter', color: '#fff', alignItems: 'center'}}>
-      <AbsoluteFill style={{background: `radial-gradient(ellipse at 50% 55%, ${st.glow}55 0%, rgba(0,0,0,0) 60%)`}} />
-      {st.show_logo ? <div style={{marginTop: H * 0.11, fontSize: W * 0.05, fontWeight: 900, letterSpacing: 4, color: st.accent, opacity: a(0)}}>{e.logo_text}</div> : null}
-      <div style={{marginTop: H * 0.025, fontSize: W * st.headline_size, fontWeight: 900, letterSpacing: -1, textAlign: 'center', lineHeight: 1, padding: `0 ${W * 0.06}px`, color: st.headline_color || '#fff',
-        opacity: a(3), transform: `scale(${0.9 + 0.1 * a(3)})`}}>{up(e.headline, 'upper')}</div>
-      {e.image ? (
-        <div style={{marginTop: H * 0.035, width: W * 0.62, height: W * 0.62, borderRadius: W * 0.04, overflow: 'hidden', opacity: a(6),
-          transform: `translateY(${(1 - a(6)) * 40}px)`, boxShadow: `0 30px 80px rgba(0,0,0,0.6), 0 0 60px ${st.glow}44`}}>
-          <Img src={staticFile(e.image)} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
-        </div>
-      ) : null}
-      {st.show_bullets ? (
-        <div style={{marginTop: H * 0.03, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: W * 0.018, padding: `0 ${W * 0.06}px`}}>
-          {e.bullets.map((b, i) => (
-            <div key={i} style={{padding: `${W * 0.012}px ${W * 0.026}px`, borderRadius: W * 0.05, border: '2px solid rgba(255,255,255,0.22)', background: 'rgba(255,255,255,0.06)',
-              fontSize: W * 0.032, fontWeight: 800, opacity: a(9 + i * 3)}}>{up(b, 'upper')}</div>
-          ))}
-        </div>
-      ) : null}
-      {e.cta ? (
-        <div style={{position: 'absolute', bottom: H * 0.12, padding: `${W * 0.024}px ${W * 0.07}px`, borderRadius: W * 0.06, background: st.accent,
-          fontSize: W * 0.045, fontWeight: 900, color: st.cta_text || brand.accent_text || '#fff', opacity: a(14), transform: `scale(${0.85 + 0.15 * a(14)})`}}>{up(e.cta, 'upper')} →</div>
-      ) : null}
-      {e.website ? <div style={{position: 'absolute', bottom: H * 0.075, fontSize: W * 0.03, fontWeight: 700, color: st.accent}}>{e.website}</div> : null}
-    </AbsoluteFill>
+  const lay = e.layout || 'classique';
+  const accent = st.accent;
+  const ink = st.headline_color || '#fff';
+  const Btn = ({big, at = 14}) => {
+    const pulse = big ? 1 + 0.05 * Math.sin((f - at) / 4) * (f > at + 10 ? 1 : 0) : 1;
+    return (
+      <div style={{padding: `${W * (big ? 0.035 : 0.024)}px ${W * (big ? 0.1 : 0.07)}px`, borderRadius: W * 0.08, background: accent,
+        fontSize: W * (big ? 0.065 : 0.045), fontWeight: 900, color: st.cta_text || brand.accent_text || '#fff', opacity: a(at),
+        transform: `scale(${(0.85 + 0.15 * a(at)) * pulse})`, boxShadow: big ? `0 0 ${W * 0.06}px ${accent}88` : 'none', whiteSpace: 'nowrap'}}>{up(e.cta, 'upper')} →</div>
+    );
+  };
+  const Head = ({at = 3, size = st.headline_size, top = H * 0.025}) => e.headline ? (
+    <div style={{marginTop: top, fontSize: W * size, fontWeight: 900, letterSpacing: -1, textAlign: 'center', lineHeight: 1.02, padding: `0 ${W * 0.07}px`,
+      color: 'inherit', opacity: a(at), transform: `scale(${0.9 + 0.1 * a(at)})`}}>{up(e.headline, 'upper')}</div>
+  ) : null;
+  const Logo = ({at = 0, top = H * 0.11}) => (st.show_logo || lay === 'minimal') && e.logo_text ? (
+    <div style={{marginTop: top, fontSize: W * (lay === 'minimal' ? 0.08 : 0.05), fontWeight: 900, letterSpacing: 4, color: accent, opacity: a(at)}}>{e.logo_text}</div>
+  ) : null;
+  const Photo = ({at = 6, size = 0.62}) => e.image ? (
+    <div style={{marginTop: H * 0.035, width: W * size, height: W * size, borderRadius: W * 0.04, overflow: 'hidden', opacity: a(at),
+      transform: `translateY(${(1 - a(at)) * 40}px)`, boxShadow: `0 30px 80px rgba(0,0,0,0.6), 0 0 60px ${st.glow}44`}}>
+      <Img src={staticFile(e.image)} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+    </div>
+  ) : null;
+  const Web = () => e.website ? <div style={{position: 'absolute', bottom: H * 0.075, fontSize: W * 0.03, fontWeight: 700, color: accent}}>{e.website}</div> : null;
+  const bg = <><AbsoluteFill style={{background: st.bg}} /><AbsoluteFill style={{background: `radial-gradient(ellipse at 50% 55%, ${st.glow}55 0%, rgba(0,0,0,0) 60%)`}} /></>;
+  const wrap = (children, background = bg) => (
+    <AbsoluteFill style={{fontFamily: 'Inter', color: ink, alignItems: 'center'}}>{background}{children}</AbsoluteFill>
   );
+
+  if (lay === 'superpose') {
+    const back = (
+      <>
+        {e.image ? <Img src={staticFile(e.image)} style={{position: 'absolute', width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${1.04 + 0.03 * f / 90})`}} /> : bg}
+        <AbsoluteFill style={{background: 'linear-gradient(180deg, rgba(0,0,0,0.15) 30%, rgba(0,0,0,0.8) 75%)'}} />
+      </>
+    );
+    return wrap(<>
+      <div style={{position: 'absolute', bottom: H * 0.3, width: '100%', display: 'flex', justifyContent: 'center'}}><div style={{color: '#fff'}}><Head at={2} size={st.headline_size * 0.9} top={0} /></div></div>
+      <div style={{position: 'absolute', bottom: H * 0.17}}><Btn at={8} /></div><Web />
+    </>, back);
+  }
+  if (lay === 'bouton') {
+    const hand = interpolate((f - 22) % 30, [0, 10, 20, 30], [0, -W * 0.02, 0, 0], CL);
+    return wrap(<>
+      <Logo /><Head />
+      <div style={{position: 'absolute', top: H * 0.5, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+        <Btn big at={8} />
+        <div style={{fontSize: W * 0.12, marginTop: W * 0.02, opacity: a(18), transform: `translate(${W * 0.12}px, ${hand}px) rotate(-20deg)`}}>👆</div>
+      </div><Web />
+    </>);
+  }
+  if (lay === 'offre' || lay === 'garantie') {
+    const blink = lay === 'offre' ? 0.75 + 0.25 * Math.abs(Math.sin(f / 6)) : 1;
+    return wrap(<>
+      <Logo />
+      <div style={{marginTop: H * 0.06, display: 'flex', alignItems: 'center', gap: W * 0.02, padding: `${W * 0.02}px ${W * 0.05}px`, borderRadius: W * 0.06,
+        background: lay === 'offre' ? '#ff2d55' : 'transparent', color: lay === 'offre' ? '#fff' : ink, border: lay === 'garantie' ? `3px solid ${accent}` : 'none',
+        fontSize: W * 0.05, fontWeight: 900, opacity: a(2) * blink, transform: `scale(${0.8 + 0.2 * a(2)})`}}>
+        <span>{lay === 'offre' ? '🔥' : '🛡️'}</span>{up(e.badge, 'upper')}
+      </div>
+      <Head at={6} /><Photo at={9} size={0.5} />
+      <div style={{position: 'absolute', bottom: H * 0.12}}><Btn at={14} /></div><Web />
+    </>);
+  }
+  if (lay === 'avis') {
+    return wrap(<>
+      <Logo />
+      <div style={{marginTop: H * 0.1, display: 'flex', gap: W * 0.012, opacity: a(2)}}>{[0, 1, 2, 3, 4].map((i) => (
+        <svg key={i} width={W * 0.085} height={W * 0.085} viewBox="0 0 24 24" style={{transform: `scale(${a(2 + i * 2)})`}}><path fill="#FFC531" d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" /></svg>
+      ))}</div>
+      <div style={{marginTop: H * 0.03, fontSize: W * 0.07, fontWeight: 800, textAlign: 'center', padding: `0 ${W * 0.08}px`, lineHeight: 1.15, opacity: a(5),
+        transform: `translateY(${(1 - a(5)) * 30}px)`}}>“{e.quote}”</div>
+      <div style={{marginTop: H * 0.02, fontSize: W * 0.032, color: '#2e9e5b', fontWeight: 700, opacity: a(8)}}>✓ Verified buyer</div>
+      <Photo at={10} size={0.42} />
+      <div style={{position: 'absolute', bottom: H * 0.12}}><Btn at={14} /></div><Web />
+    </>);
+  }
+  if (lay === 'question') {
+    return wrap(<>
+      <div style={{position: 'absolute', top: H * 0.3, width: '100%', display: 'flex', justifyContent: 'center'}}><Head at={2} size={st.headline_size * 1.15} top={0} /></div>
+      <div style={{position: 'absolute', top: H * 0.58}}><Btn big at={12} /></div><Web />
+    </>);
+  }
+  if (lay === 'minimal') {
+    return wrap(<>
+      <div style={{position: 'absolute', top: H * 0.36, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+        <Logo top={0} />
+        <div style={{width: W * 0.12 * a(4), height: 3, background: accent, margin: `${H * 0.025}px 0`}} />
+        <Btn at={8} />
+      </div><Web />
+    </>);
+  }
+  return wrap(<>
+    <Logo /><Head /><Photo />
+    {st.show_bullets ? (
+      <div style={{marginTop: H * 0.03, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: W * 0.018, padding: `0 ${W * 0.06}px`}}>
+        {e.bullets.map((b, i) => (
+          <div key={i} style={{padding: `${W * 0.012}px ${W * 0.026}px`, borderRadius: W * 0.05, border: '2px solid rgba(255,255,255,0.22)', background: 'rgba(255,255,255,0.06)',
+            fontSize: W * 0.032, fontWeight: 800, opacity: a(9 + i * 3)}}>{up(b, 'upper')}</div>
+        ))}
+      </div>
+    ) : null}
+    {e.cta ? <div style={{position: 'absolute', bottom: H * 0.12}}><Btn at={14} /></div> : null}<Web />
+  </>);
 };
 
 // ---------------------------------------------------------------- musique avec ducking

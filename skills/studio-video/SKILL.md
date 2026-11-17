@@ -100,8 +100,10 @@ Questions, une par message :
 
 1. **Le brief.** « Envoie ton brief (lien Google Doc, fichier ou texte). » Modèle à proposer si
    l'utilisateur n'en a pas : rubriques ci-dessous. Le lire et le résumer en `brief.json`
-   (`subject`, `goal`, `audience`, `messages`, `hooks`, `proofs`, `tone`, `cta`, `end_text`,
-   `bullets`, `avoid`, `language`, `duration`, `questions`, `reviews`). Une rubrique obligatoire manque → la demander.
+   (`subject`, `goal`, `audience`, `messages`, `hooks`, `proofs`, `tone`, `cta` (liste), `end_text`
+   (liste), `offers`, `bullets`, `avoid`, `language`, `duration`, `questions`, `reviews`). Fins et
+   textes de bouton : ceux du brief d'abord, puis la banque de `library/ctas.json` selon l'objectif
+   (achat, devis, découverte) ; ne jamais annoncer une offre, une garantie ou un avis absent du brief. Une rubrique obligatoire manque → la demander.
 2. **Les rushes.** « Les rushes : `RUSHES` (déjà indexés), ou le lien d'un autre dossier ? » Autre
    dossier → « Je l'indexe et le range dans `RUSHES`, ou je travaille directement avec ? » puis
    Analyse sur ce dossier (seulement les nouveaux fichiers).
@@ -114,7 +116,9 @@ Questions, une par message :
    chaque choix avec sa ligne **ⓘ** (quand le choisir, idéal pour), et ajouter « Pour le détail
    d'un choix, réponds *i* + le numéro ». *i 7* → `engine/library.py info <id>` (à quoi ça ressemble,
    quand le choisir, idéal pour, ce qu'il faut dans les rushes), puis reposer la question. Plusieurs
-   numéros possibles (« 2, 5, 9 ») : les variantes se répartissent entre eux.
+   numéros possibles (« 2, 5, 9 ») : les variantes se répartissent entre eux. Puis la **fin (CTA)** :
+   AskUserQuestion *Auto* (la mise en page et le texte du bouton changent à chaque variante) ·
+   *Choisir* → liste `engine/library.py fins` avec ⓘ, un ou plusieurs numéros → `--end <id,id>`.
 6. **Nombre de variantes.** AskUserQuestion : *10* · *15* · *20*.
 7. **Nom des vidéos.** « Pour le nom final : la date (MM.JJ.AA, aujourd'hui par défaut), le numéro
    produit (ex. 001) et l'identifiant (ex. ryad) ? » Le nom sera
@@ -124,7 +128,7 @@ Questions, une par message :
 Puis, sans autre question :
 
 1. `python3 engine/variants.py matrix <index> --n N --style <auto|id> --composition <auto|id>
-   --must <F003,…> --project <nom>` : répartit les variantes (compositions possibles avec ces rushes
+   --end <auto|id,id> --must <F003,…> --project <nom>` : répartit les variantes (compositions possibles avec ces rushes
    seulement, personne principale qui a assez de parole, accroches tournantes).
 2. `python3 engine/variants.py draft variants.json brief.json --out plans` : premier jet de chaque
    plan. **Relire chaque plan** : réécrire l'accroche et les lignes de voix off depuis le brief (ton,
@@ -132,7 +136,7 @@ Puis, sans autre question :
    les pauses (`annotate.py <index> words F00X`). Voix off : anglais seulement, Kokoro ; un mot
    inconnu de la voix → l'ajouter à `tts/lexicon-extra.txt` (phonèmes sur le modèle des mots voisins).
 3. **Planche.** `python3 engine/variants.py board variants.json --plans plans` → envoyer le tableau
-   (variante, style, composition, personne, accroche, durée) et demander : « Lesquelles je monte ?
+   (variante, style, composition, personne, accroche, fin et texte du bouton, durée) et demander : « Lesquelles je monte ?
    (*toutes*, ou les numéros) ».
 4. **Aperçus.** `python3 engine/variants.py build plans --only V01,V04,…` (≈ 3 à 4 min par vidéo :
    prévenir de la durée). Envoyer les aperçus au fur et à mesure (`SendUserFile`).
@@ -158,11 +162,12 @@ Puis, sans autre question :
 | Accroches possibles | non | « Finally, a shirt that fits » |
 | Preuves | non | Test d'arrachage, 51 % chanvre, garantie |
 | Ton | non | Authentique |
-| Appel à l'action + texte de fin | non | Shop now · Built to last |
+| Appels à l'action (plusieurs possibles) + textes de fin | non | Shop now · Get yours — Built to last |
+| Offres réelles | non | Free shipping · Limited stock (badge de la fin *Offre*) |
 | À éviter | non | Pas de prix, pas de concurrent nommé |
 | Langue et durée | non | Anglais, 20 à 40 s |
 | Questions posées (VideoAsk) | non | Does it really fit? · How does it feel? (affichées en carton dans *Réponse à une question*) |
-| Avis écrits | non | « Softest tee I own » (cartes d'avis du style *Avis clients*) |
+| Avis écrits (vrais avis clients) | non | « Softest tee I own » (cartes d'avis et fin *Avis 5 étoiles* ; sans vrais avis, jamais d'avis inventé) |
 
 ---
 
