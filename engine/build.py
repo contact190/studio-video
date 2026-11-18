@@ -360,6 +360,9 @@ def build(plan_path, out_dir=None, preview=False):
             broll = {'src': demo_c['src'], 'dur': demo_c['dur']}
     if preview:
         W, H = W // 2, H // 2
+    es = (plan['slots'].get('end') or {}).get('end_style') or {}
+    if es:
+        style = {**style, 'end_card': {**style.get('end_card', {}), **es}}
     timeline = {'overlays': overlays, 'broll': broll, 'width': W, 'height': H, 'fps': FPS, 'durationInFrames': total, 'style': style, 'brand': brand,
                 'clips': clips, 'voice': voice, 'music': music, 'subtitles': [{**s, 'from': round(s['t0'] * FPS), 'to': round(s['t1'] * FPS)} for s in subs],
                 'tags': tags, 'hook': hook, 'end': end, 'slots': slot_marks}

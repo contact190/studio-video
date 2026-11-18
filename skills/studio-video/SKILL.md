@@ -117,8 +117,18 @@ Questions, une par message :
    d'un choix, réponds *i* + le numéro ». *i 7* → `engine/library.py info <id>` (à quoi ça ressemble,
    quand le choisir, idéal pour, ce qu'il faut dans les rushes), puis reposer la question. Plusieurs
    numéros possibles (« 2, 5, 9 ») : les variantes se répartissent entre eux. Puis la **fin (CTA)** :
-   AskUserQuestion *Auto* (la mise en page et le texte du bouton changent à chaque variante) ·
-   *Choisir* → liste `engine/library.py fins` avec ⓘ, un ou plusieurs numéros → `--end <id,id>`.
+   AskUserQuestion *Auto* · *Liste* · *Prompt*.
+   - *Auto* : la fin et le texte du bouton changent à chaque variante, parmi les fins **validées**
+     (toutes les fins de base s'il n'y en a aucune).
+   - *Liste* : `engine/library.py fins` (validées en premier, avec ⓘ), un ou plusieurs numéros →
+     `--end <id,id>`.
+   - *Prompt* : « Décris la fin que tu veux (ex. *urgence, bouton rouge carré, livraison offerte*). »
+     puis « Des vidéos de référence pour la fin ? (liens ou fichiers, ou *non*) ». Pour chaque
+     référence : `python3 engine/fins.py look <ref>` → regarder `fin_sheet.jpg` et lire le texte
+     entendu ; relever mise en page, couleurs, forme du bouton, texte, animation, durée. Créer la fin
+     avec `engine/fins.py add` (base la plus proche, réglages, textes, `--source prompt|ref`), la
+     montrer en une image (aperçu d'une variante) et l'utiliser (`--end <id>`). À la fin du montage :
+     « On garde cette fin dans la bibliothèque ? » → oui : `fins.py validate <id>`, commit et push.
 6. **Nombre de variantes.** AskUserQuestion : *10* · *15* · *20*.
 7. **Nom des vidéos.** « Pour le nom final : la date (MM.JJ.AA, aujourd'hui par défaut), le numéro
    produit (ex. 001) et l'identifiant (ex. ryad) ? » Le nom sera
@@ -173,9 +183,9 @@ Puis, sans autre question :
 
 ## PRODUCTION (atelier : créer ou modifier un style, une composition ou les deux)
 
-**Étape 1 — Ce qu'on fait.** Si ce n'est pas déjà dit : AskUserQuestion « Tu veux créer ou modifier
-quoi ? » → *Un style* · *Une composition* · *Les deux*. Pour une modification : `engine/library.py`
-et demander laquelle.
+**Étape 1 — Ce qu'on fait.** Si ce n'est pas déjà dit : AskUserQuestion (plusieurs choix possibles)
+« Tu veux créer ou modifier quoi ? » → *Un style* · *Une composition* · *Une fin (CTA)*. Pour une
+modification : `engine/library.py` (ou `engine/library.py fins`) et demander laquelle.
 
 **Étape 2 — Les références.** « Envoie une ou plusieurs vidéos de référence, ou le lien d'un dossier
 Drive de références. » (Une modification peut se faire sans référence : demander ce qu'il faut changer.)
@@ -186,6 +196,12 @@ plans, textes, sous-titres, sons, rythme). Lire `VIDEO.md`, `video/packaging.md`
 regarder `storyboard.jpg` ; vérifier soi-même ce que rea-video estime (filmé ou généré). Avec plusieurs
 références : garder ce qui est commun (durée moyenne des plans, taille et position des sous-titres,
 ordre des parties, durée totale) et signaler ce qui varie.
+
+**Fin (CTA).** Pour chaque référence : `python3 engine/fins.py look <ref>` (dernières secondes en
+planche + texte entendu) ; relever mise en page, couleurs, forme du bouton, texte, animation, durée.
+Créer avec `engine/fins.py add` (base la plus proche parmi les 8, réglages, textes). Tester sur une
+variante, demander « validé ou modifications ? », puis `fins.py validate <id>` : la fin validée est
+utilisée par défaut en *Auto* dans Montage.
 
 **Étape 4 — Proposition.** Écrire la fiche (`library/styles/<id>.json` et/ou
 `library/compositions/<id>.json`, `version: 1` ou `version + 1`, `status: brouillon`) sur le modèle des

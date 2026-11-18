@@ -66,9 +66,13 @@ def show_info(ident):
 
 def show_ends():
     d = json.loads((Path(__file__).resolve().parent.parent / 'library' / 'ctas.json').read_text(encoding='utf-8'))
-    for i, l in enumerate(d['layouts'], 1):
-        print(f"{i}. {l['name']} — {l['description']}")
-        print(f"   ⓘ {l['info']['quand']} Idéal pour : {l['info']['ideal_pour']}")
+    lays = sorted(d['layouts'], key=lambda l: l.get('status') != 'validé')
+    for i, l in enumerate(lays, 1):
+        mark = ' ✅ validée (par défaut en Auto)' if l.get('status') == 'validé' else ''
+        base = f" [base : {l['base']}]" if l.get('base', l['id']) != l['id'] else ''
+        print(f"{i}. {l['name']}{mark}{base} — {l['description']}  ({l['id']})")
+        if l.get('info', {}).get('quand'):
+            print(f"   ⓘ {l['info']['quand']} Idéal pour : {l['info'].get('ideal_pour', '—')}")
 
 
 def main():

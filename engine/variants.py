@@ -44,20 +44,25 @@ def end_card(brief, msgs, n, image_seg, layout=None):
            'learn' if any(w in goal for w in ('learn', 'découvr', 'notoriété', 'awareness')) else 'buy'
     ctas = _as_list(brief.get('cta')) + [c for c in CTAS['cta_texts'][kind] if c not in _as_list(brief.get('cta'))]
     avoid = ' '.join(_as_list(brief.get('avoid'))).lower()
-    lays = [l['id'] for l in CTAS['layouts']]
+    by_id = {l['id']: l for l in CTAS['layouts']}
+    valid = [l['id'] for l in CTAS['layouts'] if l.get('status') == 'validé']
+    lays = valid or [l['id'] for l in CTAS['layouts'] if l.get('base', l['id']) == l['id']]
     if not _as_list(brief.get('reviews')):   # jamais d'avis inventé : seulement les vrais avis du brief
-        lays.remove('avis')
+        lays = [x for x in lays if by_id[x].get('base', x) != 'avis'] or lays
     offers = _as_list(brief.get('offers'))
     if not offers:
-        lays.remove('offre')
+        lays = [x for x in lays if by_id[x].get('base', x) != 'offre'] or lays
     guar = [p for p in _as_list(brief.get('proofs')) if any(w in p.lower() for w in ('warrant', 'garant', 'guarant', 'return', 'rembours'))]
     if not guar:
-        lays.remove('garantie')
-    lay = layout or lays[(n - 1) % len(lays)]
-    ends = _as_list(brief.get('end_text'))
-    card = {'layout': lay, 'cta': ctas[(n - 1) % len(ctas)], 'headline': ends[(n - 1) % len(ends)] if ends else '',
-            'bullets': brief.get('bullets', msgs[:3]), 'image_seg': image_seg}
-    if lay == 'question':
+        lays = [x for x in lays if by_id[x].get('base', x) != 'garantie'] or lays
+    fin = by_id.get(layout or lays[(n - 1) % len(lays)]) or by_id['classique']
+    lay = fin.get('base', fin['id'])
+    if fin.get('cta_texts'):
+        ctas = _as_list(fin['cta_texts']) + ctas
+    ends = _as_list(brief.get('end_text')) or _as_list(fin.get('headlines'))
+    card = {'layout': lay, 'fin': fin['id'], 'end_style': fin.get('end_style', {}), 'cta': ctas[(n - 1) % len(ctas)],
+            'headline': ends[(n - 1) % len(ends)] if ends else '', 'bullets': brief.get('bullets', msgs[:3]), 'image_seg': image_seg}
+    if lay == 'question' and not fin.get('headlines'):
         card['headline'] = CTAS['questions'][(n - 1) % len(CTAS['questions'])]
     if lay == 'offre':
         card['badge'] = offers[(n - 1) % len(offers)]
@@ -158,7 +163,7 @@ def board(a):
             p = load(plans / f"{x['name']}.json")
             hook = p.get('hook_title', '—')
             e = p.get('slots', {}).get('end', {})
-            fin = f"{e.get('layout', '—')} · « {e.get('cta', '')} »" if e else '—'
+            fin = f"{e.get('fin', e.get('layout', '—'))} · « {e.get('cta', '')} »" if e else '—'
             dur = p.get('estimated_duration', '—')
         rows.append(f"| {x['id']} | {x['style']} | {x['composition']} | {x['lead_person']} | {hook} | {fin} | {dur} |")
     md = '\n'.join(rows)

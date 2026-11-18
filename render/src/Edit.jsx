@@ -169,9 +169,12 @@ const EndCard = ({e, st, brand, W, H}) => {
   const Btn = ({big, at = 14}) => {
     const pulse = big ? 1 + 0.05 * Math.sin((f - at) / 4) * (f > at + 10 ? 1 : 0) : 1;
     return (
-      <div style={{padding: `${W * (big ? 0.035 : 0.024)}px ${W * (big ? 0.1 : 0.07)}px`, borderRadius: W * 0.08, background: accent,
-        fontSize: W * (big ? 0.065 : 0.045), fontWeight: 900, color: st.cta_text || brand.accent_text || '#fff', opacity: a(at),
-        transform: `scale(${(0.85 + 0.15 * a(at)) * pulse})`, boxShadow: big ? `0 0 ${W * 0.06}px ${accent}88` : 'none', whiteSpace: 'nowrap'}}>{up(e.cta, 'upper')} →</div>
+      <div style={{padding: `${W * (big ? 0.035 : 0.024)}px ${W * (big ? 0.1 : 0.07)}px`,
+        borderRadius: st.button_shape === 'square' ? W * 0.012 : W * 0.08,
+        background: st.button_shape === 'outline' ? 'transparent' : accent, border: st.button_shape === 'outline' ? `${W * 0.006}px solid ${accent}` : 'none',
+        fontSize: W * (big ? 0.065 : 0.045), fontWeight: 900, color: st.button_shape === 'outline' ? accent : (st.cta_text || brand.accent_text || '#fff'), opacity: a(at),
+        transform: `scale(${(0.85 + 0.15 * a(at)) * pulse})`, boxShadow: big && st.button_shape !== 'outline' ? `0 0 ${W * 0.06}px ${accent}88` : 'none', whiteSpace: 'nowrap'}}>
+        {st.button_upper === false ? e.cta : up(e.cta, 'upper')}{st.button_arrow === false ? '' : ' →'}</div>
     );
   };
   const Head = ({at = 3, size = st.headline_size, top = H * 0.025}) => e.headline ? (
