@@ -29,6 +29,32 @@ Règles communes :
   personnes, produits et usages. Il est recopié dans le sheet PILOTAGE (onglets `Rushes` et
   `Segments`) pour être lisible. Montage ne réanalyse jamais un fichier déjà indexé.
 
+## Étape 0 — Connexions (obligatoire, avant toute commande, à chaque session)
+
+Avant Analyse, Montage, Production ou Gagnants, et avant l'installation : vérifier les connexions,
+en silence si tout est déjà là.
+
+1. **Google Drive — obligatoire.** Chercher les outils Google Drive (`ToolSearch` « +Google Drive »)
+   et faire un appel simple (`search_files` sur `STUDIO VIDÉO`). Absent ou en erreur de connexion →
+   `SearchMcpRegistry` [« google drive »] puis `SuggestConnectors`, et dire :
+   > **Pour commencer, connecte ton Google Drive** (bouton *Connect* ci-dessus). Sans le Drive, le
+   > skill ne peut rien faire : tes rushes, ton sheet et tes vidéos finies y sont. Écris « c'est fait »
+   > quand c'est connecté.
+   Tant que le Drive n'est pas connecté : **ne rien faire d'autre**, ne poser aucune autre question,
+   ne lancer aucune commande. À chaque message, revérifier et redemander.
+2. **Make + VideoAsk — facultatif (connecter ou passer).** Lire `Réglages` du sheet PILOTAGE : si la
+   ligne `VideoAsk en direct` vaut `oui` (outil Make noté) ou `passé`, ne rien demander. Sinon
+   (première fois, ou première session après la mise à jour du skill), AskUserQuestion :
+   « Tu veux aussi connecter **Make et VideoAsk** ? Claude pourra lire tes réponses VideoAsk
+   directement, sans attendre le Drive. » → *Connecter (recommandé)* · *Passer*.
+   - *Connecter* → étapes de l'installation 5 (Make dans Claude, VideoAsk dans Make, outil Make,
+     message Settings › Capabilities), puis écrire `VideoAsk en direct : oui` dans `Réglages`.
+   - *Passer* → écrire `VideoAsk en direct : passé` ; ne plus le demander. Si l'utilisateur choisit
+     plus tard *VideoAsk en direct* dans Montage, refaire l'étape 5 à ce moment-là.
+   Pas encore de sheet PILOTAGE (première installation) : poser la question après l'étape 1 de
+   l'installation, puis noter la réponse.
+3. Ensuite seulement : installation (si elle n'est pas faite), puis la commande demandée.
+
 ## Installation (une seule fois par utilisateur)
 
 Chaque utilisateur a **son** Drive et **sa** videoask : l'installation se fait une fois par
@@ -37,8 +63,8 @@ préparer.
 
 Avant tout : si `Réglages` du sheet PILOTAGE de l'utilisateur contient déjà l'URL du script VideoAsk,
 ou si son dossier `STUDIO VIDÉO` existe, l'installation est faite : ne rien refaire, ne pas en parler.
-S'il n'utilise pas VideoAsk, ne faire que l'étape 1. Si VideoAsk en direct n'est pas encore
-noté dans `Réglages`, ne faire que l'étape 5 (et la 6).
+S'il n'utilise pas VideoAsk, ne faire que l'étape 1. La question Make + VideoAsk est posée à
+l'étape 0, pas ici.
 
 Sinon, Claude fait tout lui-même et ne demande que **deux clics** à l'utilisateur, en lui envoyant
 exactement le message ci-dessous au bon moment (ne jamais taper de mot de passe à sa place) :
@@ -60,8 +86,7 @@ exactement le message ci-dessous au bon moment (ne jamais taper de mot de passe 
    Webhooks › `<URL /exec>?k=<clé>`, événement `form_response`. Demander l'accord avant d'enregistrer.
    Sans plan payant VideoAsk (pas de webhooks) : export zip une fois (Télécharger › Media files).
 4. Test : « Send a test response » ouvre la videoask publique ; l’utilisateur y enregistre une courte réponse (ou attendre une vraie réponse) : un fichier `Nom_AAAA-MM-JJ_HHmm_Qnn.mp4` arrive dans RUSHES.
-5. **VideoAsk en direct** (pour lire les réponses sans attendre le Drive). Demander « Tu veux aussi que
-   je lise tes réponses VideoAsk directement, sans passer par le Drive ? (oui / non) ». Oui :
+5. **VideoAsk en direct** (seulement si l'utilisateur a choisi *Connecter* à l'étape 0) :
    - **Make dans Claude** : connecteur Make absent (`ToolSearch` « +Make » ne trouve rien) →
      `SearchMcpRegistry` [« make »] puis `SuggestConnectors` ; l'utilisateur se connecte à Make, puis
      écrit « c'est fait ».
