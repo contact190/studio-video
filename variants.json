@@ -1,7 +1,7 @@
 {
- "project": "u",
+ "project": "MA4",
  "index": "/home/claude/testrush/_studio/index.json",
- "n": 2,
+ "n": 4,
  "material": {
   "people": {
    "P1": 92.02999999999999,
@@ -20,7 +20,7 @@
  "variants": [
   {
    "id": "V01",
-   "name": "u_V01_avis-clients_accroche-choc",
+   "name": "MA4_V01_avis-clients_accroche-choc",
    "style": "avis-clients",
    "composition": "accroche-choc",
    "lead_person": "P1",
@@ -31,12 +31,34 @@
   },
   {
    "id": "V02",
-   "name": "u_V02_ugc-brut_avant-apres",
+   "name": "MA4_V02_ugc-brut_avant-apres",
    "style": "ugc-brut",
    "composition": "avant-apres",
    "lead_person": "P1",
    "must": [],
    "hook_angle": 2,
+   "end_layout": null,
+   "status": "proposée"
+  },
+  {
+   "id": "V03",
+   "name": "MA4_V03_tiktok-energique_comparatif-chiffre",
+   "style": "tiktok-energique",
+   "composition": "comparatif-chiffre",
+   "lead_person": "P1",
+   "must": [],
+   "hook_angle": 3,
+   "end_layout": null,
+   "status": "proposée"
+  },
+  {
+   "id": "V04",
+   "name": "MA4_V04_sombre-premium_demo-entre-temoignages",
+   "style": "sombre-premium",
+   "composition": "demo-entre-temoignages",
+   "lead_person": "P1",
+   "must": [],
+   "hook_angle": 4,
    "end_layout": null,
    "status": "proposée"
   }

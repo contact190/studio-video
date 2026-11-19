@@ -46,7 +46,11 @@ def end_card(brief, msgs, n, image_seg, layout=None):
     avoid = ' '.join(_as_list(brief.get('avoid'))).lower()
     by_id = {l['id']: l for l in CTAS['layouts']}
     valid = [l['id'] for l in CTAS['layouts'] if l.get('status') == 'validé']
-    lays = valid or [l['id'] for l in CTAS['layouts'] if l.get('base', l['id']) == l['id']]
+    others = [l['id'] for l in CTAS['layouts'] if l.get('base', l['id']) == l['id'] and l['id'] not in valid]
+    if len(valid) >= 3 or not valid:
+        lays = valid or others
+    else:   # peu de fins validées : une variante sur deux, en alternance avec les autres mises en page
+        lays = [x for pair in zip([valid[i % len(valid)] for i in range(len(others))], others) for x in pair]
     if not _as_list(brief.get('reviews')):   # jamais d'avis inventé : seulement les vrais avis du brief
         lays = [x for x in lays if by_id[x].get('base', x) != 'avis'] or lays
     offers = _as_list(brief.get('offers'))
@@ -57,6 +61,9 @@ def end_card(brief, msgs, n, image_seg, layout=None):
         lays = [x for x in lays if by_id[x].get('base', x) != 'garantie'] or lays
     fin = by_id.get(layout or lays[(n - 1) % len(lays)]) or by_id['classique']
     lay = fin.get('base', fin['id'])
+    # fin choisie mais donnée absente du brief : on garde ses réglages, mise en page classique
+    if (lay == 'offre' and not offers) or (lay == 'garantie' and not guar) or (lay == 'avis' and not _as_list(brief.get('reviews'))):
+        lay = 'classique'
     if fin.get('cta_texts'):
         ctas = _as_list(fin['cta_texts']) + ctas
     ends = _as_list(brief.get('end_text')) or _as_list(fin.get('headlines'))
