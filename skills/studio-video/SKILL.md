@@ -42,17 +42,12 @@ en silence si tout est déjà là.
    > quand c'est connecté.
    Tant que le Drive n'est pas connecté : **ne rien faire d'autre**, ne poser aucune autre question,
    ne lancer aucune commande. À chaque message, revérifier et redemander.
-2. **Make + VideoAsk — facultatif (connecter ou passer).** Lire `Réglages` du sheet PILOTAGE : si la
-   ligne `VideoAsk en direct` vaut `oui` (outil Make noté) ou `passé`, ne rien demander. Sinon
-   (première fois, ou première session après la mise à jour du skill), AskUserQuestion :
-   « Tu veux aussi connecter **Make et VideoAsk** ? Claude pourra lire tes réponses VideoAsk
-   directement, sans attendre le Drive. » → *Connecter (recommandé)* · *Passer*.
-   - *Connecter* → étapes de l'installation 5 (Make dans Claude, VideoAsk dans Make, outil Make,
-     message Settings › Capabilities), puis écrire `VideoAsk en direct : oui` dans `Réglages`.
-   - *Passer* → écrire `VideoAsk en direct : passé` ; ne plus le demander. Si l'utilisateur choisit
-     plus tard *VideoAsk en direct* dans Montage, refaire l'étape 5 à ce moment-là.
-   Pas encore de sheet PILOTAGE (première installation) : poser la question après l'étape 1 de
-   l'installation, puis noter la réponse.
+2. **VideoAsk : rien à connecter.** Tous les utilisateurs lisent la même videoask (« UD Post purchase
+   Gift », organisation Undrdog) par un accès commun : le fichier Drive `Studio Vidéo — Accès VideoAsk.txt`
+   (partagé par le propriétaire du skill, contient `url`, `k`, `form`). Ne demander aucun compte Make
+   ni VideoAsk. Fichier introuvable (`search_files` « title contains 'Accès VideoAsk' ») → dire en une
+   phrase : « Demande au propriétaire du skill de te partager le fichier *Studio Vidéo — Accès
+   VideoAsk* sur Drive » ; en attendant, VideoAsk passe par `RUSHES` comme avant.
 3. Ensuite seulement : installation (si elle n'est pas faite), puis la commande demandée.
 
 ## Installation (une seule fois par utilisateur)
@@ -63,8 +58,7 @@ préparer.
 
 Avant tout : si `Réglages` du sheet PILOTAGE de l'utilisateur contient déjà l'URL du script VideoAsk,
 ou si son dossier `STUDIO VIDÉO` existe, l'installation est faite : ne rien refaire, ne pas en parler.
-S'il n'utilise pas VideoAsk, ne faire que l'étape 1. La question Make + VideoAsk est posée à
-l'étape 0, pas ici.
+S'il n'utilise pas VideoAsk, ne faire que l'étape 1.
 
 Sinon, Claude fait tout lui-même et ne demande que **deux clics** à l'utilisateur, en lui envoyant
 exactement le message ci-dessous au bon moment (ne jamais taper de mot de passe à sa place) :
@@ -90,21 +84,7 @@ exactement le message ci-dessous au bon moment (ne jamais taper de mot de passe 
    « c'est fait ».
    Sans plan payant VideoAsk (pas de webhooks) : export zip une fois (Télécharger › Media files).
 4. Test : « Send a test response » ouvre la videoask publique ; l’utilisateur y enregistre une courte réponse (ou attendre une vraie réponse) : un fichier `Nom_AAAA-MM-JJ_HHmm_Qnn.mp4` arrive dans RUSHES.
-5. **VideoAsk en direct** (seulement si l'utilisateur a choisi *Connecter* à l'étape 0) :
-   - **Make dans Claude** : connecteur Make absent (`ToolSearch` « +Make » ne trouve rien) →
-     `SearchMcpRegistry` [« make »] puis `SuggestConnectors` ; l'utilisateur se connecte à Make, puis
-     écrit « c'est fait ».
-   - **VideoAsk dans Make** : `connections_list` (type videoask). Absente → lui dire : « Dans Make,
-     va dans **Connections › Add › VideoAsk** et connecte ton compte VideoAsk. Claude ne voit jamais
-     ton mot de passe. Ensuite écris « c'est fait ». »
-   - **L'outil Make** « Studio Vidéo — Lire VideoAsk » : le créer (`tools_create`, voir *VideoAsk en
-     direct*), le tester avec `/organizations` puis `/forms`, noter l'organisation et la videoask.
-   - Puis envoyer exactement :
-     > **Dernier réglage, dans Claude :** va dans **Settings › Capabilities** et autorise le domaine
-     > `media.videoask.com`. C'est ce qui permet de télécharger les vidéos directement. Sans ce
-     > réglage, le skill te le dit et passe par le Drive comme avant.
-6. Écrire dans `Réglages` : ID des dossiers, URL du script, videoask branchée, et pour VideoAsk en
-   direct l'ID de l'outil Make, l'organisation et la videoask.
+5. Écrire dans `Réglages` : ID des dossiers, URL du script, videoask branchée.
 
 ## Démarrage technique (chaque session, en silence)
 
@@ -231,41 +211,37 @@ Puis, sans autre question :
 
 ### VideoAsk en direct (sans passer par le Drive)
 
-Pour travailler sur les réponses VideoAsk sans attendre qu'elles soient dans le Drive.
-- **Connexion** : connecteur **Make** (`ToolSearch` « +Make »). Il faut une connexion VideoAsk dans le
-  Make de l'utilisateur (`connections_list`, type videoask ; absente → la lui faire créer une fois :
-  Make › Connections › Add › VideoAsk ; Claude ne voit jamais son mot de passe ni sa clé).
-- **L'outil Make** « Studio Vidéo — Lire VideoAsk » (`scenarios_list`, sinon le créer avec
-  `tools_create`) : module `videoask:makeApiCall`, `GET`, entrées `path` (obligatoire),
-  `organization` (en-tête `organization-id`), `limit`, `offset`. On l'appelle avec `scenarios_run`
-  (`responsive: true`). Sans l'en-tête `organization-id`, VideoAsk répond 0 videoask.
-- **Ordre des appels** :
-  1. `/organizations` → l'organisation (plusieurs → demander laquelle).
-  2. `/forms` → les videoasks (plusieurs → demander laquelle).
-  3. `/forms/<form_id>` → les questions, dans l'ordre (champ `questions`, titres Welcome, Q1…).
-     Réponse lourde : l'appeler une seule fois et l'enregistrer en `form.json`.
-  4. `/forms/<form_id>/contacts` avec `limit` 20 → les dernières personnes (nom, date, statut).
-     Cette liste ne contient pas les vidéos. Montrer « n° · nom · date » et demander
-     « Lesquelles j'utilise ? (numéros, ou les N dernières) ».
-  5. Pour chaque personne choisie :
-     `/forms/<form_id>/contacts/<contact_id>?include_answers=true` → ses réponses (lien de la
-     vidéo `media_url`, durée, transcription, `question_id`). Enregistrer `contact_<n>.json`.
-  Ne jamais recopier dans la conversation l'e-mail ni les liens signés des personnes.
-- **Ne jamais envoyer l'utilisateur sur une page VideoAsk** (`share_url`, page d'une réponse, d'un
-  contact ou de la videoask) : ces pages refusent l'accès dès que le navigateur est connecté avec un
-  autre compte ou un rôle sans droits (« We could not access this page »). Tout passe par l'outil
-  Make. Pour montrer une réponse : sa transcription dans le tableau, et si l'utilisateur veut la voir,
-  télécharger la vidéo (`fetch`) et l'envoyer (`SendUserFile`) ; sans le domaine autorisé, montrer la
-  vignette (`thumbnail`) n'est pas possible non plus : le dire et proposer le Drive.
+Pour prendre les réponses VideoAsk du jour sans attendre qu'elles soient dans le Drive. Aucun compte à
+connecter : un scénario Make du propriétaire (webhook) lit la videoask Undrdog pour tout le monde.
+- **Accès** : lire le fichier Drive `Studio Vidéo — Accès VideoAsk.txt` (`url`, `k`, `form`). Ne jamais
+  recopier `k` dans la conversation ni dans un fichier du repo (le repo est public).
+- **Appels** (sur l'ordinateur de l'utilisateur, `device_bash`, car le réseau de Claude ne joint pas
+  Make) : `curl -sG "<url>" --data-urlencode "k=<k>" --data-urlencode "path=<chemin>"
+  [--data-urlencode "limit=20"] [--data-urlencode "answers=true"] -o <fichier>` dans un dossier de
+  travail connecté (ex. `STUDIO VIDÉO/TEST/_videoask/`), puis `device_stage_files`. Chemins autorisés
+  (les autres sont refusés par le scénario) :
+  1. `/forms/<form>` → les questions dans l'ordre (champ `questions`) → `form.json`.
+  2. `/forms/<form>/contacts` (`limit` 20) → les dernières personnes, la plus récente en premier ;
+     sans les vidéos. Montrer « n° · nom · date » (filtrer sur la date demandée, ex. aujourd'hui) et
+     demander « Lesquelles j'utilise ? (*toutes* ou numéros) ».
+  3. `/forms/<form>/contacts/<contact_id>` avec `answers=true` → ses réponses (`media_url`, durée,
+     transcription, `question_id`) → `contact_<n>.json`.
+  Réponse vide ou pas de JSON → le scénario est coupé ou la clé a changé : le dire et passer par
+  `RUSHES`. Sans `device_bash` : ouvrir l'URL complète dans le navigateur intégré et lire le JSON
+  (`get_page_text`).
 - **Choisir** : `python3 engine/videoask_direct.py list contact_*.json --questions form.json
   [--since AAAA-MM-JJ]` → tableau (personne, date, question, durée, ce qu'elle dit) ; demander
-  « Lesquelles j'utilise ? (*toutes* ou numéros) ». Les réponses vides (transcription vide, 2–3 s)
-  sont à écarter par défaut.
-- **Télécharger** : `python3 engine/videoask_direct.py fetch answers.json --only … --out /tmp/videoask`
-  (même nom de fichier que le script Drive), puis Moteur 2 sur ce dossier. Les liens expirent : les
-  relire (étape 5) s'ils datent de plus d'un jour. Le téléchargement demande que `media.videoask.com`
-  soit autorisé dans Settings › Capabilities ; s'il est refusé (403), le dire en une phrase et passer
-  par le Drive comme avant. Proposer ensuite de copier ces vidéos dans `RUSHES` pour les garder.
+  « Lesquelles j'utilise ? (*toutes* ou numéros) ». Réponses vides (transcription vide, 2–3 s)
+  écartées par défaut. Ne jamais afficher l'e-mail ni les liens signés des personnes.
+- **Télécharger** : sur l'ordinateur, `curl -sL -o "<RUSHES>/VIDEOASK/<name>" "<url>"` pour chaque
+  ligne choisie de `answers.json` (même nom de fichier que le script Drive) : les vidéos arrivent
+  directement dans `RUSHES`, puis Moteur 1–2 (seulement ces fichiers). Sans `device_bash` :
+  `videoask_direct.py fetch` (demande que `media.videoask.com` soit autorisé dans Settings ›
+  Capabilities ; sinon le dire et attendre le Drive). Les liens expirent : les relire (appel 3) s'ils
+  datent de plus d'un jour.
+- **Ne jamais envoyer l'utilisateur sur une page VideoAsk** (`share_url`, réponse, contact) : ces
+  pages refusent l'accès selon le compte du navigateur (« We could not access this page »). Pour
+  montrer une réponse : sa transcription, ou la vidéo téléchargée envoyée avec `SendUserFile`.
 
 ---
 
