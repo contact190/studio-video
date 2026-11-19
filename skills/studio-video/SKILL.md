@@ -37,7 +37,8 @@ préparer.
 
 Avant tout : si `Réglages` du sheet PILOTAGE de l'utilisateur contient déjà l'URL du script VideoAsk,
 ou si son dossier `STUDIO VIDÉO` existe, l'installation est faite : ne rien refaire, ne pas en parler.
-S'il n'utilise pas VideoAsk, ne faire que l'étape 1.
+S'il n'utilise pas VideoAsk, ne faire que l'étape 1. Si VideoAsk en direct n'est pas encore
+noté dans `Réglages`, ne faire que l'étape 5 (et la 6).
 
 Sinon, Claude fait tout lui-même et ne demande que **deux clics** à l'utilisateur, en lui envoyant
 exactement le message ci-dessous au bon moment (ne jamais taper de mot de passe à sa place) :
@@ -59,7 +60,22 @@ exactement le message ci-dessous au bon moment (ne jamais taper de mot de passe 
    Webhooks › `<URL /exec>?k=<clé>`, événement `form_response`. Demander l'accord avant d'enregistrer.
    Sans plan payant VideoAsk (pas de webhooks) : export zip une fois (Télécharger › Media files).
 4. Test : « Send a test response » ouvre la videoask publique ; l’utilisateur y enregistre une courte réponse (ou attendre une vraie réponse) : un fichier `Nom_AAAA-MM-JJ_HHmm_Qnn.mp4` arrive dans RUSHES.
-5. Écrire dans `Réglages` : ID des dossiers, URL du script, videoask branchée.
+5. **VideoAsk en direct** (pour lire les réponses sans attendre le Drive). Demander « Tu veux aussi que
+   je lise tes réponses VideoAsk directement, sans passer par le Drive ? (oui / non) ». Oui :
+   - **Make dans Claude** : connecteur Make absent (`ToolSearch` « +Make » ne trouve rien) →
+     `SearchMcpRegistry` [« make »] puis `SuggestConnectors` ; l'utilisateur se connecte à Make, puis
+     écrit « c'est fait ».
+   - **VideoAsk dans Make** : `connections_list` (type videoask). Absente → lui dire : « Dans Make,
+     va dans **Connections › Add › VideoAsk** et connecte ton compte VideoAsk. Claude ne voit jamais
+     ton mot de passe. Ensuite écris « c'est fait ». »
+   - **L'outil Make** « Studio Vidéo — Lire VideoAsk » : le créer (`tools_create`, voir *VideoAsk en
+     direct*), le tester avec `/organizations` puis `/forms`, noter l'organisation et la videoask.
+   - Puis envoyer exactement :
+     > **Dernier réglage, dans Claude :** va dans **Settings › Capabilities** et autorise le domaine
+     > `media.videoask.com`. C'est ce qui permet de télécharger les vidéos directement. Sans ce
+     > réglage, le skill te le dit et passe par le Drive comme avant.
+6. Écrire dans `Réglages` : ID des dossiers, URL du script, videoask branchée, et pour VideoAsk en
+   direct l'ID de l'outil Make, l'organisation et la videoask.
 
 ## Démarrage technique (chaque session, en silence)
 
