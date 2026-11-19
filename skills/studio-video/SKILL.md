@@ -329,7 +329,8 @@ Puis :
    par le script Google de l'utilisateur : ouvrir dans le navigateur intégré
    `<URL /exec du script>?action=fetch&k=<clé>&name=<ad_id>.mp4&sub=META&url=<download_hd_url encodé>`
    (URL du script et clé dans `Réglages`) et lire la réponse JSON (`ok`, `size`). Le script refuse
-   tout lien qui n'est pas Meta. Si `ok` est faux ou si la vidéo dépasse 50 Mo : `device_bash`
+   tout lien qui n'est pas Meta. Pas de script (utilisateur autre que le propriétaire), `ok` faux ou
+   vidéo de plus de 50 Mo : `device_bash`
    `curl -L -o "<STUDIO VIDÉO>/BIBLIOTHÈQUE/RÉFÉRENCES/META/<ad_id>.mp4" "<url>"` (dossier Drive
    synchronisé), sinon demander de la télécharger depuis le Gestionnaire de publicités. Script
    installé avant l'action `fetch` (réponse « actif » sans JSON) : mettre à jour le code depuis
