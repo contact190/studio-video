@@ -52,16 +52,16 @@ en silence si tout est déjà là.
 
 ## Installation (une seule fois par utilisateur)
 
-Chaque utilisateur a **son** Drive et **sa** videoask : l'installation se fait une fois par
-utilisateur, dans ses comptes. Elle se lance seule au premier usage ; l'utilisateur n'a rien à
-préparer.
+Chaque utilisateur a **son** Drive : l'installation se fait une fois par utilisateur, dans son
+compte. Elle se lance seule au premier usage ; l'utilisateur n'a rien à préparer. Pour VideoAsk, rien
+à installer : tout le monde passe par l'accès commun (étape 0).
 
-Avant tout : si `Réglages` du sheet PILOTAGE de l'utilisateur contient déjà l'URL du script VideoAsk,
-ou si son dossier `STUDIO VIDÉO` existe, l'installation est faite : ne rien refaire, ne pas en parler.
-S'il n'utilise pas VideoAsk, ne faire que l'étape 1.
+Avant tout : si son dossier `STUDIO VIDÉO` existe, l'installation est faite : ne rien refaire, ne pas
+en parler. **Pour un utilisateur, seules les étapes 1 et 5 se font.** Les étapes 2 à 4 (script
+VideoAsk → Drive et webhook) ne concernent que le propriétaire de la videoask, une seule fois ; ne
+jamais les proposer aux autres utilisateurs.
 
-Sinon, Claude fait tout lui-même et ne demande que **deux clics** à l'utilisateur, en lui envoyant
-exactement le message ci-dessous au bon moment (ne jamais taper de mot de passe à sa place) :
+Message à envoyer au propriétaire au bon moment (ne jamais taper de mot de passe à sa place) :
 
 > **Une seule action de ta part :** dans l'onglet Apps Script, clique sur **Autoriser l'accès**,
 > choisis ton compte Google, puis **Paramètres avancés › Accéder à Studio Vidéo — VideoAsk ›
@@ -84,7 +84,7 @@ exactement le message ci-dessous au bon moment (ne jamais taper de mot de passe 
    « c'est fait ».
    Sans plan payant VideoAsk (pas de webhooks) : export zip une fois (Télécharger › Media files).
 4. Test : « Send a test response » ouvre la videoask publique ; l’utilisateur y enregistre une courte réponse (ou attendre une vraie réponse) : un fichier `Nom_AAAA-MM-JJ_HHmm_Qnn.mp4` arrive dans RUSHES.
-5. Écrire dans `Réglages` : ID des dossiers, URL du script, videoask branchée.
+5. Écrire dans `Réglages` : ID des dossiers (et, pour le propriétaire, URL du script, videoask branchée).
 
 ## Démarrage technique (chaque session, en silence)
 
