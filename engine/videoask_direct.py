@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """VideoAsk en direct (sans Drive) : liste les réponses vidéo d'une videoask et les télécharge.
 
-Entrée : la réponse de l'API VideoAsk (GET /forms/<form_id>/contacts?include_answers=true), obtenue par
-le connecteur Make (module VideoAsk « Make an API Call », connexion de l'utilisateur), enregistrée en JSON.
-Facultatif : les questions (GET /forms/<form_id>/questions) pour numéroter Q01, Q02…
+Entrée : les réponses lues par l'outil Make « Studio Vidéo — Lire VideoAsk » (module VideoAsk
+« Make an API Call », connexion de l'utilisateur), enregistrées en JSON :
+  - un ou plusieurs contacts : GET /forms/<form_id>/contacts/<contact_id>?include_answers=true
+    (un fichier par contact, ou une liste de contacts ; l'enveloppe Make outputs/tool_output/body est acceptée)
+  - facultatif, les questions : GET /forms/<form_id> (le champ « questions », dans l'ordre) pour numéroter Q01…
+La liste GET /forms/<form_id>/contacts ne contient PAS les vidéos : elle sert seulement à choisir les contacts.
 
   python3 engine/videoask_direct.py list contacts.json [--questions questions.json] [--since 2026-11-01]
       → tableau numéroté (n°, personne, date, question, durée, début de la transcription) + answers.json
@@ -21,12 +24,19 @@ import sys
 from pathlib import Path
 
 
-def load(p):
-    d = json.load(open(p, encoding='utf-8'))
-    for k in ('body', 'data', 'results', 'items'):
+def unwrap(d):
+    for k in ('outputs', 'tool_output', 'body', 'data', 'results', 'items'):
         if isinstance(d, dict) and k in d:
             d = d[k]
-    return d if isinstance(d, list) else [d]
+    return d
+
+
+def load(*paths):
+    out = []
+    for p in paths:
+        d = unwrap(json.load(open(p, encoding='utf-8')))
+        out += [unwrap(x) for x in d] if isinstance(d, list) else [d]
+    return out
 
 
 def slug(name):
@@ -39,10 +49,11 @@ def list_cmd(a):
     qidx = {}
     if a.questions:
         qs = load(a.questions)
-        qs = sorted(qs, key=lambda q: q.get('order', q.get('position', 0)))
-        qidx = {q.get('question_id', q.get('id')): (i + 1, q.get('label') or q.get('title') or '') for i, q in enumerate(qs)}
+        if len(qs) == 1 and 'questions' in qs[0]:
+            qs = qs[0]['questions']          # GET /forms/<id> : questions dans l'ordre
+        qidx = {q.get('question_id', q.get('id')): (i + 1, q.get('title') or q.get('label') or '') for i, q in enumerate(qs)}
     rows = []
-    for c in load(a.contacts):
+    for c in load(*a.contacts):
         who = slug(c.get('name'))
         for ans in c.get('answers', []) or []:
             url = ans.get('media_url') or ans.get('share_url')
@@ -95,7 +106,7 @@ def fetch_cmd(a):
 def main():
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest='cmd', required=True)
-    l = sub.add_parser('list'); l.add_argument('contacts'); l.add_argument('--questions'); l.add_argument('--since')
+    l = sub.add_parser('list'); l.add_argument('contacts', nargs='+'); l.add_argument('--questions'); l.add_argument('--since')
     f = sub.add_parser('fetch'); f.add_argument('answers'); f.add_argument('--only'); f.add_argument('--out', required=True)
     a = ap.parse_args()
     {'list': list_cmd, 'fetch': fetch_cmd}[a.cmd](a)

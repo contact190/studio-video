@@ -187,20 +187,34 @@ Puis, sans autre question :
 ### VideoAsk en direct (sans passer par le Drive)
 
 Pour travailler sur les réponses VideoAsk sans attendre qu'elles soient dans le Drive.
-- **Lire les réponses** : connecteur **Make** (`ToolSearch` « +Make ») avec la connexion VideoAsk de
-  l'utilisateur dans Make (il la crée une fois : Make › Connections › Add › VideoAsk ; Claude ne voit
-  jamais son mot de passe ni sa clé). Absente → la lui faire créer. Créer une fois un outil Make
-  (`tools_create`) sur le module VideoAsk « Make an API Call » qui fait `GET /forms/{form_id}/contacts`
-  (réponses incluses) et `GET /forms/{form_id}/questions` ; l'appeler, enregistrer `contacts.json` et
-  `questions.json`. Plusieurs videoasks → demander laquelle (`searchForms`).
-- **Choisir** : `python3 engine/videoask_direct.py list contacts.json --questions questions.json
-  [--since AAAA-MM-JJ]` → tableau (personne, date, question, durée, début de transcription) ; demander
-  « Lesquelles j'utilise ? (*toutes* ou numéros) ».
+- **Connexion** : connecteur **Make** (`ToolSearch` « +Make »). Il faut une connexion VideoAsk dans le
+  Make de l'utilisateur (`connections_list`, type videoask ; absente → la lui faire créer une fois :
+  Make › Connections › Add › VideoAsk ; Claude ne voit jamais son mot de passe ni sa clé).
+- **L'outil Make** « Studio Vidéo — Lire VideoAsk » (`scenarios_list`, sinon le créer avec
+  `tools_create`) : module `videoask:makeApiCall`, `GET`, entrées `path` (obligatoire),
+  `organization` (en-tête `organization-id`), `limit`, `offset`. On l'appelle avec `scenarios_run`
+  (`responsive: true`). Sans l'en-tête `organization-id`, VideoAsk répond 0 videoask.
+- **Ordre des appels** :
+  1. `/organizations` → l'organisation (plusieurs → demander laquelle).
+  2. `/forms` → les videoasks (plusieurs → demander laquelle).
+  3. `/forms/<form_id>` → les questions, dans l'ordre (champ `questions`, titres Welcome, Q1…).
+     Réponse lourde : l'appeler une seule fois et l'enregistrer en `form.json`.
+  4. `/forms/<form_id>/contacts` avec `limit` 20 → les dernières personnes (nom, date, statut).
+     Cette liste ne contient pas les vidéos. Montrer « n° · nom · date » et demander
+     « Lesquelles j'utilise ? (numéros, ou les N dernières) ».
+  5. Pour chaque personne choisie :
+     `/forms/<form_id>/contacts/<contact_id>?include_answers=true` → ses réponses (lien de la
+     vidéo `media_url`, durée, transcription, `question_id`). Enregistrer `contact_<n>.json`.
+  Ne jamais recopier dans la conversation l'e-mail ni les liens signés des personnes.
+- **Choisir** : `python3 engine/videoask_direct.py list contact_*.json --questions form.json
+  [--since AAAA-MM-JJ]` → tableau (personne, date, question, durée, ce qu'elle dit) ; demander
+  « Lesquelles j'utilise ? (*toutes* ou numéros) ». Les réponses vides (transcription vide, 2–3 s)
+  sont à écarter par défaut.
 - **Télécharger** : `python3 engine/videoask_direct.py fetch answers.json --only … --out /tmp/videoask`
-  (même nom de fichier que le script Drive), puis Moteur 2 sur ce dossier. Le téléchargement direct
-  demande que le domaine des médias VideoAsk (`media.videoask.com`) soit autorisé dans Settings ›
-  Capabilities ; s'il est refusé, le dire et passer par le Drive comme avant. Proposer ensuite de
-  copier ces vidéos dans `RUSHES` pour les garder.
+  (même nom de fichier que le script Drive), puis Moteur 2 sur ce dossier. Les liens expirent : les
+  relire (étape 5) s'ils datent de plus d'un jour. Le téléchargement demande que `media.videoask.com`
+  soit autorisé dans Settings › Capabilities ; s'il est refusé (403), le dire en une phrase et passer
+  par le Drive comme avant. Proposer ensuite de copier ces vidéos dans `RUSHES` pour les garder.
 
 ---
 
