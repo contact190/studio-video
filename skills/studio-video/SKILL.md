@@ -84,6 +84,10 @@ exactement le message ci-dessous au bon moment (ne jamais taper de mot de passe 
    navigateur intégré, donner le lien du projet à ouvrir dans Chrome.
 3. **Webhook VideoAsk** (navigateur, organisation qui contient la videoask) : videoask › Connect ›
    Webhooks › `<URL /exec>?k=<clé>`, événement `form_response`. Demander l'accord avant d'enregistrer.
+   C'est la seule fois où le skill ouvre VideoAsk. Page « We could not access this page » → le
+   navigateur est connecté avec un compte qui n'est pas propriétaire ou admin de l'organisation :
+   demander à l'utilisateur de se connecter dans ce navigateur avec le compte propriétaire, puis
+   « c'est fait ».
    Sans plan payant VideoAsk (pas de webhooks) : export zip une fois (Télécharger › Media files).
 4. Test : « Send a test response » ouvre la videoask publique ; l’utilisateur y enregistre une courte réponse (ou attendre une vraie réponse) : un fichier `Nom_AAAA-MM-JJ_HHmm_Qnn.mp4` arrive dans RUSHES.
 5. **VideoAsk en direct** (seulement si l'utilisateur a choisi *Connecter* à l'étape 0) :
@@ -247,6 +251,12 @@ Pour travailler sur les réponses VideoAsk sans attendre qu'elles soient dans le
      `/forms/<form_id>/contacts/<contact_id>?include_answers=true` → ses réponses (lien de la
      vidéo `media_url`, durée, transcription, `question_id`). Enregistrer `contact_<n>.json`.
   Ne jamais recopier dans la conversation l'e-mail ni les liens signés des personnes.
+- **Ne jamais envoyer l'utilisateur sur une page VideoAsk** (`share_url`, page d'une réponse, d'un
+  contact ou de la videoask) : ces pages refusent l'accès dès que le navigateur est connecté avec un
+  autre compte ou un rôle sans droits (« We could not access this page »). Tout passe par l'outil
+  Make. Pour montrer une réponse : sa transcription dans le tableau, et si l'utilisateur veut la voir,
+  télécharger la vidéo (`fetch`) et l'envoyer (`SendUserFile`) ; sans le domaine autorisé, montrer la
+  vignette (`thumbnail`) n'est pas possible non plus : le dire et proposer le Drive.
 - **Choisir** : `python3 engine/videoask_direct.py list contact_*.json --questions form.json
   [--since AAAA-MM-JJ]` → tableau (personne, date, question, durée, ce qu'elle dit) ; demander
   « Lesquelles j'utilise ? (*toutes* ou numéros) ». Les réponses vides (transcription vide, 2–3 s)
