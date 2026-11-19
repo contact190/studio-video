@@ -190,7 +190,7 @@ const EndCard = ({e, st, brand, W, H}) => {
       : anim === 'bounce' ? `translateY(${(1 - p) * -H * 0.25}px)`
       : anim === 'glitch' ? `translate(${f - s < 12 ? Math.sin((f - s) * 7) * W * 0.02 : 0}px, 0)`
       : anim === 'flash' || anim === 'wipe' ? '' : `scale(${0.85 + 0.15 * p})`;
-    return {opacity: Math.min(1, Math.max(0, p)), transform: `${t} ${base}`.trim(),
+    return {opacity: Math.min(1, Math.max(0, p)), transform: `${t} ${base}`.trim() || 'translateZ(0)', position: 'relative',
       filter: anim === 'zoom' ? `blur(${(1 - Math.min(1, p)) * 12}px)` : undefined};
   };
   const glitchShadow = (s) => anim === 'glitch' && f - s < 14 ? `${W * 0.008}px 0 #ff2d55, ${-W * 0.008}px 0 #00e5ff` : (th.neon ? `0 0 ${W * 0.03}px ${accent}` : 'none');
