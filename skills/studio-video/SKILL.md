@@ -104,9 +104,10 @@ Questions, une par message :
    (liste), `offers`, `bullets`, `avoid`, `language`, `duration`, `questions`, `reviews`). Fins et
    textes de bouton : ceux du brief d'abord, puis la banque de `library/ctas.json` selon l'objectif
    (achat, devis, découverte) ; ne jamais annoncer une offre, une garantie ou un avis absent du brief. Une rubrique obligatoire manque → la demander.
-2. **Les rushes.** « Les rushes : `RUSHES` (déjà indexés), ou le lien d'un autre dossier ? » Autre
-   dossier → « Je l'indexe et le range dans `RUSHES`, ou je travaille directement avec ? » puis
-   Analyse sur ce dossier (seulement les nouveaux fichiers).
+2. **Les rushes.** « Les rushes : `RUSHES` (déjà indexés), *VideoAsk en direct*, ou le lien d'un
+   autre dossier ? » Autre dossier → « Je l'indexe et le range dans `RUSHES`, ou je travaille
+   directement avec ? » puis Analyse sur ce dossier (seulement les nouveaux fichiers). VideoAsk en
+   direct → section **VIDÉOASK EN DIRECT** ci-dessous.
 3. **Vidéos imposées** (facultatif). « Des vidéos à utiliser obligatoirement dans toutes les
    variantes ? (noms ou liens, ou *non*) » → identifiants `F00X` ou `F00X.S0Y`.
 4. **Références** (facultatif). « Des vidéos ou liens de référence pour l'esprit ? (ou *non*) » →
@@ -178,6 +179,24 @@ Puis, sans autre question :
 | Langue et durée | non | Anglais, 20 à 40 s |
 | Questions posées (VideoAsk) | non | Does it really fit? · How does it feel? (affichées en carton dans *Réponse à une question*) |
 | Avis écrits (vrais avis clients) | non | « Softest tee I own » (cartes d'avis et fin *Avis 5 étoiles* ; sans vrais avis, jamais d'avis inventé) |
+
+### VideoAsk en direct (sans passer par le Drive)
+
+Pour travailler sur les réponses VideoAsk sans attendre qu'elles soient dans le Drive.
+- **Lire les réponses** : connecteur **Make** (`ToolSearch` « +Make ») avec la connexion VideoAsk de
+  l'utilisateur dans Make (il la crée une fois : Make › Connections › Add › VideoAsk ; Claude ne voit
+  jamais son mot de passe ni sa clé). Absente → la lui faire créer. Créer une fois un outil Make
+  (`tools_create`) sur le module VideoAsk « Make an API Call » qui fait `GET /forms/{form_id}/contacts`
+  (réponses incluses) et `GET /forms/{form_id}/questions` ; l'appeler, enregistrer `contacts.json` et
+  `questions.json`. Plusieurs videoasks → demander laquelle (`searchForms`).
+- **Choisir** : `python3 engine/videoask_direct.py list contacts.json --questions questions.json
+  [--since AAAA-MM-JJ]` → tableau (personne, date, question, durée, début de transcription) ; demander
+  « Lesquelles j'utilise ? (*toutes* ou numéros) ».
+- **Télécharger** : `python3 engine/videoask_direct.py fetch answers.json --only … --out /tmp/videoask`
+  (même nom de fichier que le script Drive), puis Moteur 2 sur ce dossier. Le téléchargement direct
+  demande que le domaine des médias VideoAsk (`media.videoask.com`) soit autorisé dans Settings ›
+  Capabilities ; s'il est refusé, le dire et passer par le Drive comme avant. Proposer ensuite de
+  copier ces vidéos dans `RUSHES` pour les garder.
 
 ---
 
