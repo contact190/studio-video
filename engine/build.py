@@ -242,7 +242,8 @@ def build(plan_path, out_dir=None, preview=False):
                 img = 'media/end.jpg'
             end = {'from': round(T * FPS), 'dur': round(d * FPS), 'headline': p.get('headline', ''), 'bullets': p.get('bullets', []),
                    'cta': p.get('cta', brand.get('cta', '')), 'image': img, 'logo_text': brand.get('logo_text', ''), 'website': brand.get('website', ''),
-                   'layout': p.get('layout') or style['end_card'].get('layout', 'classique'), 'badge': p.get('badge', ''), 'quote': p.get('quote', '')}
+                   'layout': p.get('layout') or style['end_card'].get('layout', 'classique'), 'badge': p.get('badge', ''), 'quote': p.get('quote', ''),
+                   'theme': p.get('theme') or style['end_card'].get('theme', ''), 'animation': p.get('animation') or style['end_card'].get('animation', '')}
             T += round(d * FPS) / FPS
         elif p.get('audio', slot['audio'][0]) == 'speaker':
             for c in p.get('clips', []):

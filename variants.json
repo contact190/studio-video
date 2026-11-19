@@ -1,7 +1,7 @@
 {
- "project": "MA4",
+ "project": "LK",
  "index": "/home/claude/testrush/_studio/index.json",
- "n": 4,
+ "n": 8,
  "material": {
   "people": {
    "P1": 92.02999999999999,
@@ -20,46 +20,106 @@
  "variants": [
   {
    "id": "V01",
-   "name": "MA4_V01_avis-clients_accroche-choc",
+   "name": "LK_V01_avis-clients_accroche-choc",
    "style": "avis-clients",
    "composition": "accroche-choc",
    "lead_person": "P1",
    "must": [],
    "hook_angle": 1,
    "end_layout": null,
+   "end_theme": null,
+   "end_anim": null,
    "status": "proposée"
   },
   {
    "id": "V02",
-   "name": "MA4_V02_ugc-brut_avant-apres",
+   "name": "LK_V02_ugc-brut_avant-apres",
    "style": "ugc-brut",
    "composition": "avant-apres",
    "lead_person": "P1",
    "must": [],
    "hook_angle": 2,
    "end_layout": null,
+   "end_theme": null,
+   "end_anim": null,
    "status": "proposée"
   },
   {
    "id": "V03",
-   "name": "MA4_V03_tiktok-energique_comparatif-chiffre",
+   "name": "LK_V03_tiktok-energique_comparatif-chiffre",
    "style": "tiktok-energique",
    "composition": "comparatif-chiffre",
    "lead_person": "P1",
    "must": [],
    "hook_angle": 3,
    "end_layout": null,
+   "end_theme": null,
+   "end_anim": null,
    "status": "proposée"
   },
   {
    "id": "V04",
-   "name": "MA4_V04_sombre-premium_demo-entre-temoignages",
+   "name": "LK_V04_sombre-premium_demo-entre-temoignages",
    "style": "sombre-premium",
    "composition": "demo-entre-temoignages",
    "lead_person": "P1",
    "must": [],
    "hook_angle": 4,
    "end_layout": null,
+   "end_theme": null,
+   "end_anim": null,
+   "status": "proposée"
+  },
+  {
+   "id": "V05",
+   "name": "LK_V05_podcast-interview_mosaique-clients",
+   "style": "podcast-interview",
+   "composition": "mosaique-clients",
+   "lead_person": "P1",
+   "must": [],
+   "hook_angle": 5,
+   "end_layout": null,
+   "end_theme": null,
+   "end_anim": null,
+   "status": "proposée"
+  },
+  {
+   "id": "V06",
+   "name": "LK_V06_noir-blanc_objection-levee",
+   "style": "noir-blanc",
+   "composition": "objection-levee",
+   "lead_person": "P1",
+   "must": [],
+   "hook_angle": 6,
+   "end_layout": null,
+   "end_theme": null,
+   "end_anim": null,
+   "status": "proposée"
+  },
+  {
+   "id": "V07",
+   "name": "LK_V07_natif-reseaux_probleme-solution",
+   "style": "natif-reseaux",
+   "composition": "probleme-solution",
+   "lead_person": "P1",
+   "must": [],
+   "hook_angle": 7,
+   "end_layout": null,
+   "end_theme": null,
+   "end_anim": null,
+   "status": "proposée"
+  },
+  {
+   "id": "V08",
+   "name": "LK_V08_mots-surlignes_question-reponse",
+   "style": "mots-surlignes",
+   "composition": "question-reponse",
+   "lead_person": "P1",
+   "must": [],
+   "hook_angle": 8,
+   "end_layout": null,
+   "end_theme": null,
+   "end_anim": null,
    "status": "proposée"
   }
  ]

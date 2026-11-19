@@ -6,6 +6,7 @@ Usage :
   python3 engine/library.py compositions    → liste numérotée des compositions
   python3 engine/library.py all --json      → tout, en JSON
   python3 engine/library.py fins            → mises en page de fin (CTA), avec ⓘ
+  python3 engine/library.py looks           → thèmes visuels et animations des fins
   python3 engine/library.py info <id>       → fiche (i) : à quoi ça ressemble, quand l'utiliser, ce qu'il faut
 Ordre : validés d'abord, puis brouillons ; le défaut est marqué.
 """
@@ -75,7 +76,21 @@ def show_ends():
             print(f"   ⓘ {l['info']['quand']} Idéal pour : {l['info'].get('ideal_pour', '—')}")
 
 
+def show_looks():
+    d = json.loads((Path(__file__).resolve().parent.parent / 'library' / 'ctas.json').read_text(encoding='utf-8'))
+    print('Thèmes visuels :')
+    for i, t in enumerate(d['themes'], 1):
+        print(f"{i}. {t['name']} — {t['description']}  ({t['id']})")
+        print(f"   ⓘ {t['info']['quand']} Idéal pour : {t['info']['ideal_pour']}")
+    print('\nAnimations :')
+    for i, x in enumerate(d['animations'], 1):
+        print(f"{i}. {x['name']} — {x['description']}  ({x['id']})")
+
+
 def main():
+    if sys.argv[1:2] == ['looks']:
+        show_looks()
+        return
     if sys.argv[1:2] == ['fins']:
         show_ends()
         return

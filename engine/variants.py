@@ -37,7 +37,8 @@ def _as_list(x):
     return [t.strip() for t in (x if isinstance(x, list) else str(x or '').split('·')) if str(t).strip()]
 
 
-def end_card(brief, msgs, n, image_seg, layout=None):
+def end_card(brief, msgs, n, image_seg, layout=None, looks=None):
+    looks = looks or {}
     """Fin de vidéo différente à chaque variante : mise en page + texte du bouton qui tournent."""
     goal = str(brief.get('goal', '')).lower()
     kind = 'lead' if any(w in goal for w in ('devis', 'quote', 'lead', 'contact', 'rdv', 'call', 'appel')) else \
@@ -67,7 +68,12 @@ def end_card(brief, msgs, n, image_seg, layout=None):
     if fin.get('cta_texts'):
         ctas = _as_list(fin['cta_texts']) + ctas
     ends = _as_list(brief.get('end_text')) or _as_list(fin.get('headlines'))
-    card = {'layout': lay, 'fin': fin['id'], 'end_style': fin.get('end_style', {}), 'cta': ctas[(n - 1) % len(ctas)],
+    es = fin.get('end_style', {})
+    themes = [t['id'] for t in CTAS['themes']]
+    anims = [x['id'] for x in CTAS['animations']]
+    theme = es.get('theme') or (looks.get('theme') or themes)[(n - 1) % len(looks.get('theme') or themes)]
+    anim = es.get('animation') or (looks.get('animation') or anims)[(n * 3) % len(looks.get('animation') or anims)]
+    card = {'layout': lay, 'fin': fin['id'], 'theme': theme, 'animation': anim, 'end_style': es, 'cta': ctas[(n - 1) % len(ctas)],
             'headline': ends[(n - 1) % len(ends)] if ends else '', 'bullets': brief.get('bullets', msgs[:3]), 'image_seg': image_seg}
     if lay == 'question' and not fin.get('headlines'):
         card['headline'] = CTAS['questions'][(n - 1) % len(CTAS['questions'])]
@@ -151,6 +157,8 @@ def matrix(a):
         out.append({'id': vid, 'name': f'{a.project}_{vid}_{s["id"]}_{c["id"]}', 'style': s['id'],
                     'composition': c['id'], 'lead_person': lead, 'must': must, 'hook_angle': i,
                     'end_layout': None if a.end == 'auto' else a.end.split(',')[(i - 1) % len(a.end.split(','))],
+                    'end_theme': None if a.end_theme == 'auto' else a.end_theme.split(','),
+                    'end_anim': None if a.end_anim == 'auto' else a.end_anim.split(','),
                     'status': 'proposée'})
     res = {'project': a.project, 'index': str(Path(a.index).resolve()), 'n': a.n, 'material': mat,
            'compositions_skipped': skipped, 'variants': out}
@@ -170,7 +178,7 @@ def board(a):
             p = load(plans / f"{x['name']}.json")
             hook = p.get('hook_title', '—')
             e = p.get('slots', {}).get('end', {})
-            fin = f"{e.get('fin', e.get('layout', '—'))} · « {e.get('cta', '')} »" if e else '—'
+            fin = f"{e.get('fin', e.get('layout', '—'))} · {e.get('theme', '')} · {e.get('animation', '')} · « {e.get('cta', '')} »" if e else '—'
             dur = p.get('estimated_duration', '—')
         rows.append(f"| {x['id']} | {x['style']} | {x['composition']} | {x['lead_person']} | {hook} | {fin} | {dur} |")
     md = '\n'.join(rows)
@@ -409,7 +417,7 @@ def draft(a):
             lo, hi = slot.get('duration', [3, 8])
             target = (lo + hi) / 2
             if slot.get('type') == 'end_card':
-                plan['slots'][sid] = end_card(brief, msgs, n + 1, demo[0] if demo else None, x.get('end_layout'))
+                plan['slots'][sid] = end_card(brief, msgs, n + 1, demo[0] if demo else None, x.get('end_layout'), {'theme': x.get('end_theme'), 'animation': x.get('end_anim')})
                 total += 3.5
             elif slot['audio'][0] == 'speaker' and lead:
                 who = lead if slot.get('same_person') or sid in ('hook', 'testimonial', 'testimonial_1') or not others else others[(len(plan['slots'])) % len(others)]
@@ -541,6 +549,8 @@ def main():
     m.add_argument('--n', type=int, default=10)
     m.add_argument('--style', default='auto')
     m.add_argument('--composition', default='auto')
+    m.add_argument('--end-theme', default='auto', help='thème(s) de fin : auto ou id[,id]')
+    m.add_argument('--end-anim', default='auto', help='animation(s) de fin : auto ou id[,id]')
     m.add_argument('--end', default='auto', help="mise en page de fin : auto (varie) ou id[,id] de library/ctas.json")
     m.add_argument('--must', default='')
     m.add_argument('--project', default='video')

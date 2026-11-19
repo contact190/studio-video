@@ -119,15 +119,19 @@ Questions, une par message :
    quand le choisir, idéal pour, ce qu'il faut dans les rushes), puis reposer la question. Plusieurs
    numéros possibles (« 2, 5, 9 ») : les variantes se répartissent entre eux. Puis la **fin (CTA)** :
    AskUserQuestion *Auto* · *Liste* · *Prompt*.
-   - *Auto* : la fin et le texte du bouton changent à chaque variante, parmi les fins **validées**
-     (toutes les fins de base s'il n'y en a aucune).
+   - *Auto* : à chaque variante changent la mise en page, le **thème visuel** (nuit, clair, néon,
+     dégradé, affiche brute, verre, pastel), l'**animation d'entrée** (pop, glissé, zoom flou, chute,
+     machine à écrire, flash, balayage, glitch) et le texte du bouton. Fins **validées** en premier
+     (une variante sur deux tant qu'il y en a moins de 3).
    - *Liste* : `engine/library.py fins` (validées en premier, avec ⓘ), un ou plusieurs numéros →
-     `--end <id,id>`.
+     `--end <id,id>` ; puis, si l'utilisateur veut, `engine/library.py looks` → `--end-theme <id,id>`
+     et `--end-anim <id,id>` (sinon ils varient).
    - *Prompt* : « Décris la fin que tu veux (ex. *urgence, bouton rouge carré, livraison offerte*). »
      puis « Des vidéos de référence pour la fin ? (liens ou fichiers, ou *non*) ». Pour chaque
      référence : `python3 engine/fins.py look <ref>` → regarder `fin_sheet.jpg` et lire le texte
      entendu ; relever mise en page, couleurs, forme du bouton, texte, animation, durée. Créer la fin
-     avec `engine/fins.py add` (base la plus proche, réglages, textes, `--source prompt|ref`), la
+     avec `engine/fins.py add` (base la plus proche, réglages dont `theme` et `animation`, textes,
+     `--source prompt|ref`), la
      montrer en une image (aperçu d'une variante) et l'utiliser (`--end <id>`). À la fin du montage :
      « On garde cette fin dans la bibliothèque ? » → oui : `fins.py validate <id>`, commit et push.
 6. **Nombre de variantes.** AskUserQuestion : *10* · *15* · *20*.
@@ -139,7 +143,7 @@ Questions, une par message :
 Puis, sans autre question :
 
 1. `python3 engine/variants.py matrix <index> --n N --style <auto|id> --composition <auto|id>
-   --end <auto|id,id> --must <F003,…> --project <nom>` : répartit les variantes (compositions possibles avec ces rushes
+   --end <auto|id,id> --end-theme <auto|id,id> --end-anim <auto|id,id> --must <F003,…> --project <nom>` : répartit les variantes (compositions possibles avec ces rushes
    seulement, personne principale qui a assez de parole, accroches tournantes).
 2. `python3 engine/variants.py draft variants.json brief.json --out plans` : premier jet de chaque
    plan. **Relire chaque plan** : réécrire l'accroche et les lignes de voix off depuis le brief (ton,
@@ -218,7 +222,8 @@ ordre des parties, durée totale) et signaler ce qui varie.
 
 **Fin (CTA).** Pour chaque référence : `python3 engine/fins.py look <ref>` (dernières secondes en
 planche + texte entendu) ; relever mise en page, couleurs, forme du bouton, texte, animation, durée.
-Créer avec `engine/fins.py add` (base la plus proche parmi les 8, réglages, textes). Tester sur une
+Créer avec `engine/fins.py add` (base la plus proche parmi les 8, réglages, thème visuel et
+animation d'entrée les plus proches, textes). Tester sur une
 variante, demander « validé ou modifications ? », puis `fins.py validate <id>` : la fin validée est
 utilisée par défaut en *Auto* dans Montage.
 

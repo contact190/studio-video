@@ -11,7 +11,8 @@
   python3 engine/fins.py validate <id>   → statut validé : utilisée par défaut en Auto.
 Mises en page de base : classique, bouton, offre, garantie, avis, superpose, question, minimal.
 Réglages possibles (style) : bg, glow, accent, headline_color, headline_size, show_logo, show_bullets,
-button_shape (pill|square|outline), button_upper (true|false), button_arrow (true|false).
+button_shape (pill|square|outline), button_upper (true|false), button_arrow (true|false),
+theme (nuit|clair|neon|degrade|brut|verre|pastel), animation (pop|slide|zoom|bounce|typewriter|flash|wipe|glitch).
 """
 import argparse
 import json
@@ -22,7 +23,7 @@ from pathlib import Path
 LIB = Path(__file__).resolve().parent.parent / 'library' / 'ctas.json'
 BASES = ['classique', 'bouton', 'offre', 'garantie', 'avis', 'superpose', 'question', 'minimal']
 KEYS = {'bg', 'glow', 'accent', 'headline_color', 'headline_size', 'show_logo', 'show_bullets', 'button_shape',
-        'button_upper', 'button_arrow', 'cta_text'}
+        'button_upper', 'button_arrow', 'cta_text', 'theme', 'animation'}
 
 
 def split(t):

@@ -157,5 +157,112 @@
   "30-day returns",
   "Satisfaction guaranteed"
  ],
- "_doc": "Une fin = mise en page de base (base) + réglages (end_style : bg, accent, headline_color, headline_size, show_logo, show_bullets, button_shape pill|square|outline, button_upper, button_arrow) + textes propres facultatifs (cta_texts, headlines). status validé = utilisée par défaut en Auto."
+ "_doc": "Une fin = mise en page de base (base) + réglages (end_style : bg, accent, headline_color, headline_size, show_logo, show_bullets, button_shape pill|square|outline, button_upper, button_arrow, theme, animation) + textes propres facultatifs (cta_texts, headlines). status validé = utilisée par défaut en Auto.",
+ "themes": [
+  {
+   "id": "nuit",
+   "name": "Nuit",
+   "description": "Fond sombre, halo de la couleur de la marque.",
+   "info": {
+    "quand": "Look premium par défaut.",
+    "ideal_pour": "Styles sombres, produits haut de gamme."
+   }
+  },
+  {
+   "id": "clair",
+   "name": "Clair",
+   "description": "Fond papier clair, texte noir, ombres douces.",
+   "info": {
+    "quand": "Après une vidéo lumineuse.",
+    "ideal_pour": "Styles épurés, déco, mode."
+   }
+  },
+  {
+   "id": "neon",
+   "name": "Néon",
+   "description": "Noir, contours et bouton lumineux.",
+   "info": {
+    "quand": "Pour une fin qui claque.",
+    "ideal_pour": "TikTok, public jeune."
+   }
+  },
+  {
+   "id": "degrade",
+   "name": "Dégradé",
+   "description": "Dégradé de la couleur de marque vers le violet nuit, bouton blanc.",
+   "info": {
+    "quand": "Pour une fin colorée et moderne.",
+    "ideal_pour": "Lancements, apps, tech."
+   }
+  },
+  {
+   "id": "brut",
+   "name": "Affiche brute",
+   "description": "Jaune vif, noir, bordures épaisses, ombres dures.",
+   "info": {
+    "quand": "Pour arrêter le pouce.",
+    "ideal_pour": "Promotions, ton direct."
+   }
+  },
+  {
+   "id": "verre",
+   "name": "Verre",
+   "description": "Photo produit floutée derrière une carte en verre dépoli.",
+   "info": {
+    "quand": "Pour garder l'ambiance de la vidéo.",
+    "ideal_pour": "Produits photogéniques."
+   }
+  },
+  {
+   "id": "pastel",
+   "name": "Pastel",
+   "description": "Dégradé rose et bleu doux, bouton rose.",
+   "info": {
+    "quand": "Ton doux et chaleureux.",
+    "ideal_pour": "Beauté, bien-être, cadeaux."
+   }
+  }
+ ],
+ "animations": [
+  {
+   "id": "pop",
+   "name": "Pop",
+   "description": "Les éléments apparaissent en rebondissant légèrement."
+  },
+  {
+   "id": "slide",
+   "name": "Glissé",
+   "description": "Les éléments montent depuis le bas, l'un après l'autre."
+  },
+  {
+   "id": "zoom",
+   "name": "Zoom flou",
+   "description": "Arrivée de loin, du flou au net."
+  },
+  {
+   "id": "bounce",
+   "name": "Chute",
+   "description": "Les éléments tombent du haut et rebondissent."
+  },
+  {
+   "id": "typewriter",
+   "name": "Machine à écrire",
+   "description": "Le titre s'écrit lettre par lettre."
+  },
+  {
+   "id": "flash",
+   "name": "Flash",
+   "description": "Éclair blanc puis tout apparaît d'un coup."
+  },
+  {
+   "id": "wipe",
+   "name": "Balayage",
+   "description": "Un bandeau de couleur traverse l'écran et révèle la fin."
+  },
+  {
+   "id": "glitch",
+   "name": "Glitch",
+   "description": "Le titre tremble avec un décalage rouge et bleu."
+  }
+ ]
 }
